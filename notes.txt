@@ -1,3 +1,4 @@
+2021-11-19:
 Databasstruktur:
 För att kunna skilja på auth mellan olika bokningar behöver vi nog ändra strukturen till:
 Offices/bookings/uid
@@ -10,4 +11,7 @@ Kan finnas ett fält med "Admins" med uid:s till de som har admintillåtelse. Sa
 Notes med Uwe:
  - GDPR, visa namn?
  - SSO?
- - 
+ - Ändrat databasstruktur
+
+ 2021-11-18: 
+ Hur tar vi bort bokningar som har gått ut?

@@ -39,16 +39,16 @@ export default function BookingDashboard() {
 
     return (
         <>
-        <Container>
+        <Container  className="shadow-container">
         <div>
             <Form>
                 <Form.Label>Office</Form.Label>
-                <Form.Control onChange={handleOnChange} as="select" ref={selectedOfficeRef}>
+                <Form.Select aria-label="Default select example" onChange={handleOnChange} ref={selectedOfficeRef}>
                     <option>Select an office</option>
                     {offices && offices.map((office,i)=>{
                         return(<option key={i}>{office}</option>)
                     })}
-                </Form.Control>
+                    </Form.Select>
             </Form>
         </div>
         {showViewerAndBooker&&

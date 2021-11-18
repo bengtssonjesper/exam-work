@@ -1,8 +1,8 @@
 import React, {useState, useEffect, useRef} from 'react'
 import{getDatabase,set,ref,onValue} from 'firebase/database'
+import './styles.css'
 import { Button,Form,Alert } from 'react-bootstrap'
 import { useAuth } from '../contexts/AuthContext'
-import './styles.css'
 import {v4 as uuidv4} from 'uuid'
 import{useNavigate} from 'react-router-dom'
 
@@ -23,7 +23,7 @@ export default function SeatBooker(props) {
     useEffect(()=>{
         //Denna verkar köras väldigt mycket, kolla det
         getDbData();
-    },[])
+    },[props.selectedOffice])
 
     function getDbData(){
         const db = getDatabase();
@@ -47,6 +47,7 @@ export default function SeatBooker(props) {
                     date:dateRef.current.value,
                     startTime:startTimeRef.current.value,
                     endTime:endTimeRef.current.value,
+                    office:props.selectedOffice,
                 })
                 setMessage("Booking succeeded")
             }catch(error){
@@ -65,17 +66,20 @@ export default function SeatBooker(props) {
         const dateEndTimeRef = new Date();
         dateStartTimeRef.setHours(startTimeRef.current.value.substr(0,2),startTimeRef.current.value.substr(3,5),0)
         dateEndTimeRef.setHours(endTimeRef.current.value.substr(0,2),endTimeRef.current.value.substr(3,5),0)
-
-        for(const[key,value] of Object.entries(dbData.bookings)){
-            for(const[childKey,childValue] of Object.entries(value)){
-                if(childValue.date===dateRef.current.value&&
-                    childValue.seat===seatRef.current.value&&
-                    isCollision(childValue.startTime,childValue.endTime,dateStartTimeRef,dateEndTimeRef)){
-                        isAllowed=false;
+        if('bookings' in dbData){
+            for(const[key,value] of Object.entries(dbData.bookings)){
+                for(const[childKey,childValue] of Object.entries(value)){
+                    if(childValue.date===dateRef.current.value&&
+                        childValue.seat===seatRef.current.value&&
+                        isCollision(childValue.startTime,childValue.endTime,dateStartTimeRef,dateEndTimeRef)){
+                            isAllowed=false;
+                    }
                 }
             }
+        }else{
+            //If no bookings then automatically allowed
+            isAllowed=true;
         }
-
         return isAllowed;
     }
 
@@ -128,11 +132,11 @@ export default function SeatBooker(props) {
 
     return (
         <>
-        <div className="my-container mt-3 p-2">
-            <h1>Seat Booker</h1>
+        <div className="shadow-container mt-3 p-2">
+            <h1 className="text-center">Seat Booker</h1>
             {error && <Alert variant="danger">{error}</Alert>}
             {message && <Alert variant="success">{message}</Alert>}
-            <Button id="formToggleBtn" disabled={loading} onClick={handleFormToggle}>{toggleButtonInnerHTML}</Button>
+            <Button className="text-center" id="formToggleBtn" disabled={loading} onClick={handleFormToggle}>{toggleButtonInnerHTML}</Button>
             {showForm &&<Form onSubmit={handleSubmit}>
                 <Form.Group>
                     <Form.Label>

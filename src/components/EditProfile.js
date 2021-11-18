@@ -33,7 +33,7 @@ export default function EditProfile() {
     }
 
     return (
-        <Container>
+        <Container className="shadow-container">
             {error && <Alert variant="danger">{error}</Alert>}
             {message && <Alert variant="success">{message}</Alert>}
 
@@ -44,9 +44,9 @@ export default function EditProfile() {
                     </Form.Label>
                     <Form.Control ref={nameRef} type="string"/>
                 </Form.Group>
-                <Button type="submit">Submit</Button>
+                <Button className="mt-3" type="submit">Submit</Button>
             </Form>
-            <Button  onClick={navigateToProfile}>Profile</Button>
+            <Button className="mt-3" onClick={navigateToProfile}>Back to Profile</Button>
         </Container>
     )
 }

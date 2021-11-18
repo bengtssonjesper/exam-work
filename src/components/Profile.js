@@ -1,7 +1,8 @@
 import React, {useState, useEffect} from "react";
+import './styles.css'
 import {ref,getDatabase} from 'firebase/database'
 import {useAuth} from '../contexts/AuthContext'
-import {Button, Alert,Container} from 'react-bootstrap'
+import {Button, Alert,Container, Accordion, Row, Col} from 'react-bootstrap'
 import{useNavigate} from 'react-router-dom'
 import { onValue } from "@firebase/database";
 
@@ -10,6 +11,7 @@ export default function Profile() {
   const [error, setError] = useState("");
   const navigate = useNavigate()
   const [profileData,setProfileData]=useState();
+  const [myBookings,setMyBookings]=useState();
 
 
   useEffect(()=>{
@@ -27,8 +29,32 @@ export default function Profile() {
     }
     getProfileData();
   },[currentUser._delegate.uid])
+
+  useEffect(()=>{
+    var tmpArr=[];
+    const db=getDatabase();
+    const allOfficesRef = ref(db,"Offices");
+    onValue(allOfficesRef,(snapshot)=>{
+      const data = snapshot.val();
+      
+
+      Object.keys(data).forEach(office=>{
+        if(data[office].bookings){
+          Object.keys(data[office].bookings).forEach(bookerId=>{
+            if(bookerId===currentUser._delegate.uid){
+              Object.keys(data[office].bookings[bookerId]).forEach(bookingId=>{
+                tmpArr.push(data[office].bookings[bookerId][bookingId])
+              })
+            }
+          })
+        }
+      })
+    })
+
+    setMyBookings(tmpArr)
+  },[])
   
-  async function testLogOut(){
+  async function handleLogOut(){
     setError("");
     try {
       await logout();
@@ -50,27 +76,61 @@ export default function Profile() {
 
   return (
     <>
-    <Container>
-      <div>
+    <Container className="mt-3" className="shadow-container">
       {error&&<Alert type="danger">{error}</Alert>}
-      </div>
 
-      <div>
-      Profile
-        {currentUser&&<p>Current user: {currentUser.email}</p>}
-        {currentUser&&<p>UserID: {currentUser._delegate.uid}</p>}
+      <h1 className="text-center">Profile</h1>
         {profileData && <p>Name: {profileData.name}</p>}
+        {currentUser&&<p>Logged in as: {currentUser.email}</p>}
         
-        {currentUser&&
+        {myBookings&&
         <div>
-          <p>My bookings: </p>
-
+          <Accordion>
+            <Accordion.Item eventKey="0">
+              <Accordion.Header>Show My Bookings</Accordion.Header>
+              <Accordion.Body>
+          {myBookings.map((booking,i)=>{
+            
+            return (<Row key={i}>
+              <Col className="md-2">
+                <strong>
+                Office: 
+                </strong>
+                {booking.office} 
+              </Col>
+              <Col className="md-2">
+              <strong>
+                Date: 
+                </strong>
+                {booking.date} 
+              </Col>
+              <Col className="md-2">
+              <strong>
+                Seat: 
+                </strong>
+                {booking.seat} 
+              </Col >
+              <Col className="md-2">
+              <strong>
+                Start Time:
+                </strong>
+                 {booking.startTime}
+              </Col>
+              <Col className="md-2">
+              <strong>
+                End Time: 
+                </strong>
+                {booking.endTime}
+              </Col>
+            </Row>)
+            
+          })}
+          </Accordion.Body>
+          </Accordion.Item>
+          </Accordion>
         </div>
         }
-      </div>
-      <Button onClick={testLogOut}>Logout</Button>
-      <Button onClick={handleGoToBooking}>Book seat</Button>
-      <Button onClick={handleEditProfile}>Edit profile info</Button>
+      <Button className="mt-3" onClick={handleEditProfile}>Edit profile info</Button>
     </Container>
     </>)
 }

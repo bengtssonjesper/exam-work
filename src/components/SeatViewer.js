@@ -1,11 +1,14 @@
 import React,{useEffect, useState, useRef} from 'react'
 import SeatRow from './SeatRow'
+import ScheduleRow from './ScheduleRow'
 import {ref,getDatabase,onValue} from 'firebase/database'
 import SeatRowHeadings from './SeatRowHeadings'
-import {Form} from 'react-bootstrap'
+import ScheduleHeadings from './ScheduleHeadings'
+import {Form,Button,Row,Col} from 'react-bootstrap'
 
 export default function SeatViewer(props) {
     const [dbData,setDbData]=useState([])
+    const [view,setView]=useState("text")
     const [thisWeeksDates,setThisWeeksDates]=useState([])
     const [daySortedData, setDaySortedData]=useState()
     const dateRef = useRef("");
@@ -16,12 +19,16 @@ export default function SeatViewer(props) {
             const db = getDatabase();
             const OfficesRef = ref(db, 'Offices/'+props.selectedOffice);
             onValue(OfficesRef, (snapshot) => {
-                const data = snapshot.val();
+                const data =  snapshot.val();
                 setDbData(data);
+                handleDateChange(data);
             });
         }
         //Denna verkar köras väldigt mycket, kolla det
         getDbData();
+    },[props.selectedOffice])
+
+    useEffect(()=>{
         getThisWeeksDates();
     },[])
 
@@ -36,16 +43,24 @@ export default function SeatViewer(props) {
         setThisWeeksDates(tmpArr)
     }
 
-    function handleDateChange(){
+    function handleDateChange(data){
+        var tmpData=[]
+        //To determine if called from onChange or from useEffect
+        if('seats' in data){
+            tmpData=data;
+        }else{
+            tmpData=dbData;
+        }
         var tmpArr=[];
-        for(const[key,value] of Object.entries(dbData.bookings)){
+        if('bookings' in tmpData){
+        for(const[key,value] of Object.entries(tmpData.bookings)){
             for(const[childKey,childValue] of Object.entries(value)){
                 if(childValue.date===dateRef.current.value){
                     tmpArr.push(childValue)
                 }
             }
+        }
     }
-
         setDaySortedData(tmpArr)
     }
 
@@ -59,20 +74,41 @@ export default function SeatViewer(props) {
         return timeA-timeB
     }
 
+    function handleTextViewClick(){
+        const textButton = document.getElementById('setTextViewBtn')
+        setView("text")
+    }
+
+    function handleScheduleViewClick(){
+        const scheduleButton = document.getElementById('setScheduleViewBtn')
+        setView("schedule")
+    }
+
     return (
-        <div className="my-container mt-3 p-2">
-            <h1>SeatViewer</h1>
-            <Form.Group >
+        <div className="shadow-container">
+                <h1 className="text-center">Seat Viewer</h1>
+            <Row className="mt-2 mb-4">
+                <Col  className="d-flex align-items-end md-6">
+                <Form>
+                    <Form.Group >
                     <Form.Label>Seat</Form.Label>
-                    <Form.Control as="select" ref={dateRef} onChange={handleDateChange}>
-                    <option>Select a date</option>
-                    {thisWeeksDates && thisWeeksDates.map((date,i)=>{
-                        return (<option key={i}>{date.getFullYear()}-{date.getMonth()+1}-{date.getDate()}</option>)
-                    })}
-                    </Form.Control>
-            </Form.Group>
-            {dateRef.current.value!=="Select a date" && <SeatRowHeadings/>}
-            {dateRef.current.value!=="Select a date" &&dbData && daySortedData && dbData.seats.map((seat,i)=>{
+                        <Form.Select aria-label="Default select example" ref={dateRef} onChange={handleDateChange}>
+                        <option>Select a date</option>
+                        {thisWeeksDates && thisWeeksDates.map((date,i)=>{
+                            return (<option key={i}>{date.getFullYear()}-{date.getMonth()+1}-{date.getDate()}</option>)
+                        })}
+                        </Form.Select>
+                    </Form.Group>
+                    </Form>
+                </Col>
+                <Col className="d-flex justify-content-evenly align-items-end">
+                        <Button id="setTextViewBtn" variant={view==='text'? "dark":"outline-dark"} onClick={handleTextViewClick}>Text View</Button>
+                        <Button id="setScheduleViewBtn" variant={view==='schedule'?"dark":"outline-dark"} onClick={handleScheduleViewClick}>Schedule View</Button>
+                </Col>
+            </Row>
+            
+            {view==="text" && dateRef.current.value!=="Select a date" && <SeatRowHeadings />}
+            {view==="text"&& dateRef.current.value!=="Select a date" &&dbData && daySortedData && dbData.seats.map((seat,i)=>{
                 return(
                 <SeatRow 
                 key={i} 
@@ -80,6 +116,17 @@ export default function SeatViewer(props) {
                 bookings={daySortedData.filter(booking=>booking.seat===seat).sort(sortBookings)}
                 />)
             })}
+            {view==="schedule" && dateRef.current.value!=="Select a date" && <ScheduleHeadings />}
+            {view==="schedule"&&dateRef.current.value!=="Select a date"&&dbData && daySortedData && dbData.seats.map((seat,i)=>{
+                return(
+                    <ScheduleRow
+                    key={i}
+                    seat={seat} 
+                    bookings={daySortedData.filter(booking=>booking.seat===seat).sort(sortBookings)}
+                    />
+                )})
+            
+        }
         </div>
     )
 }
