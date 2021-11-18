@@ -25,6 +25,8 @@ export default function Login() {
     setLoading(false);
   }
 
+
+
   return (
     <Container
       className="d-flex align-items-center justify-content-center"
@@ -44,9 +46,10 @@ export default function Login() {
                 <Form.Label>Password</Form.Label>
                 <Form.Control type="password" ref={passwordRef} required />
               </Form.Group>
-              <Button className="mt-3 w-100" type="submit">
+              <Button disabled={loading} className="mt-3 w-100" type="submit">
                 Log In
               </Button>
+
             </Form>
           </Card.Body>
         </Card>

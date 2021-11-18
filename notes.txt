@@ -1,0 +1,13 @@
+Databasstruktur:
+För att kunna skilja på auth mellan olika bokningar behöver vi nog ändra strukturen till:
+Offices/bookings/uid
+
+Admin:
+För att göra en person till admin:
+Kan antingen finnas ett fält i profilinfon, "isAdmin", men vem skulle ha tillåtelse att skriva i detta fält? Går det att lösa med ett lösenord som måste skrivas in för att skicka "set"en? Går det att hacka? Om man ska lösa med lösenord, var skulle detta lösen finnas sparat?
+Kan finnas ett fält med "Admins" med uid:s till de som har admintillåtelse. Samma här, vem har tillåtelse?
+
+Notes med Uwe:
+ - GDPR, visa namn?
+ - SSO?
+ - 
