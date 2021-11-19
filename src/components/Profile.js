@@ -12,6 +12,8 @@ export default function Profile() {
   const navigate = useNavigate()
   const [profileData,setProfileData]=useState();
   const [myBookings,setMyBookings]=useState();
+  const [myBookingsObj,setMyBookingsObj]=useState({});
+  const today = new Date();
 
 
   useEffect(()=>{
@@ -32,6 +34,7 @@ export default function Profile() {
 
   useEffect(()=>{
     var tmpArr=[];
+    var tmpObj={};
     const db=getDatabase();
     const allOfficesRef = ref(db,"Offices");
     onValue(allOfficesRef,(snapshot)=>{
@@ -43,30 +46,29 @@ export default function Profile() {
           Object.keys(data[office].bookings).forEach(bookerId=>{
             if(bookerId===currentUser._delegate.uid){
               Object.keys(data[office].bookings[bookerId]).forEach(bookingId=>{
-                tmpArr.push(data[office].bookings[bookerId][bookingId])
+                var compDate = new Date();
+                var fullDateString = data[office].bookings[bookerId][bookingId].date.substr(0,10)
+                var monthString = data[office].bookings[bookerId][bookingId].date.substr(5,2)
+                var dateString = data[office].bookings[bookerId][bookingId].date.substr(8,2)
+                compDate.setMonth(monthString)
+                compDate.setMonth(compDate.getMonth()-1) //Think this is needed for January/December
+                compDate.setDate(dateString)
+                if(compDate>=today){
+                  if(fullDateString in tmpObj){
+                    tmpObj[fullDateString].push(data[office].bookings[bookerId][bookingId])
+                  }else{
+                    tmpObj[fullDateString]=[data[office].bookings[bookerId][bookingId]]
+                  }
+                }
               })
             }
           })
         }
       })
     })
-
-    setMyBookings(tmpArr)
+    setMyBookingsObj(tmpObj)
   },[])
-  
-  async function handleLogOut(){
-    setError("");
-    try {
-      await logout();
-      navigate('/login')
-    } catch {
-      setError("Failed to log out");
-    }
-  }
 
-  function handleGoToBooking(){
-    navigate('/bookingdashboard')
-  }
 
   function handleEditProfile(){
     navigate('/editprofile')
@@ -83,48 +85,34 @@ export default function Profile() {
         {profileData && <p>Name: {profileData.name}</p>}
         {currentUser&&<p>Logged in as: {currentUser.email}</p>}
         
-        {myBookings&&
+        {myBookingsObj&&
         <div>
+
+
           <Accordion>
             <Accordion.Item eventKey="0">
               <Accordion.Header>Show My Bookings</Accordion.Header>
               <Accordion.Body>
-          {myBookings.map((booking,i)=>{
-            
-            return (<Row key={i}>
-              <Col className="md-2">
-                <strong>
-                Office: 
-                </strong>
-                {booking.office} 
-              </Col>
-              <Col className="md-2">
-              <strong>
-                Date: 
-                </strong>
-                {booking.date} 
-              </Col>
-              <Col className="md-2">
-              <strong>
-                Seat: 
-                </strong>
-                {booking.seat} 
-              </Col >
-              <Col className="md-2">
-              <strong>
-                Start Time:
-                </strong>
-                 {booking.startTime}
-              </Col>
-              <Col className="md-2">
-              <strong>
-                End Time: 
-                </strong>
-                {booking.endTime}
-              </Col>
-            </Row>)
-            
-          })}
+              {Object.keys(myBookingsObj).map(element=>{
+              console.log("Element:", element)
+              console.log("Element:", myBookingsObj[element])
+                  return(
+                    <div>
+                      <strong>{element}</strong>
+                      {myBookingsObj[element].map(booking=>{
+                        return(
+                          <div className="d-flex justify-content-between">
+                          <p>Office: {booking.office}</p>
+                          <p>Seat: {booking.seat}</p>
+                          <p>Start Time: {booking.startTime}</p>
+                          <p>End Time: {booking.endTime}</p>
+                        </div>
+                        )
+                      })}
+                      </div>
+                  )
+                })}
+
           </Accordion.Body>
           </Accordion.Item>
           </Accordion>

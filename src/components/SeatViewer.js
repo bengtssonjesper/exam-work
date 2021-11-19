@@ -11,7 +11,15 @@ export default function SeatViewer(props) {
     const [view,setView]=useState("text")
     const [thisWeeksDates,setThisWeeksDates]=useState([])
     const [daySortedData, setDaySortedData]=useState()
+    const [dayHours, setDayHours]=useState([])
+    const [showTimeChange, setShowTimeChange]=useState(false)
+    const [scheduleStartTime, setScheduleStartTime]=useState("06")
+    const [scheduleEndTime, setScheduleEndTime]=useState("18")
+    const [workHoursArray, setWorkHoursArray]=useState([])
+    const [loading, setLoading]=useState(false)
     const dateRef = useRef("");
+    const startScheduleRef = useRef("");
+    const endScheduleRef = useRef("");
 
     useEffect(()=>{
         //Declare function in useEffect to avoid warning about dependency array
@@ -30,7 +38,23 @@ export default function SeatViewer(props) {
 
     useEffect(()=>{
         getThisWeeksDates();
+        setDayHours(getTimeArray(0,24))
     },[])
+
+
+    function getTimeArray(start,end){
+        var tmpArr=[]
+        for(var i = start;i<=end;i++){
+            var tmpString=i.toString();
+            if(tmpString.length<2){
+                tmpArr.push("0"+tmpString)
+            }else{
+                tmpArr.push(tmpString)
+            }
+        }
+        return tmpArr
+    }
+
 
     function getThisWeeksDates(){
         const today = new Date();
@@ -75,13 +99,29 @@ export default function SeatViewer(props) {
     }
 
     function handleTextViewClick(){
-        const textButton = document.getElementById('setTextViewBtn')
         setView("text")
     }
 
     function handleScheduleViewClick(){
-        const scheduleButton = document.getElementById('setScheduleViewBtn')
         setView("schedule")
+    }
+
+    function swapShowTimeChange(){
+        setLoading(true)
+        if(showTimeChange){
+            setShowTimeChange(false)
+        }else{
+            setShowTimeChange(true)
+        }
+        setLoading(false)
+    }
+
+    function handleTimeChange(e){
+        e.preventDefault()
+        setScheduleStartTime(startScheduleRef.current.value)
+        setScheduleEndTime(endScheduleRef.current.value)
+
+        setWorkHoursArray(getTimeArray(startScheduleRef.current.value,endScheduleRef.current.value))
     }
 
     return (
@@ -99,15 +139,48 @@ export default function SeatViewer(props) {
                         })}
                         </Form.Select>
                     </Form.Group>
+                    
                     </Form>
+                    
                 </Col>
                 <Col className="d-flex justify-content-evenly align-items-end">
-                        <Button id="setTextViewBtn" variant={view==='text'? "dark":"outline-dark"} onClick={handleTextViewClick}>Text View</Button>
-                        <Button id="setScheduleViewBtn" variant={view==='schedule'?"dark":"outline-dark"} onClick={handleScheduleViewClick}>Schedule View</Button>
+                    <Button 
+                        id="setTextViewBtn" 
+                        variant={view==='text'? "dark":"outline-dark"} 
+                        onClick={handleTextViewClick}
+                    >Text View</Button>
+                    <Button 
+                        id="setScheduleViewBtn" 
+                        variant={view==='schedule'?"dark":"outline-dark"} 
+                        onClick={handleScheduleViewClick}
+                    >Schedule View</Button>
                 </Col>
             </Row>
+            <Row>
+                <Col xs md="3" className="mt-3 mb-3">
+                    {view==='schedule' && <Button disabled={loading} onClick={swapShowTimeChange}>Change Times</Button>}
+                    {view==='schedule' && showTimeChange && 
+                        <Form onSubmit={handleTimeChange}>
+                        <Form.Group>
+                            <Form.Label>View Hours:</Form.Label>
+                            <Form.Select ref={startScheduleRef} aria-label="Default select example">
+                                {dayHours && dayHours.map(hour=>{
+                                    return(<option>{hour}</option>)
+                                })}
+                            </Form.Select>
+                            <Form.Select ref={endScheduleRef} aria-label="Default select example">
+                            {dayHours && dayHours.map(hour=>{
+                                    return(<option>{hour}</option>)
+                                })}
+                            </Form.Select>
+                        </Form.Group>
+                        <Button type="submit">Change</Button>
+                        </Form>
+                    }
+                    </Col>
+            </Row>
             
-            {view==="text" && dateRef.current.value!=="Select a date" && <SeatRowHeadings />}
+            {view==="text" && dateRef.current.value!=="Select a date" && <SeatRowHeadings/>}
             {view==="text"&& dateRef.current.value!=="Select a date" &&dbData && daySortedData && dbData.seats.map((seat,i)=>{
                 return(
                 <SeatRow 
@@ -116,17 +189,22 @@ export default function SeatViewer(props) {
                 bookings={daySortedData.filter(booking=>booking.seat===seat).sort(sortBookings)}
                 />)
             })}
-            {view==="schedule" && dateRef.current.value!=="Select a date" && <ScheduleHeadings />}
-            {view==="schedule"&&dateRef.current.value!=="Select a date"&&dbData && daySortedData && dbData.seats.map((seat,i)=>{
+            {view==='schedule' && <div style={{margin:"5px"}}>
+            {dateRef.current.value!=="Select a date" && <ScheduleHeadings start={scheduleStartTime} end={scheduleEndTime} workHoursArray={workHoursArray}/>}
+            {scheduleStartTime && dateRef.current.value!=="Select a date"&&dbData && daySortedData && dbData.seats.map((seat,i)=>{
                 return(
                     <ScheduleRow
                     key={i}
+                    start={scheduleStartTime} 
+                    end={scheduleEndTime}
                     seat={seat} 
                     bookings={daySortedData.filter(booking=>booking.seat===seat).sort(sortBookings)}
                     />
                 )})
             
         }
+                </div>}
+
         </div>
     )
 }

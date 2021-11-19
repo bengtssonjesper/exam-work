@@ -15,3 +15,15 @@ Notes med Uwe:
 
  2021-11-18: 
  Hur tar vi bort bokningar som har gått ut?
+
+2021-11-19:
+Hover på schedulebooking, funkar ej när man håller på texten, hur lösa detta?
+Bättre lösning på vilka timmar som ska visas i schedule?
+ - Anger tider i seatviewer så dessa kan skickas både till headers och row
+ 
+ Att göra nu: 
+  - Fixa städning av databasen
+  - Initialvärdena av scheduleHeadings.
+  - Sortering av bokningarna i profilen
+  - Kanske showMore-knapp i profilbokningarna?
+  - Ibland får vi error om dateRef när vi gör en bokning

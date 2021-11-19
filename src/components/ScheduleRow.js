@@ -3,11 +3,14 @@ import {Row,Col} from 'react-bootstrap'
 import ScheduleBooking from './ScheduleBooking'
 
 export default function ScheduleRow(props) {
-    const firstHour = 6;
-    const lastHour= 18;
+    // const firstHour = props.scheduleStartTime;
+    // const lastHour= props.scheduleEndTime;
+
+    const firstHour=props.start;
+    const lastHour=props.end;
+
 
     function calculateStart(booking){
-        
         const amountMinutes=(lastHour-firstHour)*60
         const bookingStartMinutes = parseInt(booking.startTime.substr(0,2))*60+parseInt(booking.startTime.substr(3,5))
         const startRatio=(bookingStartMinutes-firstHour*60)/amountMinutes
@@ -34,7 +37,7 @@ export default function ScheduleRow(props) {
                 <Col xs md="1">
                     {props.seat}
                 </Col>
-                <Col style={{position:"relative"}} xs md="11">
+                <Col style={{position:"relative", overflow:"hidden"}} xs md="11">
                 {props.bookings.map((booking,i)=>{
                     const start=calculateStart(booking)
                     const width=calculateWidth(booking)
