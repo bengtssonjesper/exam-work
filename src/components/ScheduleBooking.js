@@ -1,20 +1,14 @@
-import React,{useEffect, useState, useRef} from 'react'
+import { set,ref, getDatabase } from '@firebase/database';
+import React,{useState, useRef} from 'react'
 import {Popover,OverlayTrigger} from 'react-bootstrap'
+import BookingModal from './BookingModal'
 
 export default function ScheduleBooking(props) {
-    const [hovered,setHovered]=useState(false);
-    const [showTooltip,setShowTooltip]=useState(false);
     const target = useRef(null);
-    var timer;
+    const [show, setShow] = useState(false);
 
-    console.log("props: ",props)
-
-    const startWorkHour=6;
-    const endWorkHour=18;
-    const amountWorkMinutes=(endWorkHour-startWorkHour)*60;
-    const startMinutes=props.startTime
-    var dynamicStart = "20%"
-    var dynamicWidth = "30%"
+    const handleClose = () => setShow(false);
+    const handleShow = () => setShow(true);
 
 
     const myStyles={
@@ -30,34 +24,10 @@ export default function ScheduleBooking(props) {
         transition:"width 0.5s, left 0.5s"
     }
 
-    const myHoverStyles={
-        backgroundColor:"rgba(180,180,180,1)",
-        left:"0",
-        width:"100%",
-        zIndex:"1"
+    const currentUserStyles={
+        backgroundColor:"rgba(150,10,90,0.5)",
+        cursor:"pointer"
     }
-
-    function updateIsHovered(){
-        if(!hovered){
-            setHovered(true)
-        }
-    }
-
-    function updateIsNotHovered(){
-        if(hovered){
-            setHovered(false)
-        }
-    }
-
-    function testMouseEnter(){
-        timer= setTimeout(setShowTooltip(true),1000)
-    }
-
-    function testMouseLeave(){
-        clearTimeout(timer)
-    }
-
-
 
     const popover = (
         <Popover id="popover-basic">
@@ -70,9 +40,12 @@ export default function ScheduleBooking(props) {
 
     return (
         <>
-        <OverlayTrigger placement="right" overlay={popover}>
-        {/*<div ref={target} onClick={()=>{setShowTooltip(!showTooltip)}} onMouseEnter={updateIsHovered} onMouseOut={updateIsNotHovered} style={{...myStyles,...(hovered?myHoverStyles:null)}}style={{...myStyles}} className="d-flex justify-content-between align-items-center"> */}
-        <div ref={target} /*onMouseEnter={testMouseEnter} onMouseOut={testMouseLeave} style={{...myStyles,...(hovered?myHoverStyles:null)}}*/style={{...myStyles}} className="d-flex justify-content-between align-items-center">
+        {show&&
+            <BookingModal setShow={setShow} show={show} booking={props.booking} handleClose={handleClose} />
+        }
+        <OverlayTrigger placement="right" overlay={popover} >
+        
+        {props && <div ref={target} style={{...myStyles,...(props.isCurrentUsersBooking?currentUserStyles:null)}} onClick={props.isCurrentUsersBooking?handleShow:null} className="d-flex justify-content-between align-items-center">
             <p style={{pointerEvents:"none"}} className="m-1">
                 {props.booking.startTime}
             </p>
@@ -80,6 +53,7 @@ export default function ScheduleBooking(props) {
                 {props.booking.endTime}
             </p>
         </div>
+}
         </OverlayTrigger>
         
         </>

@@ -2,16 +2,15 @@ import React, {useState, useEffect} from "react";
 import './styles.css'
 import {ref,getDatabase} from 'firebase/database'
 import {useAuth} from '../contexts/AuthContext'
-import {Button, Alert,Container, Accordion, Row, Col} from 'react-bootstrap'
+import {Button, Alert,Container, Accordion} from 'react-bootstrap'
 import{useNavigate} from 'react-router-dom'
 import { onValue } from "@firebase/database";
 
 export default function Profile() {
-  const { currentUser,logout } = useAuth();
+  const { currentUser } = useAuth();
   const [error, setError] = useState("");
   const navigate = useNavigate()
   const [profileData,setProfileData]=useState();
-  const [myBookings,setMyBookings]=useState();
   const [myBookingsObj,setMyBookingsObj]=useState({});
   const today = new Date();
 
@@ -26,14 +25,13 @@ export default function Profile() {
           setProfileData(data)
         })
       }catch(error){
-        //Some error
+        setError("Error getting profile data")
       }
     }
     getProfileData();
   },[currentUser._delegate.uid])
 
   useEffect(()=>{
-    var tmpArr=[];
     var tmpObj={};
     const db=getDatabase();
     const allOfficesRef = ref(db,"Offices");
@@ -93,15 +91,13 @@ export default function Profile() {
             <Accordion.Item eventKey="0">
               <Accordion.Header>Show My Bookings</Accordion.Header>
               <Accordion.Body>
-              {Object.keys(myBookingsObj).map(element=>{
-              console.log("Element:", element)
-              console.log("Element:", myBookingsObj[element])
+              {Object.keys(myBookingsObj).map((element,i)=>{
                   return(
-                    <div>
+                    <div key={i}>
                       <strong>{element}</strong>
-                      {myBookingsObj[element].map(booking=>{
+                      {myBookingsObj[element].map((booking,j)=>{
                         return(
-                          <div className="d-flex justify-content-between">
+                          <div key={j} className="d-flex justify-content-between">
                           <p>Office: {booking.office}</p>
                           <p>Seat: {booking.seat}</p>
                           <p>Start Time: {booking.startTime}</p>

@@ -38,25 +38,39 @@ export default function SeatBooker(props) {
         e.preventDefault();
         setError("")
         setMessage("")
-        if(isBookingAllowed()){
-            try{
-                const db = getDatabase();
-                set(ref(db,'Offices/' + props.selectedOffice+"/bookings/"+currentUser._delegate.uid + "/"+uuidv4()),{
-                    user:currentUser._delegate.uid, //Förmodligen onödigt då det finns i överkategorin
-                    seat:seatRef.current.value,
-                    date:dateRef.current.value,
-                    startTime:startTimeRef.current.value,
-                    endTime:endTimeRef.current.value,
-                    office:props.selectedOffice,
-                })
-                setMessage("Booking succeeded")
-            }catch(error){
-                setError("Failed to post booking to database")
+        try{
+            if(seatRef.current.value==="Select a seat"){
+                throw'Please select a seat'
             }
-        }else{
-            setError("Booking not allowed, please change input data")
-        }
+            // else if(!(dateRef.current.value in props.thisWeeksDatesStrings)){
+            else if(!(props.thisWeeksDatesStrings.includes(dateRef.current.value))){
+                throw'You can only book one week ahead'
+            }
+            else if( isBookingAllowed()){
+                    const db = getDatabase();
+                    const uid = uuidv4()
+                    try{
+                    set(ref(db,'Offices/' + props.selectedOffice+"/bookings/"+currentUser._delegate.uid + "/"+uid),{
+                        user:currentUser._delegate.uid, //Förmodligen onödigt då det finns i överkategorin
+                        seat:seatRef.current.value,
+                        date:dateRef.current.value,
+                        startTime:startTimeRef.current.value,
+                        endTime:endTimeRef.current.value,
+                        office:props.selectedOffice,
+                        bookingId: uid
+                    })
+                    setMessage("Booking successful")
+                    }catch(error){
+                        setError("Failed to post to database")
+                    }
+                
+            }else{
+                throw'Booking not allowed, please change input data'
+            }
         
+        }catch(error){
+            setError(error)
+        }
     }
 
     function isBookingAllowed(){
@@ -66,13 +80,17 @@ export default function SeatBooker(props) {
         const dateEndTimeRef = new Date();
         dateStartTimeRef.setHours(startTimeRef.current.value.substr(0,2),startTimeRef.current.value.substr(3,5),0)
         dateEndTimeRef.setHours(endTimeRef.current.value.substr(0,2),endTimeRef.current.value.substr(3,5),0)
-        if('bookings' in dbData){
+        if(dateStartTimeRef>=dateEndTimeRef){
+            isAllowed=false
+            throw'Start time has to be before end time'
+        }else if('bookings' in dbData){
             for(const[key,value] of Object.entries(dbData.bookings)){
                 for(const[childKey,childValue] of Object.entries(value)){
                     if(childValue.date===dateRef.current.value&&
                         childValue.seat===seatRef.current.value&&
                         isCollision(childValue.startTime,childValue.endTime,dateStartTimeRef,dateEndTimeRef)){
                             isAllowed=false;
+                            throw'Booking collision with existing booking, please change input data'
                     }
                 }
             }
@@ -112,20 +130,6 @@ export default function SeatBooker(props) {
         setLoading(false)
     }
 
-    // function AddOfficeData(){
-    //     try{
-    //         const db = getDatabase();
-
-    //     set(ref(db, 'Offices/Office1'), {
-    //         seats:["Seat 1","Seat 2","Seat 3"],
-    //         bookings:[]
-            
-    //     });
-    //     }catch(error){ 
-    //         setError("Failed to add booking")
-    //     }
-    // }
-
     function navigateToProfile(){
         navigate('/')
     }
@@ -142,11 +146,11 @@ export default function SeatBooker(props) {
                     <Form.Label>
                         Date
                     </Form.Label>
-                    <Form.Control type="date" ref={dateRef}></Form.Control>
+                    <Form.Control type="date" ref={dateRef} required></Form.Control>
                 </Form.Group>
                 <Form.Group>
                     <Form.Label>Seat</Form.Label>
-                    <Form.Control as="select" ref={seatRef}>
+                    <Form.Control as="select" ref={seatRef} required>
                     <option>Select a seat</option>
                     {dbData && dbData.seats.map((seat,i)=>{
                         return (<option key={i}>{seat}</option>)
@@ -157,13 +161,13 @@ export default function SeatBooker(props) {
                     <Form.Label>
                         Start Time
                     </Form.Label>
-                    <Form.Control ref={startTimeRef} type="time"></Form.Control>
+                    <Form.Control ref={startTimeRef} type="time" required></Form.Control>
                 </Form.Group>
                 <Form.Group>
                     <Form.Label>
                         End Time
                     </Form.Label>
-                    <Form.Control ref={endTimeRef} type="time"></Form.Control>
+                    <Form.Control ref={endTimeRef} type="time" required></Form.Control>
                 </Form.Group>
                 <Button type="submit" className="mt-2">Submit</Button>
             </Form>}

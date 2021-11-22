@@ -17,13 +17,22 @@ Notes med Uwe:
  Hur tar vi bort bokningar som har gått ut?
 
 2021-11-19:
-Hover på schedulebooking, funkar ej när man håller på texten, hur lösa detta?
-Bättre lösning på vilka timmar som ska visas i schedule?
- - Anger tider i seatviewer så dessa kan skickas både till headers och row
+Hover på schedulebooking, funkar ej när man håller på texten, hur lösa detta? Löste med pointerEvents:none
+Bättre lösning på vilka timmar som ska visas i schedule? Klart
+ - Anger tider i seatviewer så dessa kan skickas både till headers och row. Klart
  
  Att göra nu: 
   - Fixa städning av databasen
-  - Initialvärdena av scheduleHeadings.
-  - Sortering av bokningarna i profilen
+  - Initialvärdena av scheduleHeadings. Klart
+  - Sortering av bokningarna i profilen. 
   - Kanske showMore-knapp i profilbokningarna?
-  - Ibland får vi error om dateRef när vi gör en bokning
+  - Ibland får vi error om dateRef när vi gör en bokning. (Hände när jag la en bokning men hade inte angett ett datum i seatviewern.)
+
+  2021-11-22:
+  - Fixa beskrivande errors för olika fails? Klart, löst med olika throws
+  - Admin kan ha rätt till en knapp "clean database"? Som tar bort bokningar som har datum innan dagens datum.
+  - Börja kolla på edit booking?
+  - Kolla så en och samma person endast kan ha en bokning samtidigt.
+
+  Att göra imorgon: 
+  - Fixa så att den kollar om kollision när vi uppdaterar bokning

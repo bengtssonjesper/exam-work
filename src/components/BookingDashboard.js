@@ -1,5 +1,5 @@
 import React,{useRef, useState, useEffect} from 'react'
-import {Container, Form,Button} from 'react-bootstrap'
+import {Container, Form} from 'react-bootstrap'
 import SeatViewer from './SeatViewer'
 import SeatBooker from './SeatBooker'
 import {getDatabase,ref, onValue} from 'firebase/database'
@@ -9,6 +9,8 @@ export default function BookingDashboard() {
     const [offices, setOffices] = useState([])
     const [selectedOffice,setSelectedOffice] = useState();
     const [showViewerAndBooker, setShowViewerAndBooker] = useState(false);
+    const [thisWeeksDates,setThisWeeksDates]=useState([])
+    const [thisWeeksDatesStrings,setThisWeeksDatesStrings]=useState([])
 
 
     useEffect(()=>{
@@ -25,7 +27,33 @@ export default function BookingDashboard() {
             })
         }
         getOffices();
+        getThisWeeksDates();
+        // formatThisWeeksDates();
     },[])
+
+    function getThisWeeksDates(){
+        const today = new Date();
+        var tmpArr=[];
+        for(var i =0;i<7;i++){
+            var tmp = new Date();
+            tmp.setDate(today.getDate()+i)
+            tmpArr.push(tmp)
+        }
+        setThisWeeksDates(tmpArr)
+        formatThisWeeksDates(tmpArr);
+    }
+
+    function formatThisWeeksDates(arr){
+        var tmpArr=[]
+        tmpArr = arr.map(date=>{
+            const year = date.getFullYear().toString()
+            const month = date.getMonth().toString()==="12" ? "1" : (date.getMonth()+1).toString()
+            const day = date.getDate().toString()
+            var tmpStr=year+"-"+month+"-"+day
+            return tmpStr;
+        })
+        setThisWeeksDatesStrings(tmpArr)
+    }
     
     function handleOnChange(){
         //Using selectedOffice as state to force rerender of childs on update
@@ -54,17 +82,13 @@ export default function BookingDashboard() {
         {showViewerAndBooker&&
         <div>
             <div id="seatViewer">
-            <SeatViewer selectedOffice={selectedOffice}></SeatViewer>
+            <SeatViewer selectedOffice={selectedOffice} thisWeeksDates={thisWeeksDates}></SeatViewer>
             </div>
             <div id="seatBooker">
-            <SeatBooker selectedOffice={selectedOffice}></SeatBooker>
+            <SeatBooker selectedOffice={selectedOffice} thisWeeksDates={thisWeeksDates} thisWeeksDatesStrings={thisWeeksDatesStrings}></SeatBooker>
             </div>
         </div>
         }
-         
-        
-
-        
         </Container>
         </>
     )

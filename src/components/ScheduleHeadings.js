@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react'
+import React from 'react'
 import {Row,Col} from 'react-bootstrap'
 
 export default function ScheduleHeadings(props) {
@@ -9,7 +9,7 @@ export default function ScheduleHeadings(props) {
             </Col>
             <Col xs md="11" className="d-flex justify-content-between">
                 {props.workHoursArray && props.workHoursArray.map((hour,i)=>{
-                    return(<p>{hour}</p>)
+                    return(<p key={i}>{hour}</p>)
                 })}
             </Col>
         </Row>

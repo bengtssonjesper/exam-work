@@ -24,6 +24,9 @@ export default function NavBar() {
     function navigateToSignUp(){
         navigate('/signup')
     }
+    function navigateToAdmin(){
+        navigate('/admin')
+    }
 
     async function handleLogOut(){
         try{
@@ -46,6 +49,9 @@ export default function NavBar() {
                     }
                     {currentUser &&
                         <Nav.Link onClick={navigateToBookingDashboard}>Book Seat</Nav.Link>
+                    }
+                    {currentUser &&
+                        <Nav.Link onClick={navigateToAdmin}>Admin page</Nav.Link>
                     }
                 </Nav>
 

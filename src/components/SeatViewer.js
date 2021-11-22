@@ -9,7 +9,7 @@ import {Form,Button,Row,Col} from 'react-bootstrap'
 export default function SeatViewer(props) {
     const [dbData,setDbData]=useState([])
     const [view,setView]=useState("text")
-    const [thisWeeksDates,setThisWeeksDates]=useState([])
+    // const [thisWeeksDates,setThisWeeksDates]=useState([])
     const [daySortedData, setDaySortedData]=useState()
     const [dayHours, setDayHours]=useState([])
     const [showTimeChange, setShowTimeChange]=useState(false)
@@ -37,8 +37,9 @@ export default function SeatViewer(props) {
     },[props.selectedOffice])
 
     useEffect(()=>{
-        getThisWeeksDates();
+        // getThisWeeksDates();
         setDayHours(getTimeArray(0,24))
+        setWorkHoursArray(getTimeArray(scheduleStartTime,scheduleEndTime))
     },[])
 
 
@@ -56,16 +57,16 @@ export default function SeatViewer(props) {
     }
 
 
-    function getThisWeeksDates(){
-        const today = new Date();
-        var tmpArr=[];
-        for(var i =0;i<7;i++){
-            var tmp = new Date();
-            tmp.setDate(today.getDate()+i)
-            tmpArr.push(tmp)
-        }
-        setThisWeeksDates(tmpArr)
-    }
+    // function getThisWeeksDates(){
+    //     const today = new Date();
+    //     var tmpArr=[];
+    //     for(var i =0;i<7;i++){
+    //         var tmp = new Date();
+    //         tmp.setDate(today.getDate()+i)
+    //         tmpArr.push(tmp)
+    //     }
+    //     setThisWeeksDates(tmpArr)
+    // }
 
     function handleDateChange(data){
         var tmpData=[]
@@ -79,6 +80,7 @@ export default function SeatViewer(props) {
         if('bookings' in tmpData){
         for(const[key,value] of Object.entries(tmpData.bookings)){
             for(const[childKey,childValue] of Object.entries(value)){
+                //Här ges erroret, dateref.current är null,
                 if(childValue.date===dateRef.current.value){
                     tmpArr.push(childValue)
                 }
@@ -134,7 +136,7 @@ export default function SeatViewer(props) {
                     <Form.Label>Seat</Form.Label>
                         <Form.Select aria-label="Default select example" ref={dateRef} onChange={handleDateChange}>
                         <option>Select a date</option>
-                        {thisWeeksDates && thisWeeksDates.map((date,i)=>{
+                        {props.thisWeeksDates && props.thisWeeksDates.map((date,i)=>{
                             return (<option key={i}>{date.getFullYear()}-{date.getMonth()+1}-{date.getDate()}</option>)
                         })}
                         </Form.Select>
@@ -158,7 +160,7 @@ export default function SeatViewer(props) {
             </Row>
             <Row>
                 <Col xs md="3" className="mt-3 mb-3">
-                    {view==='schedule' && <Button disabled={loading} onClick={swapShowTimeChange}>Change Times</Button>}
+                    {view==='schedule' && <Button disabled={loading} onClick={swapShowTimeChange}>Change View Times</Button>}
                     {view==='schedule' && showTimeChange && 
                         <Form onSubmit={handleTimeChange}>
                         <Form.Group>
@@ -190,19 +192,19 @@ export default function SeatViewer(props) {
                 />)
             })}
             {view==='schedule' && <div style={{margin:"5px"}}>
-            {dateRef.current.value!=="Select a date" && <ScheduleHeadings start={scheduleStartTime} end={scheduleEndTime} workHoursArray={workHoursArray}/>}
-            {scheduleStartTime && dateRef.current.value!=="Select a date"&&dbData && daySortedData && dbData.seats.map((seat,i)=>{
-                return(
-                    <ScheduleRow
-                    key={i}
-                    start={scheduleStartTime} 
-                    end={scheduleEndTime}
-                    seat={seat} 
-                    bookings={daySortedData.filter(booking=>booking.seat===seat).sort(sortBookings)}
-                    />
-                )})
-            
-        }
+                {dateRef && dateRef.current.value!=="Select a date" && <ScheduleHeadings workHoursArray={workHoursArray}/>}
+                {scheduleStartTime && dateRef.current.value!=="Select a date"&& dbData && daySortedData && dbData.seats.map((seat,i)=>{
+                    return(
+                        <ScheduleRow
+                        key={i}
+                        start={scheduleStartTime} 
+                        end={scheduleEndTime}
+                        seat={seat} 
+                        bookings={daySortedData.filter(booking=>booking.seat===seat).sort(sortBookings)}
+                        />
+                    )})
+                
+            }
                 </div>}
 
         </div>

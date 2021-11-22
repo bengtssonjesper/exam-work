@@ -7,6 +7,7 @@ import Profile from "./Profile";
 import BookingDashboard from "./BookingDashboard";
 import EditProfile from "./EditProfile";
 import NavBar from "./NavBar";
+import AdminPage from "./AdminPage";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 function App() {
@@ -23,6 +24,9 @@ function App() {
           </Route>
           <Route  path="/editprofile" element={<PrivateRoute/>}>
             <Route  path="/editprofile" element={<EditProfile />} />
+          </Route>
+          <Route  path="/admin" element={<PrivateRoute/>}>
+            <Route  path="/admin" element={<AdminPage />} />
           </Route>
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />

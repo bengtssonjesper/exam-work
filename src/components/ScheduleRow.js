@@ -1,10 +1,12 @@
 import React from 'react'
 import {Row,Col} from 'react-bootstrap'
 import ScheduleBooking from './ScheduleBooking'
+import {useAuth} from '../contexts/AuthContext'
 
 export default function ScheduleRow(props) {
     // const firstHour = props.scheduleStartTime;
     // const lastHour= props.scheduleEndTime;
+    const { currentUser } = useAuth();
 
     const firstHour=props.start;
     const lastHour=props.end;
@@ -31,6 +33,14 @@ export default function ScheduleRow(props) {
         return widthString
     }
 
+    function getIsCurrentUsersBooking(booking){
+        var isCurrentUsersBooking = false;
+        if(currentUser._delegate.uid===booking.user){
+            isCurrentUsersBooking=true;
+        }
+        return isCurrentUsersBooking;
+    }
+
     return (
         <div>
             <Row className="schedule-row text-center">
@@ -41,7 +51,8 @@ export default function ScheduleRow(props) {
                 {props.bookings.map((booking,i)=>{
                     const start=calculateStart(booking)
                     const width=calculateWidth(booking)
-                    return(<ScheduleBooking key={i} booking={booking} start={start} width={width}/>)
+                    const isCurrentUsersBooking=getIsCurrentUsersBooking(booking)
+                    return(<ScheduleBooking key={i} booking={booking} start={start} width={width} isCurrentUsersBooking={isCurrentUsersBooking}/>)
                 })}
                 </Col>  
             </Row>
