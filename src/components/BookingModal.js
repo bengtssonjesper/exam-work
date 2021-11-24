@@ -1,7 +1,7 @@
 import React, {useRef, useState, useEffect} from 'react'
 import {Modal,Button, Form,Alert} from 'react-bootstrap'
 import {set,ref,getDatabase,onValue} from 'firebase/database'
-import { createBooking,getBookingsFromSelectedOffice } from './HelperFunctions';
+import { updateBooking,getBookingsFromSelectedOffice } from './HelperFunctions';
 
 export default function BookingModal(props) {
     const startTimeRef=useRef();
@@ -45,33 +45,37 @@ export default function BookingModal(props) {
     function handleUpdateSubmit(e){
         e.preventDefault();
         const bookingsOnSameSeat = arrayOfBookings.filter(booking_=>
-            (booking_['seat']===props.booking['seat'])
+            ((booking_['seat']===props.booking['seat'])&&
+            (booking_['date']===props.booking['date']))
         )
-        createBooking(startTimeRef.current.value,endTimeRef.current.value,props.booking, bookingsOnSameSeat, setError, setMessage);
+        updateBooking(startTimeRef.current.value,endTimeRef.current.value,props.booking, bookingsOnSameSeat, setError, setMessage);
     }
 
     return (
         <Modal show={props.show} onHide={props.handleClose}>
         <Modal.Header closeButton>
-          <Modal.Title>Booking</Modal.Title>
+          <Modal.Title>What do you wish to do with this booking?</Modal.Title>
         </Modal.Header>
-        <Modal.Body>What do you wish to do with this booking?
-        {showUpdateForm && 
-        <Form onSubmit={handleUpdateSubmit}>
-            <Form.Group>
-                <Form.Label>
-                    Start Time: 
-                </Form.Label>
-                <Form.Control ref={startTimeRef} type="time"></Form.Control>
-            </Form.Group>
-            <Form.Group>
-                <Form.Label>
-                    End Time: 
-                </Form.Label>
-                <Form.Control ref={endTimeRef} type="time"></Form.Control>
-            </Form.Group>
-            <Button className="mt-2" type="submit">Update booking</Button>
-        </Form>}
+        <Modal.Body>
+            {showUpdateForm && 
+            <div>
+                <p>Please enter the new times</p>
+            <Form onSubmit={handleUpdateSubmit}>
+                <Form.Group>
+                    <Form.Label>
+                        Start Time: 
+                    </Form.Label>
+                    <Form.Control ref={startTimeRef} type="time" required></Form.Control>
+                </Form.Group>
+                <Form.Group>
+                    <Form.Label>
+                        End Time: 
+                    </Form.Label>
+                    <Form.Control ref={endTimeRef} type="time" required></Form.Control>
+                </Form.Group>
+                <Button className="mt-2 mb-2" type="submit">Update booking</Button>
+            </Form>
+            </div>}
             {message && <Alert variant="success">{message}</Alert>}
             {error && <Alert variant="danger">{error}</Alert>}
         </Modal.Body>

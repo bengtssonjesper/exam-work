@@ -13,8 +13,8 @@ export default function ScheduleBooking(props) {
 
     const myStyles={
         height:"90%",
-        backgroundColor:"rgba(200,200,200,0.7)",
-        border:"1px solid rgba(170,170,170,0.7)",
+        backgroundColor:"rgba(200,200,200,0.4)",
+        border:"1px solid rgba(170,170,170,0.2)",
         borderRadius:"5px",
         position:"absolute",
         top:"5%",
@@ -25,7 +25,7 @@ export default function ScheduleBooking(props) {
     }
 
     const currentUserStyles={
-        backgroundColor:"rgba(150,10,90,0.5)",
+        backgroundColor:"rgba(150,10,90,0.2)",
         cursor:"pointer"
     }
 

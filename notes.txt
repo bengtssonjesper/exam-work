@@ -36,3 +36,6 @@ Bättre lösning på vilka timmar som ska visas i schedule? Klart
 
   Att göra imorgon: 
   - Fixa så att den kollar om kollision när vi uppdaterar bokning
+
+  2021-11-23:
+   - När jag byter office läggs nya offices till på listan. Kan ej återskapa felet

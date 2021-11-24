@@ -32,3 +32,27 @@ body{
     border-radius:5px;
     position:relative;
 }
+
+.whosBookingsWrapper{
+    display:inline-block;
+    margin:5px 10px;
+}
+
+.cube{
+    display: inline-block;
+    width:15px;
+    height:15px;
+    margin: auto 5px;
+}
+
+.ownCube{
+    background-color: rgba(150,10,90,0.3);
+}
+
+.othersCube{
+    background-color: rgba(200,200,200,0.4);
+}
+
+.overflow-hidden{
+    overflow:hidden;
+}

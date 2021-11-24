@@ -8,6 +8,7 @@ import BookingDashboard from "./BookingDashboard";
 import EditProfile from "./EditProfile";
 import NavBar from "./NavBar";
 import AdminPage from "./AdminPage";
+import ReduxTest from "./ReduxTest";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 function App() {
@@ -27,6 +28,9 @@ function App() {
           </Route>
           <Route  path="/admin" element={<PrivateRoute/>}>
             <Route  path="/admin" element={<AdminPage />} />
+          </Route>
+          <Route  path="/reduxtest" element={<PrivateRoute/>}>
+            <Route  path="/reduxtest" element={<ReduxTest />} />
           </Route>
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />

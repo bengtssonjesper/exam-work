@@ -4,7 +4,7 @@ import ScheduleRow from './ScheduleRow'
 import {ref,getDatabase,onValue} from 'firebase/database'
 import SeatRowHeadings from './SeatRowHeadings'
 import ScheduleHeadings from './ScheduleHeadings'
-import {Form,Button,Row,Col} from 'react-bootstrap'
+import {Form,Button,Row,Col,Container} from 'react-bootstrap'
 
 export default function SeatViewer(props) {
     const [dbData,setDbData]=useState([])
@@ -81,7 +81,7 @@ export default function SeatViewer(props) {
         for(const[key,value] of Object.entries(tmpData.bookings)){
             for(const[childKey,childValue] of Object.entries(value)){
                 //Här ges erroret, dateref.current är null,
-                if(childValue.date===dateRef.current.value){
+                if(dateRef && (childValue.date===dateRef.current.value)){
                     tmpArr.push(childValue)
                 }
             }
@@ -183,29 +183,48 @@ export default function SeatViewer(props) {
             </Row>
             
             {view==="text" && dateRef.current.value!=="Select a date" && <SeatRowHeadings/>}
-            {view==="text"&& dateRef.current.value!=="Select a date" &&dbData && daySortedData && dbData.seats.map((seat,i)=>{
-                return(
-                <SeatRow 
-                key={i} 
-                seat={seat} 
-                bookings={daySortedData.filter(booking=>booking.seat===seat).sort(sortBookings)}
-                />)
+            {view==='text' && <div>
+                {dateRef.current.value!=="Select a date" &&dbData && daySortedData && dbData.seats.map((seat,i)=>{
+                    return(
+                    <SeatRow 
+                    key={i} 
+                    seat={seat} 
+                    bookings={daySortedData.filter(booking=>booking.seat===seat).sort(sortBookings)}
+                    />)
+                
             })}
-            {view==='schedule' && <div style={{margin:"5px"}}>
+                </div>}
+            
+            {view==='schedule' && 
+                <div style={{margin:"5px"}}>
                 {dateRef && dateRef.current.value!=="Select a date" && <ScheduleHeadings workHoursArray={workHoursArray}/>}
                 {scheduleStartTime && dateRef.current.value!=="Select a date"&& dbData && daySortedData && dbData.seats.map((seat,i)=>{
                     return(
+                        <div>
                         <ScheduleRow
                         key={i}
                         start={scheduleStartTime} 
                         end={scheduleEndTime}
                         seat={seat} 
                         bookings={daySortedData.filter(booking=>booking.seat===seat).sort(sortBookings)}
+                        
                         />
+                        </div>
                     )})
+                }
                 
+                </div>
             }
-                </div>}
+            {dateRef && dateRef.current.value!=="Select a date" &&
+                        <Container>
+                    <div className="whosBookingsWrapper">
+                    Your bookings: <div className="cube ownCube"/>
+                    </div>
+                    <div className="whosBookingsWrapper">
+                    Other bookings: <div className="cube othersCube"/>
+                    </div>
+                </Container>
+            }
 
         </div>
     )

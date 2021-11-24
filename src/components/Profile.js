@@ -5,6 +5,8 @@ import {useAuth} from '../contexts/AuthContext'
 import {Button, Alert,Container, Accordion} from 'react-bootstrap'
 import{useNavigate} from 'react-router-dom'
 import { onValue } from "@firebase/database";
+import { useSelector, useDispatch } from 'react-redux'
+import { bookingsActions } from '../store/bookings'
 
 export default function Profile() {
   const { currentUser } = useAuth();
@@ -13,6 +15,9 @@ export default function Profile() {
   const [profileData,setProfileData]=useState();
   const [myBookingsObj,setMyBookingsObj]=useState({});
   const today = new Date();
+
+  const dispatch = useDispatch()
+  const allBookings = useSelector((state)=>state.bookings.allBookings)
 
 
   useEffect(()=>{
@@ -67,9 +72,54 @@ export default function Profile() {
     setMyBookingsObj(tmpObj)
   },[])
 
+  useEffect(()=>{
+    const db=getDatabase();
+    const reduxAllOfficesRef = ref(db,'Offices')
+    onValue(reduxAllOfficesRef, (snapshot)=>{
+      const data = snapshot.val();
+      reduxFormatData(data);
+
+    })
+  },[])
+
+  function reduxFormatData(data){
+    var allBookingsArr=[]
+    var bookingsByDateObj={}
+    var bookingsByOfficeObj={}
+    console.log("Redux format: ", data)
+    for(const[officeName,officeObject] of Object.entries(data)){
+      // console.log("officeName: ", officeName)
+      // console.log("officeObject: ", officeObject)
+      if('bookings' in officeObject){
+      for(const[bookerId,bookingsObject] of Object.entries(officeObject.bookings)){
+        // console.log("bookerId: ", bookerId);
+        // console.log("bookingsObject: ", bookingsObject);
+          for(const[bookingId,booking] of Object.entries(bookingsObject)){
+            console.log("bookingId: ", bookingId);
+            console.log("booking: ", booking);
+            allBookingsArr.push(booking)
+            //Här vill vi lägga till bokningarna på rätt ställe i objekten.
+            //Kolla om det finns ett objekt för bokningens datum/office
+            //Om det gör det, lägg den där, annars gör ett nytt objekt och lägg den där.
+          }
+        }
+      }
+    }
+    dispatch(bookingsActions.setAllBookings(allBookingsArr))
+  }
+
+
 
   function handleEditProfile(){
     navigate('/editprofile')
+  }
+
+  function navigateToReduxTest(){
+    navigate('/reduxtest')
+  }
+
+  function testReduxContains(){
+    console.log("Contains: ", allBookings)
   }
 
   
@@ -116,5 +166,7 @@ export default function Profile() {
         }
       <Button className="mt-3" onClick={handleEditProfile}>Edit profile info</Button>
     </Container>
+    <Button onClick={navigateToReduxTest}>Redux</Button>
+    <Button onClick={testReduxContains}>Test redux contains</Button>
     </>)
 }
