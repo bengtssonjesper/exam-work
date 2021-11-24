@@ -39,3 +39,6 @@ Bättre lösning på vilka timmar som ska visas i schedule? Klart
 
   2021-11-23:
    - När jag byter office läggs nya offices till på listan. Kan ej återskapa felet
+
+    2021-11-24:
+   -Fixa seatBooker, funktionen där den kollar om en bokning är giltig. Gör så beror av store 

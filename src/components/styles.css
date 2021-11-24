@@ -1,58 +1,73 @@
-body{
-    box-sizing:border-box;
-    margin:0;
-    padding:0;
+body {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
-.my-container{
-    border:solid 1px black;
-    border-radius: 5px;
+html,
+body,
+.app {
+  height: 100%;
+  background-color: #b8c6db;
+  background-image: linear-gradient(315deg, #b8c6db 0%, #f5f7fa 74%);
 }
 
-.seatRowContainer{
-    margin:5px 0;
-    padding:5px;
-
-    border:1px solid rgba(0, 0, 0, 0.171);
-    border-radius: 5px;
+.my-container {
+  border: solid 1px black;
+  border-radius: 5px;
 }
 
+.seatRowContainer {
+  margin: 5px 0;
+  padding: 5px;
 
-.shadow-container{
-    margin:10px auto;
-    padding:10px;
-    border:1px solid rgba(0, 0, 0, 0.171);
-    border-radius:5px;
-    box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+  border: 1px solid rgba(255, 255, 255, 0.774);
+  border-radius: 5px;
 }
 
-.schedule-row{
-    margin:5px;
-    border:1px solid rgba(0, 0, 0, 0.171);
-    border-radius:5px;
-    position:relative;
+.shadow-container {
+  background-color: white;
+  margin: 10px auto;
+  padding: 10px;
+  border: 1px solid rgba(0, 0, 0, 0.171);
+  border-radius: 5px;
+  box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
 }
 
-.whosBookingsWrapper{
-    display:inline-block;
-    margin:5px 10px;
+.min-height-full {
+  position: relative;
+  min-height: 85vh;
+  background-color: rgba(255, 255, 255, 0.7);
 }
 
-.cube{
-    display: inline-block;
-    width:15px;
-    height:15px;
-    margin: auto 5px;
+.schedule-row {
+  margin: 5px;
+  border: 1px solid rgba(0, 0, 0, 0.171);
+  border-radius: 5px;
+  position: relative;
 }
 
-.ownCube{
-    background-color: rgba(150,10,90,0.3);
+.whosBookingsWrapper {
+  display: inline-block;
+  margin: 5px 10px;
 }
 
-.othersCube{
-    background-color: rgba(200,200,200,0.4);
+.cube {
+  display: inline-block;
+  width: 15px;
+  height: 15px;
+  margin: auto 5px;
+  border-radius: 3px;
 }
 
-.overflow-hidden{
-    overflow:hidden;
+.ownCube {
+  background-color: rgba(150, 10, 90, 0.3);
+}
+
+.othersCube {
+  background-color: rgba(200, 200, 200, 0.4);
+}
+
+.overflow-hidden {
+  overflow: hidden;
 }
