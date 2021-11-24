@@ -1,15 +1,14 @@
-import React, { useState, useEffect, useRef } from "react";
-import { getDatabase, set, ref, onValue } from "firebase/database";
+import React, { useState, useRef } from "react";
+import { getDatabase, set, ref } from "firebase/database";
 import "./styles.css";
 import { Button, Form, Alert } from "react-bootstrap";
 import { useAuth } from "../contexts/AuthContext";
 import { v4 as uuidv4 } from "uuid";
-import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 export default function SeatBooker(props) {
   const [error, setError] = useState();
   const [message, setMessage] = useState();
-  const [dbData, setDbData] = useState();
   const [loading, setLoading] = useState(false);
   const [showForm, setShowForm] = useState(false);
   const [toggleButtonInnerHTML, setToggleButtonInnerHTML] =
@@ -19,21 +18,10 @@ export default function SeatBooker(props) {
   const startTimeRef = useRef();
   const endTimeRef = useRef();
   const { currentUser } = useAuth();
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    //Denna verkar köras väldigt mycket, kolla det
-    getDbData();
-  }, [props.selectedOffice]);
-
-  function getDbData() {
-    const db = getDatabase();
-    const OfficesRef = ref(db, "Offices/" + props.selectedOffice);
-    onValue(OfficesRef, (snapshot) => {
-      const data = snapshot.val();
-      setDbData(data);
-    });
-  }
+  const bookingsByOffice = useSelector(
+    (state) => state.bookings.bookingsByOffice
+  );
+  const seatsByOffice = useSelector((state) => state.bookings.seatsByOffice);
 
   function handleSubmit(e) {
     e.preventDefault();
@@ -42,9 +30,7 @@ export default function SeatBooker(props) {
     try {
       if (seatRef.current.value === "Select a seat") {
         throw "Please select a seat";
-      }
-      // else if(!(dateRef.current.value in props.thisWeeksDatesStrings)){
-      else if (!props.thisWeeksDatesStrings.includes(dateRef.current.value)) {
+      } else if (!props.thisWeeksDatesStrings.includes(dateRef.current.value)) {
         throw "You can only book one week ahead";
       } else if (isBookingAllowed()) {
         const db = getDatabase();
@@ -61,7 +47,7 @@ export default function SeatBooker(props) {
                 uid
             ),
             {
-              user: currentUser._delegate.uid, //Förmodligen onödigt då det finns i överkategorin
+              user: currentUser._delegate.uid,
               seat: seatRef.current.value,
               date: dateRef.current.value,
               startTime: startTimeRef.current.value,
@@ -84,6 +70,12 @@ export default function SeatBooker(props) {
 
   function isBookingAllowed() {
     var isAllowed = true;
+    var compareBookingsArr = bookingsByOffice[props.selectedOffice];
+    compareBookingsArr = compareBookingsArr.filter(
+      (booking) =>
+        booking.date === dateRef.current.value &&
+        booking.seat === seatRef.current.value
+    );
 
     const dateStartTimeRef = new Date();
     const dateEndTimeRef = new Date();
@@ -101,29 +93,23 @@ export default function SeatBooker(props) {
     if (dateStartTimeRef >= dateEndTimeRef) {
       isAllowed = false;
       throw "Start time has to be before end time";
-    } else if ("bookings" in dbData) {
-      for (const [key, value] of Object.entries(dbData.bookings)) {
-        for (const [childKey, childValue] of Object.entries(value)) {
-          if (
-            childValue.date === dateRef.current.value &&
-            childValue.seat === seatRef.current.value &&
-            isCollision(
-              childValue.startTime,
-              childValue.endTime,
-              dateStartTimeRef,
-              dateEndTimeRef
-            )
-          ) {
-            isAllowed = false;
-            throw "Booking collision with existing booking, please change input data";
-          }
-        }
-      }
     } else {
-      //If no bookings then automatically allowed
-      isAllowed = true;
+      compareBookingsArr.forEach((booking) => {
+        if (
+          isCollision(
+            booking.startTime,
+            booking.endTime,
+            dateStartTimeRef,
+            dateEndTimeRef
+          )
+        ) {
+          isAllowed = false;
+          throw "Collision with existing booking, please change input data";
+        }
+      });
+
+      return isAllowed;
     }
-    return isAllowed;
   }
 
   function isCollision(startTime, endTime, dateStartTimeRef, dateEndTimeRef) {
@@ -155,10 +141,6 @@ export default function SeatBooker(props) {
     setLoading(false);
   }
 
-  function navigateToProfile() {
-    navigate("/");
-  }
-
   return (
     <>
       <div className="shadow-container mt-3 p-2">
@@ -183,8 +165,8 @@ export default function SeatBooker(props) {
               <Form.Label>Seat</Form.Label>
               <Form.Control as="select" ref={seatRef} required>
                 <option>Select a seat</option>
-                {dbData &&
-                  dbData.seats.map((seat, i) => {
+                {seatsByOffice &&
+                  seatsByOffice[props.selectedOffice].map((seat, i) => {
                     return <option key={i}>{seat}</option>;
                   })}
               </Form.Control>

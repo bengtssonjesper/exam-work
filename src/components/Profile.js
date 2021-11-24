@@ -6,7 +6,7 @@ import { Button, Alert, Container, Accordion } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { onValue } from "@firebase/database";
 import { useSelector, useDispatch } from "react-redux";
-import bookings, { bookingsActions } from "../store/bookings";
+import { bookingsActions } from "../store/bookings";
 
 export default function Profile() {
   const { currentUser } = useAuth();
@@ -71,10 +71,6 @@ export default function Profile() {
         )) {
           for (const [bookingId, booking] of Object.entries(bookingsObject)) {
             allBookingsArr.push(booking);
-            //Här vill vi lägga till bokningarna på rätt ställe i objekten.
-            //Kolla om det finns ett objekt för bokningens datum/office
-            //Om det gör det, lägg den där, annars gör ett nytt objekt och lägg den där.
-
             if (booking.date in bookingsByDateObj) {
               bookingsByDateObj[booking.date].push(booking);
             } else {
@@ -122,17 +118,9 @@ export default function Profile() {
     navigate("/editprofile");
   }
 
-  function testReduxContains() {
-    console.log("Contains Allbookings: ", allBookings);
-    console.log("Contains seats: ", seatsByOffice);
-    console.log("Contains currentUsersBookings: ", currentUsersBookings);
-    console.log("Contains bookingsbydate: ", bookingsByDate);
-    console.log("Contains bookingsbyoffice: ", bookingsByOffice);
-  }
-
   return (
     <>
-      <Container className="mt-3" className="shadow-container min-height-full">
+      <Container className="shadow-container min-height-full mt-3">
         {error && <Alert type="danger">{error}</Alert>}
 
         <h1 className="text-center">Profile</h1>
@@ -141,34 +129,14 @@ export default function Profile() {
 
         {currentUsersBookings && (
           <div>
-            <Accordion defaultActiveKey="0">
+            <Accordion>
               <Accordion.Item eventKey="0">
                 <Accordion.Header>Show My Bookings</Accordion.Header>
                 <Accordion.Body>
-                  {/* {Object.keys(currentUsersBookings).map((element, i) => {
-                    return (
-                      <div key={i}>
-                        <strong>{element}</strong>
-                        {currentUsersBookings[element].map((booking, j) => {
-                          return (
-                            <div
-                              key={j}
-                              className="d-flex justify-content-between"
-                            >
-                              <p>Office: {booking.office}</p>
-                              <p>Seat: {booking.seat}</p>
-                              <p>Start Time: {booking.startTime}</p>
-                              <p>End Time: {booking.endTime}</p>
-                            </div>
-                          );
-                        })}
-                      </div>
-                    );
-                  })} */}
                   <Accordion>
                     {Object.keys(currentUsersBookings).map((element, i) => {
                       return (
-                        <Accordion.Item eventKey={i}>
+                        <Accordion.Item key={i} eventKey={i}>
                           <Accordion.Header>{element}</Accordion.Header>
                           <Accordion.Body>
                             {currentUsersBookings[element].map((booking, j) => {

@@ -8,8 +8,6 @@ const initialBookingState = {
   seatsByOffice: {},
   offices: [],
 };
-//Vill vi ha olika states för olika sorteringar?
-//T.ex. bookingsByDate, bookingsByOffice etc. eller gör vi filtreringen i appen?
 
 const bookingsSlice = createSlice({
   name: "bookings",
@@ -33,14 +31,6 @@ const bookingsSlice = createSlice({
     setOffices(state, action) {
       state.offices = action.payload;
     },
-    // addBooking(state, action) {
-    //   state.bookings.push(action.payload)
-    //   state.currentUsersBookings.push(action.payload)
-    // },
-    // deleteBooking(state, action) {
-    //   state.bookings.splice(state.bookings.findIndex(booking=>booking.bookingInfo===action.payload),1)
-    //   state.currentUsersBookings.splice(state.currentUsersBookings.findIndex(booking=>booking.bookingInfo===action.payload),1)
-    // },
   },
 });
 

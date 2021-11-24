@@ -73,5 +73,3 @@ export function isBookingAllowed(startTime, endTime, arrayOfBookings) {
   });
   return isAllowed;
 }
-
-export function isBookingCollision() {}

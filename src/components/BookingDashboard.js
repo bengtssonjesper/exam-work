@@ -1,5 +1,5 @@
 import React, { useRef, useState, useEffect } from "react";
-import { Container, Form, Button } from "react-bootstrap";
+import { Container, Form } from "react-bootstrap";
 import SeatViewer from "./SeatViewer";
 import SeatBooker from "./SeatBooker";
 import { useSelector } from "react-redux";
