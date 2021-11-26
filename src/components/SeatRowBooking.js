@@ -10,6 +10,7 @@ export default function SeatRowBooking(props) {
     const handleShow = () => setShow(true);
 
     const myStyles={
+        // width:"100%",
         backgroundColor:"rgba(200,200,200,0.2)",
         borderRadius:"5px"
     }
@@ -24,17 +25,17 @@ export default function SeatRowBooking(props) {
             {show&&
             <BookingModal setShow={setShow} show={show} booking={props.booking} handleClose={handleClose} />
         }
-            <Row onClick={props.isCurrentUsersBooking?handleShow:null} style={{...myStyles,...(props.isCurrentUsersBooking?currentUserStyles:null)}}>
-                <Col xs md="3">
+            <Row className="d-flex justify-content-evenly" onClick={props.isCurrentUsersBooking?handleShow:null} style={{...myStyles,...(props.isCurrentUsersBooking?currentUserStyles:null)}}>
+                <Col xs="4">
                     {props.booking.date}
                 </Col>
-                <Col xs md="3">
+                {/* <Col xs md="auto">
                     {props.booking.name}
-                </Col>
-                <Col xs md="3">
+                </Col> */}
+                <Col xs="4">
                     {props.booking.startTime}
                 </Col>
-                <Col xs md="3">
+                <Col xs="4">
                     {props.booking.endTime}
                 </Col>
             </Row>

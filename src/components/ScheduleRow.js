@@ -46,11 +46,11 @@ export default function ScheduleRow(props) {
 
   return (
     <div>
-      <Row className="schedule-row text-center">
-        <Col xs md="1">
+      <Row className="schedule-row text-center"  >
+        <Col xs="2" style={{padding:"0", margin:"0"}}>
           {props.seat}
         </Col>
-        <Col style={{ position: "relative", overflow: "hidden" }} xs md="11">
+        <Col style={{ position: "relative", overflow: "hidden",}} xs="10">
           {props.bookings.map((booking, i) => {
             const start = calculateStart(booking);
             const width = calculateWidth(booking);

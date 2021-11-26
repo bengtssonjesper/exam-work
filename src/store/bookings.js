@@ -7,6 +7,7 @@ const initialBookingState = {
   bookingsByOffice: {},
   seatsByOffice: {},
   offices: [],
+  graphicViewTimeRefs:{},
 };
 
 const bookingsSlice = createSlice({
@@ -30,6 +31,9 @@ const bookingsSlice = createSlice({
     },
     setOffices(state, action) {
       state.offices = action.payload;
+    },
+    setGraphicViewTimeRefs(state, action) {
+      state.graphicViewTimeRefs = action.payload;
     },
   },
 });

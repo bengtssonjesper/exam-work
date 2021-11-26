@@ -38,10 +38,19 @@ Bättre lösning på vilka timmar som ska visas i schedule? Klart
   - Fixa så att den kollar om kollision när vi uppdaterar bokning
 
   2021-11-23:
-   - När jag byter office läggs nya offices till på listan. Kan ej återskapa felet
+   - När jag byter office läggs nya offices till på listan. Kan ej återskapa felet. (Var pga datan laddas i profile)
 
     2021-11-24:
    -Fixa seatBooker, funktionen där den kollar om en bokning är giltig. Gör så beror av store 
+
+   2021-11-25:
+   - Bokningarna ändras ej i seatViewer om vi ändrar office.
+
+   Att göra nu:
+   - Göra om strukturen för seats så de innehåller namn, x,y samt facing.
+   - Därefter fixa så att platserna ritas ut efter dessa i graphic viewn.
+   - Sedan fixa grönt/rött beroende på om platsen är ledig eller ej.
+
 
 
 

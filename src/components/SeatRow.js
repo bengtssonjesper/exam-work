@@ -20,10 +20,10 @@ export default function SeatRow(props) {
     return (
         <div className="seatRowContainer overflow-hidden">
             <Row className="text-center overflow-hidden">
-                <Col xs md="2">
+                <Col xs="2">
                     {props.seat}
                 </Col>
-                <Col xs md="10">
+                <Col xs="10" >
                 {props.bookings.map((booking,i)=>{
                     const isCurrentUsersBooking=getIsCurrentUsersBooking(booking)
                     return(<SeatRowBooking key={i} booking={booking} isCurrentUsersBooking={isCurrentUsersBooking}/>)
