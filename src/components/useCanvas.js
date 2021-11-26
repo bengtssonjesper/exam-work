@@ -5,6 +5,8 @@ import { useSelector } from "react-redux";
 export const canvasWidth = window.innerWidth * .5;
 export const canvasHeight = window.innerHeight * .5;
 
+
+
 const seats=[
     {
         name:'Seat 1',
@@ -116,6 +118,9 @@ export function useCanvas() {
 
     const canvasRef = useRef(null);
     const graphicViewTimeRefs = useSelector((state) => state.bookings.graphicViewTimeRefs);
+    const seatsByOffice = useSelector((state) => state.bookings.seatsByOffice);
+    const selectedOffice = useSelector((state) => state.bookings.selectedOffice);
+    const seatsInSelectedOffice = seatsByOffice[selectedOffice]
 
 
     useEffect(()=>{
@@ -125,8 +130,8 @@ export function useCanvas() {
         ctx.clearRect( 0,0, canvasWidth, canvasHeight );
 
         // draw all coordinates held in state
-        seats.forEach((seat)=>{drawDesk(ctx, seat, graphicViewTimeRefs)});
+        seatsInSelectedOffice.forEach((seat)=>{drawDesk(ctx, seat, graphicViewTimeRefs)});
     });
 
-    return ([ seats, canvasRef, canvasWidth, canvasHeight ])
+    return ([ seatsInSelectedOffice, canvasRef, canvasWidth, canvasHeight ])
 }

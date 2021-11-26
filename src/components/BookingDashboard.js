@@ -2,8 +2,10 @@ import React, { useRef, useState, useEffect } from "react";
 import { Container, Form, Button } from "react-bootstrap";
 import SeatViewer from "./SeatViewer";
 import SeatBooker from "./SeatBooker";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import {set,ref, getDatabase } from  'firebase/database'
+import { bookingsActions } from "../store/bookings";
 
 export default function BookingDashboard() {
   const selectedOfficeRef = useRef("");
@@ -14,6 +16,7 @@ export default function BookingDashboard() {
   const offices = useSelector((state) => state.bookings.offices);
   const navigate = useNavigate();
   const allBookings = useSelector((state) => state.bookings.allBookings);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     getThisWeeksDates();
@@ -49,6 +52,7 @@ export default function BookingDashboard() {
   function handleOnChange() {
     //Using selectedOffice as state to force rerender of childs on update
     setSelectedOffice(selectedOfficeRef.current.value);
+    dispatch(bookingsActions.setSelectedOffice(selectedOfficeRef.current.value));
     if (selectedOfficeRef.current.value === "Select an office") {
       setShowViewerAndBooker(false);
     } else {
@@ -59,6 +63,108 @@ export default function BookingDashboard() {
   function navigateToProfile() {
     navigate("/");
   }
+
+//   const seats=[
+//     {
+//         name:'Seat 1',
+//         x:0,
+//         y:5,
+//         facing:'down'
+//     },
+//     {
+//         name:'Seat 2',
+//         x:70,
+//         y:5,
+//         facing:'down'
+//     },
+//     {
+//         name:'Seat 3',
+//         x:140,
+//         y:5,
+//         facing:'down'
+//     },
+//     {
+//         name:'Seat 4',
+//         x:210,
+//         y:5,
+//         facing:'down'
+//     },
+//     {
+//         name:'Seat 5',
+//         x:0,
+//         y:40,
+//         facing:'up'
+//     },
+//     {
+//         name:'Seat 6',
+//         x:70,
+//         y:40,
+//         facing:'up'
+//     },
+//     {
+//         name:'Seat 7',
+//         x:140,
+//         y:40,
+//         facing:'up'
+//     },
+//     {
+//         name:'Seat 8',
+//         x:210,
+//         y:40,
+//         facing:'up'
+//     },
+//     {
+//         name:'Seat 9',
+//         x:0,
+//         y:90,
+//         facing:'down'
+//     },
+//     {
+//         name:'Seat 10',
+//         x:70,
+//         y:90,
+//         facing:'down'
+//     },
+//     {
+//         name:'Seat 11',
+//         x:140,
+//         y:90,
+//         facing:'down'
+//     },
+//     {
+//         name:'Seat 12',
+//         x:210,
+//         y:90,
+//         facing:'down'
+//     },
+//     {
+//         name:'Seat 13',
+//         x:0,
+//         y:125,
+//         facing:'up'
+//     },
+//     {
+//         name:'Seat 14',
+//         x:70,
+//         y:125,
+//         facing:'up'
+//     },
+// ]
+
+  // function testAdd(){
+  //   const db = getDatabase();
+  //   try{
+  //     set(
+  //       ref(
+  //         db, 'Offices/Office3/'),
+  //         {
+  //           seats
+  //         }
+  //       );
+  //   }catch(error){
+  //     console.log("error: ", error)
+  //   }
+  // }
 
   return (
     <>
@@ -99,6 +205,7 @@ export default function BookingDashboard() {
         {/* <Button className="mt-2 place-bottom" onClick={navigateToProfile}>
           Profile
         </Button> */}
+        {/* <Button onClick={testAdd}>Add to db</Button> */}
       </Container>
     </>
   );

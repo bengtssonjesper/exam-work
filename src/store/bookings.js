@@ -35,6 +35,9 @@ const bookingsSlice = createSlice({
     setGraphicViewTimeRefs(state, action) {
       state.graphicViewTimeRefs = action.payload;
     },
+    setSelectedOffice(state, action) {
+      state.selectedOffice = action.payload;
+    },
   },
 });
 

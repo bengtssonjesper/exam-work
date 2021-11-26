@@ -82,11 +82,13 @@ export default function ManualBooking(props) {
       function isBookingAllowed() {
         var isAllowed = true;
         var compareBookingsArr = bookingsByOffice[props.selectedOffice];
-        compareBookingsArr = compareBookingsArr.filter(
-          (booking) =>
-            booking.date === dateRef.current.value &&
-            booking.seat === seatRef.current.value
-        );
+        if(compareBookingsArr){
+            compareBookingsArr = compareBookingsArr.filter(
+            (booking) =>
+                booking.date === dateRef.current.value &&
+                booking.seat === seatRef.current.value
+            );
+        }
     
         const dateStartTimeRef = new Date();
         const dateEndTimeRef = new Date();
@@ -105,6 +107,7 @@ export default function ManualBooking(props) {
           isAllowed = false;
           throw "Start time has to be before end time";
         } else {
+            if(compareBookingsArr){
           compareBookingsArr.forEach((booking) => {
             if (
               isCollision(
@@ -118,6 +121,7 @@ export default function ManualBooking(props) {
               throw "Collision with existing booking, please change input data";
             }
           });
+        }
     
           return isAllowed;
         }
@@ -165,7 +169,7 @@ export default function ManualBooking(props) {
                   <option>Select a seat</option>
                   {seatsByOffice &&
                     seatsByOffice[props.selectedOffice].map((seat, i) => {
-                      return <option key={i}>{seat}</option>;
+                      return <option key={i}>{seat.name}</option>;
                     })}
                 </Form.Control>
               </Form.Group>
