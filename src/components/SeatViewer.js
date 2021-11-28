@@ -8,7 +8,6 @@ import { Form, Button, Row, Col, Container } from "react-bootstrap";
 import { useSelector, useDispatch } from "react-redux";
 import { bookingsActions } from "../store/bookings";
 
-
 export default function SeatViewer(props) {
   const [view, setView] = useState("");
   // const [thisWeeksDates,setThisWeeksDates]=useState([])
@@ -29,7 +28,7 @@ export default function SeatViewer(props) {
   const seatsByOffice = useSelector((state) => state.bookings.seatsByOffice);
   const allBookings = useSelector((state) => state.bookings.allBookings);
   const dispatch = useDispatch();
-  const views=['Text', 'Schedule','Graphic']
+  const views = ["Text", "Schedule", "Graphic"];
 
   useEffect(() => {
     // getThisWeeksDates();
@@ -50,9 +49,9 @@ export default function SeatViewer(props) {
     return tmpArr;
   }
 
-  useEffect(()=>{
+  useEffect(() => {
     handleDateChange();
-  },[props.selectedOffice])
+  }, [props.selectedOffice, allBookings]);
 
   // useEffect(() => {
   //   handleDateChange();
@@ -62,10 +61,8 @@ export default function SeatViewer(props) {
     //Denna funktion ska returnera en array av alla bokningar på det valda officet och datumet
     var tmpArr = [];
     const data = bookingsByOffice[props.selectedOffice];
-    // console.log("data: ")
-    // console.log("data: ", data)
     if (data && dateRef !== null && dateRef.current.value !== "Select a date") {
-      console.log("dispatch: ", dateRef.current.value)
+      console.log("dispatch: ", dateRef.current.value);
       dispatch(bookingsActions.setViewDate(dateRef.current.value));
       data.forEach((booking) => {
         if (booking.date === dateRef.current.value) {
@@ -117,9 +114,9 @@ export default function SeatViewer(props) {
     );
   }
 
-  function handleViewChange(){
-    console.log("Setting view to: ", viewRef.current.value)
-    setView(viewRef.current.value)
+  function handleViewChange() {
+    console.log("Setting view to: ", viewRef.current.value);
+    setView(viewRef.current.value);
   }
 
   return (
@@ -147,20 +144,22 @@ export default function SeatViewer(props) {
                   })}
               </Form.Select>
             </Form.Group>
-            {dateRef && dateRef.current.value!=='Select a date' &&<Form.Group>
-              <Form.Label>Select view</Form.Label>
-              <Form.Select 
-              aria-label="Default select example" 
-              ref={viewRef}
-              onChange={handleViewChange}
-              >
-                <option>Select a view</option>
-                {views.map((view,i)=>{
-                  return(<option key={i}>{view}</option>)
-                })}
+            {dateRef && dateRef.current.value !== "Select a date" && (
+              <Form.Group>
+                <Form.Label>Select view</Form.Label>
+                <Form.Select
+                  aria-label="Default select example"
+                  ref={viewRef}
+                  onChange={handleViewChange}
+                >
+                  <option>Select a view</option>
+                  {views.map((view, i) => {
+                    return <option key={i}>{view}</option>;
+                  })}
                 </Form.Select>
-            </Form.Group>}
-            </Form>
+              </Form.Group>
+            )}
+          </Form>
         </Col>
         {/* <Col className="d-flex mt-3 justify-content-evenly align-items-end">
           <Col xs="6">
@@ -226,9 +225,7 @@ export default function SeatViewer(props) {
         </Col>
       </Row>
 
-      {view ==='Graphic' && 
-      <GraphicView 
-      />}
+      {view === "Graphic" && <GraphicView />}
 
       {view === "Text" && dateRef.current.value !== "Select a date" && (
         <SeatRowHeadings />
@@ -241,11 +238,8 @@ export default function SeatViewer(props) {
               return (
                 <SeatRow
                   key={i}
-                  // seat={seat}
                   seat={seat.name}
-
                   bookings={daySortedData
-                    // .filter((booking) => booking.seat === seat)
                     .filter((booking) => booking.seat === seat.name)
                     .sort(sortBookings)}
                 />
@@ -259,7 +253,7 @@ export default function SeatViewer(props) {
           {dateRef && dateRef.current.value !== "Select a date" && (
             <ScheduleHeadings workHoursArray={workHoursArray} />
           )}
-          
+
           {scheduleStartTime &&
             dateRef.current.value !== "Select a date" &&
             daySortedData &&
@@ -280,16 +274,18 @@ export default function SeatViewer(props) {
             })}
         </div>
       )}
-      {(view==='Text' || view==='Schedule') && dateRef && dateRef.current.value !== "Select a date" && (
-        <Container>
-          <div className="whosBookingsWrapper">
-            Your bookings: <div className="cube ownCube" />
-          </div>
-          <div className="whosBookingsWrapper">
-            Other bookings: <div className="cube othersCube" />
-          </div>
-        </Container>
-      )}
+      {(view === "Text" || view === "Schedule") &&
+        dateRef &&
+        dateRef.current.value !== "Select a date" && (
+          <Container>
+            <div className="whosBookingsWrapper">
+              Your bookings: <div className="cube ownCube" />
+            </div>
+            <div className="whosBookingsWrapper">
+              Other bookings: <div className="cube othersCube" />
+            </div>
+          </Container>
+        )}
     </div>
   );
 }
