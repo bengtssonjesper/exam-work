@@ -25,6 +25,7 @@ export default function Profile() {
   const bookingsByOffice = useSelector(
     (state) => state.bookings.bookingsByOffice
   );
+  var currentUsersBookingsDays=[]
 
   useEffect(() => {
     function getProfileData() {
@@ -59,6 +60,7 @@ export default function Profile() {
     var bookingsByOfficeObj = {};
     var seatsByOffice = {};
     var offices = [];
+    
     console.log("Redux format: ", data);
     for (const [officeName, officeObject] of Object.entries(data)) {
       offices.push(officeName);
@@ -112,6 +114,20 @@ export default function Profile() {
     dispatch(bookingsActions.setBookingsByDate(bookingsByDateObj));
     dispatch(bookingsActions.setBookingsByOffice(bookingsByOfficeObj));
     dispatch(bookingsActions.setOffices(offices));
+    Object.keys(currentUsersBookingsByDateObj).forEach(day=>currentUsersBookingsDays.push(day))
+    currentUsersBookingsDays.sort((a,b)=>{
+      var dateA = new Date();
+      var dateB = new Date();
+      dateA.setFullYear(a.substr(0,4),a.substr(5,2),a.substr(8,2))
+      dateB.setFullYear(b.substr(0,4),b.substr(5,2),b.substr(8,2))
+      if(dateA<dateB){
+        return -1
+      }else if(dateB<dateA){
+        return 1
+      }else{
+        return 0;
+      }
+    })
   }
 
   function handleEditProfile() {
@@ -156,7 +172,7 @@ export default function Profile() {
                         </Accordion.Item>
                       );
                     })}
-                  </Accordion>
+                  </Accordion> 
                 </Accordion.Body>
               </Accordion.Item>
             </Accordion>

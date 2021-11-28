@@ -51,6 +51,9 @@ Bättre lösning på vilka timmar som ska visas i schedule? Klart
    - Därefter fixa så att platserna ritas ut efter dessa i graphic viewn.
    - Sedan fixa grönt/rött beroende på om platsen är ledig eller ej.
 
+   2021-11-26:
+   Att göra nu: Sorteringen för profilebokningarna, har fixat en sorterad version av dagarna för boknigarna.
+
 
 
 

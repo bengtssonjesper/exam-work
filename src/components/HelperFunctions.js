@@ -73,3 +73,19 @@ export function isBookingAllowed(startTime, endTime, arrayOfBookings) {
   });
   return isAllowed;
 }
+
+export function isCollision(selectedStartTime, selectedEndTime, compareArray){
+  //Input: selectedStartTime, selectedEndTime, compareArray
+  //Output: isColission:bool
+  //Checks if a booking is colliding with any other booking on that seat/date/office
+
+  var isCollision = false;
+
+  compareArray.forEach(booking=>{
+    if((selectedStartTime>=booking.startTime && selectedStartTime<=booking.endTime)||
+    (selectedEndTime>=booking.startTime && selectedEndTime<=booking.endTime)){
+      isCollision=true;
+    }
+  })
+  return isCollision;
+}

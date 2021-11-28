@@ -5,11 +5,12 @@ import SeatRowHeadings from "./SeatRowHeadings";
 import ScheduleHeadings from "./ScheduleHeadings";
 import GraphicView from "./GraphicView";
 import { Form, Button, Row, Col, Container } from "react-bootstrap";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { bookingsActions } from "../store/bookings";
 
 
 export default function SeatViewer(props) {
-  const [view, setView] = useState("text");
+  const [view, setView] = useState("");
   // const [thisWeeksDates,setThisWeeksDates]=useState([])
   const [daySortedData, setDaySortedData] = useState();
   const [dayHours, setDayHours] = useState([]);
@@ -21,11 +22,14 @@ export default function SeatViewer(props) {
   const dateRef = useRef("");
   const startScheduleRef = useRef("");
   const endScheduleRef = useRef("");
+  const viewRef = useRef("");
   const bookingsByOffice = useSelector(
     (state) => state.bookings.bookingsByOffice
   );
   const seatsByOffice = useSelector((state) => state.bookings.seatsByOffice);
   const allBookings = useSelector((state) => state.bookings.allBookings);
+  const dispatch = useDispatch();
+  const views=['Text', 'Schedule','Graphic']
 
   useEffect(() => {
     // getThisWeeksDates();
@@ -46,15 +50,23 @@ export default function SeatViewer(props) {
     return tmpArr;
   }
 
-  useEffect(() => {
+  useEffect(()=>{
     handleDateChange();
-  }, [allBookings, props.selectedOffice]);
+  },[props.selectedOffice])
+
+  // useEffect(() => {
+  //   handleDateChange();
+  // }, [allBookings, props.selectedOffice]);
 
   function handleDateChange() {
     //Denna funktion ska returnera en array av alla bokningar på det valda officet och datumet
     var tmpArr = [];
     const data = bookingsByOffice[props.selectedOffice];
+    // console.log("data: ")
+    // console.log("data: ", data)
     if (data && dateRef !== null && dateRef.current.value !== "Select a date") {
+      console.log("dispatch: ", dateRef.current.value)
+      dispatch(bookingsActions.setViewDate(dateRef.current.value));
       data.forEach((booking) => {
         if (booking.date === dateRef.current.value) {
           tmpArr.push(booking);
@@ -105,6 +117,11 @@ export default function SeatViewer(props) {
     );
   }
 
+  function handleViewChange(){
+    console.log("Setting view to: ", viewRef.current.value)
+    setView(viewRef.current.value)
+  }
+
   return (
     <div className="shadow-container">
       <h1 className="text-center">Seat Viewer</h1>
@@ -130,9 +147,22 @@ export default function SeatViewer(props) {
                   })}
               </Form.Select>
             </Form.Group>
-          </Form>
+            {dateRef && dateRef.current.value!=='Select a date' &&<Form.Group>
+              <Form.Label>Select view</Form.Label>
+              <Form.Select 
+              aria-label="Default select example" 
+              ref={viewRef}
+              onChange={handleViewChange}
+              >
+                <option>Select a view</option>
+                {views.map((view,i)=>{
+                  return(<option key={i}>{view}</option>)
+                })}
+                </Form.Select>
+            </Form.Group>}
+            </Form>
         </Col>
-        <Col className="d-flex mt-3 justify-content-evenly align-items-end">
+        {/* <Col className="d-flex mt-3 justify-content-evenly align-items-end">
           <Col xs="6">
           <Button
             id="setTextViewBtn"
@@ -158,16 +188,16 @@ export default function SeatViewer(props) {
             Graphic View
           </Button>
           </Col>
-        </Col>
+        </Col> */}
       </Row>
       <Row>
         <Col xs md="3" className="mt-3 mb-3">
-          {view === "schedule" && (
+          {view === "Schedule" && (
             <Button disabled={loading} onClick={swapShowTimeChange}>
               Change View Times
             </Button>
           )}
-          {view === "schedule" && showTimeChange && (
+          {view === "Schedule" && showTimeChange && (
             <Form onSubmit={handleTimeChange}>
               <Form.Group>
                 <Form.Label>View Hours:</Form.Label>
@@ -196,14 +226,14 @@ export default function SeatViewer(props) {
         </Col>
       </Row>
 
-      {view ==='graphic' && 
+      {view ==='Graphic' && 
       <GraphicView 
       />}
 
-      {view === "text" && dateRef.current.value !== "Select a date" && (
+      {view === "Text" && dateRef.current.value !== "Select a date" && (
         <SeatRowHeadings />
       )}
-      {view === "text" && (
+      {view === "Text" && (
         <div>
           {dateRef.current.value !== "Select a date" &&
             daySortedData &&
@@ -224,7 +254,7 @@ export default function SeatViewer(props) {
         </div>
       )}
 
-      {view === "schedule" && (
+      {view === "Schedule" && (
         <div style={{ margin: "5px" }}>
           {dateRef && dateRef.current.value !== "Select a date" && (
             <ScheduleHeadings workHoursArray={workHoursArray} />
@@ -250,7 +280,7 @@ export default function SeatViewer(props) {
             })}
         </div>
       )}
-      {(view==='text' || view==='schedule') && dateRef && dateRef.current.value !== "Select a date" && (
+      {(view==='Text' || view==='Schedule') && dateRef && dateRef.current.value !== "Select a date" && (
         <Container>
           <div className="whosBookingsWrapper">
             Your bookings: <div className="cube ownCube" />
