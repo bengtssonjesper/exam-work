@@ -6,26 +6,19 @@ import { Button, Alert, Container, Accordion } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { onValue } from "@firebase/database";
 import { useSelector, useDispatch } from "react-redux";
-import { bookingsActions } from "../store/bookings";
+import { reduxFormatData } from "./HelperFunctions";
 
 export default function Profile() {
   const { currentUser } = useAuth();
   const [error, setError] = useState("");
   const navigate = useNavigate();
   const [profileData, setProfileData] = useState();
-  const today = new Date();
 
   const dispatch = useDispatch();
-  const allBookings = useSelector((state) => state.bookings.allBookings);
-  const seatsByOffice = useSelector((state) => state.bookings.seatsByOffice);
+  const offices = useSelector((state) => state.bookings.offices);
   const currentUsersBookings = useSelector(
     (state) => state.bookings.currentUsersBookings
   );
-  const bookingsByDate = useSelector((state) => state.bookings.bookingsByDate);
-  const bookingsByOffice = useSelector(
-    (state) => state.bookings.bookingsByOffice
-  );
-  var currentUsersBookingsDays=[]
 
   useEffect(() => {
     function getProfileData() {
@@ -46,89 +39,13 @@ export default function Profile() {
   useEffect(() => {
     const db = getDatabase();
     const reduxAllOfficesRef = ref(db, "Offices");
-    onValue(reduxAllOfficesRef, (snapshot) => {
-      const data = snapshot.val();
-      reduxFormatData(data);
-    });
-  }, []);
-
-  function reduxFormatData(data) {
-    // const today = new Date();
-    var allBookingsArr = [];
-    var currentUsersBookingsByDateObj = {};
-    var bookingsByDateObj = {};
-    var bookingsByOfficeObj = {};
-    var seatsByOffice = {};
-    var offices = [];
-    
-    console.log("Redux format: ", data);
-    for (const [officeName, officeObject] of Object.entries(data)) {
-      offices.push(officeName);
-      if ("seats" in officeObject) {
-        seatsByOffice[officeName] = officeObject["seats"];
-      }
-      if ("bookings" in officeObject) {
-        for (const [bookerId, bookingsObject] of Object.entries(
-          officeObject.bookings
-        )) {
-          for (const [bookingId, booking] of Object.entries(bookingsObject)) {
-            allBookingsArr.push(booking);
-            if (booking.date in bookingsByDateObj) {
-              bookingsByDateObj[booking.date].push(booking);
-            } else {
-              bookingsByDateObj[booking.date] = [booking];
-            }
-
-            if (booking.user === currentUser._delegate.uid) {
-              var cmpDate = new Date();
-              const year = booking.date.substr(0, 4);
-              const month = booking.date.substr(5, 2);
-              const date = booking.date.substr(8, 2);
-
-              cmpDate.setFullYear(year, month - 1, date);
-              cmpDate.setHours(23, 59, 59);
-
-              if (cmpDate >= today) {
-                if (booking.date in currentUsersBookingsByDateObj) {
-                  currentUsersBookingsByDateObj[booking.date].push(booking);
-                } else {
-                  currentUsersBookingsByDateObj[booking.date] = [booking];
-                }
-              }
-            }
-
-            if (booking.office in bookingsByOfficeObj) {
-              bookingsByOfficeObj[booking.office].push(booking);
-            } else {
-              bookingsByOfficeObj[booking.office] = [booking];
-            }
-          }
-        }
-      }
+    if (offices.length === 0) {
+      onValue(reduxAllOfficesRef, (snapshot) => {
+        const data = snapshot.val();
+        reduxFormatData(data, currentUser, dispatch);
+      });
     }
-    dispatch(bookingsActions.setAllBookings(allBookingsArr));
-    dispatch(bookingsActions.setSeatsByOffice(seatsByOffice));
-    dispatch(
-      bookingsActions.setCurrentUsersBookings(currentUsersBookingsByDateObj)
-    );
-    dispatch(bookingsActions.setBookingsByDate(bookingsByDateObj));
-    dispatch(bookingsActions.setBookingsByOffice(bookingsByOfficeObj));
-    dispatch(bookingsActions.setOffices(offices));
-    Object.keys(currentUsersBookingsByDateObj).forEach(day=>currentUsersBookingsDays.push(day))
-    currentUsersBookingsDays.sort((a,b)=>{
-      var dateA = new Date();
-      var dateB = new Date();
-      dateA.setFullYear(a.substr(0,4),a.substr(5,2),a.substr(8,2))
-      dateB.setFullYear(b.substr(0,4),b.substr(5,2),b.substr(8,2))
-      if(dateA<dateB){
-        return -1
-      }else if(dateB<dateA){
-        return 1
-      }else{
-        return 0;
-      }
-    })
-  }
+  }, []);
 
   function handleEditProfile() {
     navigate("/editprofile");
@@ -172,7 +89,7 @@ export default function Profile() {
                         </Accordion.Item>
                       );
                     })}
-                  </Accordion> 
+                  </Accordion>
                 </Accordion.Body>
               </Accordion.Item>
             </Accordion>

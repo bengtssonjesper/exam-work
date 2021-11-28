@@ -1,4 +1,5 @@
 import { ref, set, getDatabase } from "@firebase/database";
+import { bookingsActions } from "../store/bookings";
 
 export function updateBooking(
   newStartTime,
@@ -74,18 +75,103 @@ export function isBookingAllowed(startTime, endTime, arrayOfBookings) {
   return isAllowed;
 }
 
-export function isCollision(selectedStartTime, selectedEndTime, compareArray){
+export function isCollision(selectedStartTime, selectedEndTime, compareArray) {
   //Input: selectedStartTime, selectedEndTime, compareArray
   //Output: isColission:bool
   //Checks if a booking is colliding with any other booking on that seat/date/office
 
   var isCollision = false;
 
-  compareArray.forEach(booking=>{
-    if((selectedStartTime>=booking.startTime && selectedStartTime<=booking.endTime)||
-    (selectedEndTime>=booking.startTime && selectedEndTime<=booking.endTime)){
-      isCollision=true;
+  compareArray.forEach((booking) => {
+    if (
+      (selectedStartTime >= booking.startTime &&
+        selectedStartTime <= booking.endTime) ||
+      (selectedEndTime >= booking.startTime &&
+        selectedEndTime <= booking.endTime)
+    ) {
+      isCollision = true;
     }
-  })
+  });
   return isCollision;
+}
+
+export function reduxFormatData(data, currentUser, dispatch) {
+  const today = new Date();
+  var allBookingsArr = [];
+  var currentUsersBookingsByDateObj = {};
+  var bookingsByDateObj = {};
+  var bookingsByOfficeObj = {};
+  var seatsByOffice = {};
+  var offices = [];
+  var currentUsersBookingsDays = [];
+
+  console.log("Redux format: ", data);
+  for (const [officeName, officeObject] of Object.entries(data)) {
+    offices.push(officeName);
+    if ("seats" in officeObject) {
+      seatsByOffice[officeName] = officeObject["seats"];
+    }
+    if ("bookings" in officeObject) {
+      for (const [bookerId, bookingsObject] of Object.entries(
+        officeObject.bookings
+      )) {
+        for (const [bookingId, booking] of Object.entries(bookingsObject)) {
+          allBookingsArr.push(booking);
+          if (booking.date in bookingsByDateObj) {
+            bookingsByDateObj[booking.date].push(booking);
+          } else {
+            bookingsByDateObj[booking.date] = [booking];
+          }
+
+          if (booking.user === currentUser._delegate.uid) {
+            var cmpDate = new Date();
+            const year = booking.date.substr(0, 4);
+            const month = booking.date.substr(5, 2);
+            const date = booking.date.substr(8, 2);
+
+            cmpDate.setFullYear(year, month - 1, date);
+            cmpDate.setHours(23, 59, 59);
+
+            if (cmpDate >= today) {
+              if (booking.date in currentUsersBookingsByDateObj) {
+                currentUsersBookingsByDateObj[booking.date].push(booking);
+              } else {
+                currentUsersBookingsByDateObj[booking.date] = [booking];
+              }
+            }
+          }
+
+          if (booking.office in bookingsByOfficeObj) {
+            bookingsByOfficeObj[booking.office].push(booking);
+          } else {
+            bookingsByOfficeObj[booking.office] = [booking];
+          }
+        }
+      }
+    }
+  }
+  dispatch(bookingsActions.setAllBookings(allBookingsArr));
+  dispatch(bookingsActions.setSeatsByOffice(seatsByOffice));
+  dispatch(
+    bookingsActions.setCurrentUsersBookings(currentUsersBookingsByDateObj)
+  );
+  dispatch(bookingsActions.setBookingsByDate(bookingsByDateObj));
+  dispatch(bookingsActions.setBookingsByOffice(bookingsByOfficeObj));
+  dispatch(bookingsActions.setOffices(offices));
+  Object.keys(currentUsersBookingsByDateObj).forEach((day) =>
+    currentUsersBookingsDays.push(day)
+  );
+  currentUsersBookingsDays.sort((a, b) => {
+    var dateA = new Date();
+    var dateB = new Date();
+    dateA.setFullYear(a.substr(0, 4), a.substr(5, 2), a.substr(8, 2));
+    dateB.setFullYear(b.substr(0, 4), b.substr(5, 2), b.substr(8, 2));
+    if (dateA < dateB) {
+      return -1;
+    } else if (dateB < dateA) {
+      return 1;
+    } else {
+      return 0;
+    }
+  });
 }

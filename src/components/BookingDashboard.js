@@ -1,13 +1,16 @@
 import React, { useRef, useState, useEffect } from "react";
-import { Container, Form, Button } from "react-bootstrap";
+import { Container, Form } from "react-bootstrap";
 import SeatViewer from "./SeatViewer";
 import SeatBooker from "./SeatBooker";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import {set,ref, getDatabase } from  'firebase/database'
+import { ref, getDatabase, onValue } from "firebase/database";
 import { bookingsActions } from "../store/bookings";
+import { reduxFormatData } from "./HelperFunctions";
+import { useAuth } from "../contexts/AuthContext";
 
 export default function BookingDashboard() {
+  const { currentUser } = useAuth();
   const selectedOfficeRef = useRef("");
   const [selectedOffice, setSelectedOffice] = useState();
   const [showViewerAndBooker, setShowViewerAndBooker] = useState(false);
@@ -15,11 +18,21 @@ export default function BookingDashboard() {
   const [thisWeeksDatesStrings, setThisWeeksDatesStrings] = useState([]);
   const offices = useSelector((state) => state.bookings.offices);
   const navigate = useNavigate();
-  const allBookings = useSelector((state) => state.bookings.allBookings);
   const dispatch = useDispatch();
 
   useEffect(() => {
     getThisWeeksDates();
+  }, []);
+
+  useEffect(() => {
+    const db = getDatabase();
+    const reduxAllOfficesRef = ref(db, "Offices");
+    if (offices.length === 0) {
+      onValue(reduxAllOfficesRef, (snapshot) => {
+        const data = snapshot.val();
+        reduxFormatData(data, currentUser, dispatch);
+      });
+    }
   }, []);
 
   function getThisWeeksDates() {
@@ -52,7 +65,9 @@ export default function BookingDashboard() {
   function handleOnChange() {
     //Using selectedOffice as state to force rerender of childs on update
     setSelectedOffice(selectedOfficeRef.current.value);
-    dispatch(bookingsActions.setSelectedOffice(selectedOfficeRef.current.value));
+    dispatch(
+      bookingsActions.setSelectedOffice(selectedOfficeRef.current.value)
+    );
     if (selectedOfficeRef.current.value === "Select an office") {
       setShowViewerAndBooker(false);
     } else {
@@ -64,92 +79,92 @@ export default function BookingDashboard() {
     navigate("/");
   }
 
-//   const seats=[
-//     {
-//         name:'Seat 1',
-//         x:0,
-//         y:5,
-//         facing:'down'
-//     },
-//     {
-//         name:'Seat 2',
-//         x:70,
-//         y:5,
-//         facing:'down'
-//     },
-//     {
-//         name:'Seat 3',
-//         x:140,
-//         y:5,
-//         facing:'down'
-//     },
-//     {
-//         name:'Seat 4',
-//         x:210,
-//         y:5,
-//         facing:'down'
-//     },
-//     {
-//         name:'Seat 5',
-//         x:0,
-//         y:40,
-//         facing:'up'
-//     },
-//     {
-//         name:'Seat 6',
-//         x:70,
-//         y:40,
-//         facing:'up'
-//     },
-//     {
-//         name:'Seat 7',
-//         x:140,
-//         y:40,
-//         facing:'up'
-//     },
-//     {
-//         name:'Seat 8',
-//         x:210,
-//         y:40,
-//         facing:'up'
-//     },
-//     {
-//         name:'Seat 9',
-//         x:0,
-//         y:90,
-//         facing:'down'
-//     },
-//     {
-//         name:'Seat 10',
-//         x:70,
-//         y:90,
-//         facing:'down'
-//     },
-//     {
-//         name:'Seat 11',
-//         x:140,
-//         y:90,
-//         facing:'down'
-//     },
-//     {
-//         name:'Seat 12',
-//         x:210,
-//         y:90,
-//         facing:'down'
-//     },
-//     {
-//         name:'Seat 13',
-//         x:0,
-//         y:125,
-//         facing:'up'
-//     },
-//     {
-//         name:'Seat 14',
-//         x:70,
-//         y:125,
-//         facing:'up'
-//     },
-// ]
+  //   const seats=[
+  //     {
+  //         name:'Seat 1',
+  //         x:0,
+  //         y:5,
+  //         facing:'down'
+  //     },
+  //     {
+  //         name:'Seat 2',
+  //         x:70,
+  //         y:5,
+  //         facing:'down'
+  //     },
+  //     {
+  //         name:'Seat 3',
+  //         x:140,
+  //         y:5,
+  //         facing:'down'
+  //     },
+  //     {
+  //         name:'Seat 4',
+  //         x:210,
+  //         y:5,
+  //         facing:'down'
+  //     },
+  //     {
+  //         name:'Seat 5',
+  //         x:0,
+  //         y:40,
+  //         facing:'up'
+  //     },
+  //     {
+  //         name:'Seat 6',
+  //         x:70,
+  //         y:40,
+  //         facing:'up'
+  //     },
+  //     {
+  //         name:'Seat 7',
+  //         x:140,
+  //         y:40,
+  //         facing:'up'
+  //     },
+  //     {
+  //         name:'Seat 8',
+  //         x:210,
+  //         y:40,
+  //         facing:'up'
+  //     },
+  //     {
+  //         name:'Seat 9',
+  //         x:0,
+  //         y:90,
+  //         facing:'down'
+  //     },
+  //     {
+  //         name:'Seat 10',
+  //         x:70,
+  //         y:90,
+  //         facing:'down'
+  //     },
+  //     {
+  //         name:'Seat 11',
+  //         x:140,
+  //         y:90,
+  //         facing:'down'
+  //     },
+  //     {
+  //         name:'Seat 12',
+  //         x:210,
+  //         y:90,
+  //         facing:'down'
+  //     },
+  //     {
+  //         name:'Seat 13',
+  //         x:0,
+  //         y:125,
+  //         facing:'up'
+  //     },
+  //     {
+  //         name:'Seat 14',
+  //         x:70,
+  //         y:125,
+  //         facing:'up'
+  //     },
+  // ]
 
   // function testAdd(){
   //   const db = getDatabase();
