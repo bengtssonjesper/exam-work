@@ -122,8 +122,8 @@ function isBookingAllowed(selectedStartTime, selectedEndTime, compareArray) {
       isAllowed = false;
       throw "End time must be greater than start time";
     } else if (
-      (startTimeDate >= cmpStart && startTimeDate <= cmpEnd) ||
-      (endTimeDate >= cmpStart && endTimeDate <= cmpEnd)
+      (startTimeDate > cmpStart && startTimeDate < cmpEnd) ||
+      (endTimeDate > cmpStart && endTimeDate < cmpEnd)
     ) {
       isAllowed = false;
       throw "Collision with another booking, please change times";
@@ -212,23 +212,24 @@ export function reduxFormatData(data, currentUser, dispatch) {
   dispatch(
     bookingsActions.setCurrentUsersBookings(currentUsersBookingsByDateObj)
   );
+  console.log("Currentusersbooking: ", currentUsersBookingsByDateObj);
   dispatch(bookingsActions.setBookingsByDate(bookingsByDateObj));
   dispatch(bookingsActions.setBookingsByOffice(bookingsByOfficeObj));
   dispatch(bookingsActions.setOffices(offices));
-  Object.keys(currentUsersBookingsByDateObj).forEach((day) =>
-    currentUsersBookingsDays.push(day)
-  );
-  currentUsersBookingsDays.sort((a, b) => {
-    var dateA = new Date();
-    var dateB = new Date();
-    dateA.setFullYear(a.substr(0, 4), a.substr(5, 2), a.substr(8, 2));
-    dateB.setFullYear(b.substr(0, 4), b.substr(5, 2), b.substr(8, 2));
-    if (dateA < dateB) {
-      return -1;
-    } else if (dateB < dateA) {
-      return 1;
-    } else {
-      return 0;
-    }
-  });
+  // Object.keys(currentUsersBookingsByDateObj).forEach((day) =>
+  //   currentUsersBookingsDays.push(day)
+  // );
+  // currentUsersBookingsDays.sort((a, b) => {
+  //   var dateA = new Date();
+  //   var dateB = new Date();
+  //   dateA.setFullYear(a.substr(0, 4), a.substr(5, 2), a.substr(8, 2));
+  //   dateB.setFullYear(b.substr(0, 4), b.substr(5, 2), b.substr(8, 2));
+  //   if (dateA < dateB) {
+  //     return -1;
+  //   } else if (dateB < dateA) {
+  //     return 1;
+  //   } else {
+  //     return 0;
+  //   }
+  // });
 }

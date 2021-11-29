@@ -1,5 +1,6 @@
 import React, { useRef, useState } from "react";
-import { Card, Button, Form, Container, Alert } from "react-bootstrap";
+import { Card, Form, Container, Alert } from "react-bootstrap";
+import Button from "@mui/material/Button";
 import { useAuth } from "../contexts/AuthContext";
 import { Link, useNavigate } from "react-router-dom";
 
@@ -59,7 +60,12 @@ export default function Signup() {
                   required
                 />
               </Form.Group>
-              <Button disabled={loading} className="mt-3 w-100" type="submit">
+              <Button
+                variant="contained"
+                disabled={loading}
+                className="mt-3 w-100"
+                type="submit"
+              >
                 Sign Up
               </Button>
             </Form>

@@ -1,5 +1,6 @@
 import React, { useRef, useState } from "react";
-import { Modal, Button, Form, Alert } from "react-bootstrap";
+import { Modal, Form, Alert } from "react-bootstrap";
+import Button from "@mui/material/Button";
 import { set, ref, getDatabase } from "firebase/database";
 import { updateBooking } from "./HelperFunctions";
 import { useSelector } from "react-redux";
@@ -78,8 +79,13 @@ export default function BookingModal(props) {
                   required
                 ></Form.Control>
               </Form.Group>
-              <Button className="mt-2 mb-2" type="submit">
-                Update booking
+              <Button
+                color="success"
+                variant="contained"
+                className="mt-2 mb-2"
+                type="submit"
+              >
+                Update
               </Button>
             </Form>
           </div>
@@ -88,10 +94,14 @@ export default function BookingModal(props) {
         {error && <Alert variant="danger">{error}</Alert>}
       </Modal.Body>
       <Modal.Footer>
-        <Button variant="warning" onClick={handleUpdateBooking}>
+        <Button
+          color="warning"
+          variant="contained"
+          onClick={handleUpdateBooking}
+        >
           Update booking
         </Button>
-        <Button variant="danger" onClick={handleDeleteBooking}>
+        <Button color="error" variant="contained" onClick={handleDeleteBooking}>
           Delete booking
         </Button>
       </Modal.Footer>

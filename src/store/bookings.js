@@ -7,8 +7,9 @@ const initialBookingState = {
   bookingsByOffice: {},
   seatsByOffice: {},
   offices: [],
-  graphicViewTimeRefs:{},
-  viewDate:null
+  graphicViewTimeRefs: {},
+  selectedOffice: null,
+  viewDate: null,
 };
 
 const bookingsSlice = createSlice({

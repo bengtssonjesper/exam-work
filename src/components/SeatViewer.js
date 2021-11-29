@@ -4,7 +4,8 @@ import ScheduleRow from "./ScheduleRow";
 import SeatRowHeadings from "./SeatRowHeadings";
 import ScheduleHeadings from "./ScheduleHeadings";
 import GraphicView from "./GraphicView";
-import { Form, Button, Row, Col, Container } from "react-bootstrap";
+import { Form, Row, Col, Container } from "react-bootstrap";
+import Button from "@mui/material/Button";
 import { useSelector, useDispatch } from "react-redux";
 import { bookingsActions } from "../store/bookings";
 
@@ -192,7 +193,11 @@ export default function SeatViewer(props) {
       <Row>
         <Col xs md="3" className="mt-3 mb-3">
           {view === "Schedule" && (
-            <Button disabled={loading} onClick={swapShowTimeChange}>
+            <Button
+              variant="contained"
+              disabled={loading}
+              onClick={swapShowTimeChange}
+            >
               Change View Times
             </Button>
           )}
@@ -219,7 +224,9 @@ export default function SeatViewer(props) {
                     })}
                 </Form.Select>
               </Form.Group>
-              <Button type="submit">Change</Button>
+              <Button variant="contained" type="submit">
+                Change
+              </Button>
             </Form>
           )}
         </Col>

@@ -55,7 +55,11 @@ export default function BookingDashboard() {
         date.getMonth().toString() === "12"
           ? "1"
           : (date.getMonth() + 1).toString();
-      const day = date.getDate().toString();
+      var day = date.getDate().toString();
+      if (day.length < 2) {
+        day = "0" + day;
+      }
+
       var tmpStr = year + "-" + month + "-" + day;
       return tmpStr;
     });

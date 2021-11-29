@@ -1,5 +1,6 @@
 import { useRef, useState } from "react";
-import { Card, Form, Button, Alert, Container } from "react-bootstrap";
+import { Card, Form, Alert, Container } from "react-bootstrap";
+import Button from "@mui/material/Button";
 import { useAuth } from "../contexts/AuthContext";
 import { Link, useNavigate } from "react-router-dom";
 
@@ -25,8 +26,6 @@ export default function Login() {
     setLoading(false);
   }
 
-
-
   return (
     <Container
       className="d-flex align-items-center justify-content-center"
@@ -46,10 +45,14 @@ export default function Login() {
                 <Form.Label>Password</Form.Label>
                 <Form.Control type="password" ref={passwordRef} required />
               </Form.Group>
-              <Button disabled={loading} className="mt-3 w-100" type="submit">
+              <Button
+                variant="contained"
+                disabled={loading}
+                className="mt-3 w-100"
+                type="submit"
+              >
                 Log In
               </Button>
-
             </Form>
           </Card.Body>
         </Card>

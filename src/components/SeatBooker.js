@@ -1,12 +1,14 @@
 import React, { useState, useRef } from "react";
 import "./styles.css";
-import { Button } from "react-bootstrap";
+
+import Button from "@mui/material/Button";
 
 import ManualBooking from "./ManualBooking";
 import AutomaticBooking from "./AutomaticBooking";
 
 export default function SeatBooker(props) {
   const [booking, setBooking] = useState("manual");
+  const today = new Date();
 
   function handleManualBooking() {
     setBooking("manual");
@@ -20,13 +22,13 @@ export default function SeatBooker(props) {
       <div className="shadow-container mt-3 p-2">
         <h1 className="text-center">Seat Booker</h1>
         <Button
-          variant={booking === "manual" ? "dark" : "outline-dark"}
+          variant={booking === "manual" ? "outlined" : "text"}
           onClick={handleManualBooking}
         >
           Manual
         </Button>
         <Button
-          variant={booking === "automatic" ? "dark" : "outline-dark"}
+          variant={booking === "automatic" ? "outlined" : "text"}
           onClick={handleAutomaticBooking}
         >
           Automatic
@@ -37,7 +39,7 @@ export default function SeatBooker(props) {
             selectedOffice={props.selectedOffice}
           />
         )}
-        {booking === "automatic" && <AutomaticBooking />}
+        {booking === "automatic" && <AutomaticBooking today={today} />}
       </div>
     </>
   );

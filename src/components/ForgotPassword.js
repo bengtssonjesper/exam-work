@@ -1,5 +1,6 @@
 import React, { useRef, useState } from "react";
-import { Form, Button, Card, Alert, Container } from "react-bootstrap";
+import { Form, Card, Alert, Container } from "react-bootstrap";
+import Button from "@mui/material/Button";
 import { useAuth } from "../contexts/AuthContext";
 import { Link } from "react-router-dom";
 
@@ -42,7 +43,12 @@ export default function ForgotPassword() {
                 <Form.Label>Email</Form.Label>
                 <Form.Control type="email" ref={emailRef} required />
               </Form.Group>
-              <Button disabled={loading} className="mt-3 w-100" type="submit">
+              <Button
+                variant="contained"
+                disabled={loading}
+                className="mt-3 w-100"
+                type="submit"
+              >
                 Reset Password
               </Button>
             </Form>

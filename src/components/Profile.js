@@ -2,7 +2,8 @@ import React, { useState, useEffect } from "react";
 import "./styles.css";
 import { ref, getDatabase } from "firebase/database";
 import { useAuth } from "../contexts/AuthContext";
-import { Button, Alert, Container, Accordion } from "react-bootstrap";
+import { Alert, Container, Accordion } from "react-bootstrap";
+import Button from "@mui/material/Button";
 import { useNavigate } from "react-router-dom";
 import { onValue } from "@firebase/database";
 import { useSelector, useDispatch } from "react-redux";
@@ -13,6 +14,7 @@ export default function Profile() {
   const [error, setError] = useState("");
   const navigate = useNavigate();
   const [profileData, setProfileData] = useState();
+  const [expanded, setExpanded] = useState(false);
 
   const dispatch = useDispatch();
   const offices = useSelector((state) => state.bookings.offices);
@@ -50,6 +52,10 @@ export default function Profile() {
   function handleEditProfile() {
     navigate("/editprofile");
   }
+
+  const handleChange = (panel) => (event, isExpanded) => {
+    setExpanded(isExpanded ? panel : false);
+  };
 
   return (
     <>
@@ -95,7 +101,11 @@ export default function Profile() {
             </Accordion>
           </div>
         )}
-        <Button className="mt-3" onClick={handleEditProfile}>
+        <Button
+          variant="contained"
+          className="mt-3"
+          onClick={handleEditProfile}
+        >
           Edit profile info
         </Button>
       </Container>

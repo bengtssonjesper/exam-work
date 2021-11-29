@@ -1,5 +1,6 @@
 import React, { useState, useRef } from "react";
-import { Button, Form, Alert } from "react-bootstrap";
+import { Form, Alert } from "react-bootstrap";
+import Button from "@mui/material/Button";
 import { useAuth } from "../contexts/AuthContext";
 import { useSelector } from "react-redux";
 import { createBooking } from "./HelperFunctions";
@@ -56,6 +57,7 @@ export default function ManualBooking(props) {
       {error && <Alert variant="danger">{error}</Alert>}
       {message && <Alert variant="success">{message}</Alert>}
       <Button
+        variant="contained"
         className="text-center mt-2 mb-2"
         id="formToggleBtn"
         disabled={loading}
@@ -91,7 +93,12 @@ export default function ManualBooking(props) {
             <Form.Label>End Time</Form.Label>
             <Form.Control ref={endTimeRef} type="time" required></Form.Control>
           </Form.Group>
-          <Button type="submit" className="mt-2">
+          <Button
+            variant="contained"
+            color="success"
+            type="submit"
+            className="mt-2"
+          >
             Submit
           </Button>
         </Form>

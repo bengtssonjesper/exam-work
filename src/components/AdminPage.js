@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { Button, Row } from "react-bootstrap";
+import { Row } from "react-bootstrap";
+import Button from "@mui/material/Button";
 import { ref, set, getDatabase, onValue } from "firebase/database";
 
 export default function AdminPage() {
@@ -63,7 +64,9 @@ export default function AdminPage() {
         <h3>Admin functions</h3>
       </Row>
       {/* FIX ADMIN PERMISSION FOR THIS FUNCTIONALITY */}
-      <Button onClick={handleDatabaseClean}>Clean database</Button>
+      <Button variant="contained" onClick={handleDatabaseClean}>
+        Clean database
+      </Button>
     </div>
   );
 }
