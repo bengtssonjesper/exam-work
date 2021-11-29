@@ -78,7 +78,6 @@ export function updateBooking(
     "/" +
     booking["bookingId"];
   try {
-    console.log("compare: ", arrayOfBookings);
     if (isBookingAllowed(newStartTime, newEndTime, arrayOfBookings)) {
       set(ref(db, refStr), {
         bookingId: booking["bookingId"],
@@ -132,42 +131,6 @@ function isBookingAllowed(selectedStartTime, selectedEndTime, compareArray) {
   });
   return isAllowed;
 }
-
-// export function isBookingAllowed(startTime, endTime, arrayOfBookings) {
-//   //Input: startTime: string, endTime:string, arrayOfBookings: array[Booking]
-//   //Output: if booking is allowed or not, as bool
-//   var isAllowed = true;
-//   var startTimeDate = new Date();
-//   var endTimeDate = new Date();
-//   startTimeDate.setHours(
-//     parseInt(startTime.substr(0, 2)),
-//     parseInt(startTime.substr(3, 2))
-//   );
-//   endTimeDate.setHours(
-//     parseInt(endTime.substr(0, 2)),
-//     parseInt(endTime.substr(3, 2))
-//   );
-//   arrayOfBookings.forEach((booking) => {
-//     var cmpStart = new Date();
-//     var cmpEnd = new Date();
-//     cmpStart.setHours(
-//       booking.startTime.substr(0, 2),
-//       booking.startTime.substr(3, 2)
-//     );
-//     cmpEnd.setHours(booking.endTime.substr(0, 2), booking.endTime.substr(3, 2));
-//     if (startTimeDate >= endTimeDate) {
-//       isAllowed = false;
-//       throw "End time must be greater than start time";
-//     } else if (
-//       (startTimeDate >= cmpStart && startTimeDate <= cmpEnd) ||
-//       (endTimeDate >= cmpStart && endTimeDate <= cmpEnd)
-//     ) {
-//       isAllowed = false;
-//       throw "Collision with another booking, please change times";
-//     }
-//   });
-//   return isAllowed;
-// }
 
 export function isCollision(selectedStartTime, selectedEndTime, compareArray) {
   //Input: selectedStartTime, selectedEndTime, compareArray
