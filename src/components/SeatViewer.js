@@ -132,12 +132,11 @@ export default function SeatViewer(props) {
                 onChange={handleDateChange}
               >
                 <option>Select a date</option>
-                {props.thisWeeksDates &&
-                  props.thisWeeksDates.map((date, i) => {
+                  {props.thisWeeksDatesStrings &&
+                  props.thisWeeksDatesStrings.map((date, i) => {
                     return (
                       <option key={i}>
-                        {date.getFullYear()}-{date.getMonth() + 1}-
-                        {date.getDate()}
+                        {date}
                       </option>
                     );
                   })}
