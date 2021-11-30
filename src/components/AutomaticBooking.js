@@ -1,16 +1,21 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useSelector } from "react-redux";
 import Button from "@mui/material/Button";
-import { Form } from "react-bootstrap";
+import { Form,Row,Col, Alert } from "react-bootstrap";
+import RecommendedBooking from "./RecommendedBooking";
+import { useAuth } from "../contexts/AuthContext";
 
 export default function AutomaticBooking(props) {
   //Leta igenom och hitta lediga luckor? Filtrera bort för korta luckor
-
+  const { currentUser } = useAuth();
   const dateRef = useRef();
   const fromRef = useRef();
   const toRef = useRef();
   const durationRef = useRef();
   const today = new Date();
+  const[recommendedSlots,setRecommendedSlots]=useState([]);
+  const[error,setError]=useState("")
+  const[message,setMessage]=useState("")
 
   const bookingsByOffice = useSelector(
     (state) => state.bookings.bookingsByOffice
@@ -22,7 +27,6 @@ export default function AutomaticBooking(props) {
   function handleSearch(e) {
     e.preventDefault();
     var startTime = performance.now();
-    console.log("duration: ", durationRef.current.value);
     const selectedDuration =
       parseInt(durationRef.current.value.substr(0, 2)) +
       parseInt(durationRef.current.value.substr(3, 2)) / 60;
@@ -66,6 +70,7 @@ export default function AutomaticBooking(props) {
           from: initStartTime,
           to: initEndTime,
           duration: (initEndTime - initStartTime) / (60 * 60 * 1000),
+          seat:seatsByOffice[selectedOffice][seat].name
         },
       ];
     });
@@ -104,11 +109,13 @@ export default function AutomaticBooking(props) {
             from: slot.from,
             to: compareStartDate,
             duration: (compareStartDate - slot.from) / (60 * 60 * 1000),
+            seat:slot.seat
           };
           var newSlotTwo = {
             from: compareEndDate,
             to: slot.to,
             duration: (slot.to - compareEndDate) / (60 * 60 * 1000),
+            seat:slot.seat
           };
 
           //Removes the previous slot and adds the two new slots.
@@ -119,13 +126,21 @@ export default function AutomaticBooking(props) {
     var viableOptions = [];
     Object.keys(emptySlots).forEach((seat, i) => {
       emptySlots[seat].forEach((slot) => {
-        console.log("slot: ", slot);
+        var compareStart = new Date();
+        var compareEnd = new Date();
+        if(slot.from>selectedFrom){
+          compareStart = slot.from;
+          
+        }else{
+          compareStart=selectedFrom;
+        }
+        compareEnd.setHours(compareStart.getHours(),compareStart.getMinutes(),compareStart.getSeconds())
+        compareEnd.setMinutes(compareStart.getMinutes()+selectedDuration*60)
         if (
-          slot.from <= selectedFrom &&
-          slot.to >= selectedTo &&
-          slot.duration >= selectedDuration
-        ) {
-          viableOptions.push(slot);
+          compareStart>=slot.from && compareEnd <=slot.to && compareEnd<=selectedTo
+          ) {
+            const pushSlot = {from:compareStart, to:compareEnd, duration:selectedDuration, seat:slot.seat}
+            viableOptions.push(pushSlot);
         }
       });
     });
@@ -134,7 +149,7 @@ export default function AutomaticBooking(props) {
 
     var endTime = performance.now();
     console.log("takes: (ms) ", endTime - startTime);
-    console.log("viable: ", viableOptions);
+    setRecommendedSlots(viableOptions)
   }
 
   return (
@@ -181,6 +196,25 @@ export default function AutomaticBooking(props) {
         </Form.Group>
         <Button type="submit">Search</Button>
       </Form>
+      {error && <Alert variant="danger">{error}</Alert>}
+      {message && <Alert variant="success">{message}</Alert>}
+
+      {recommendedSlots.length>0 && <p>Available seats: </p>}
+      {recommendedSlots && recommendedSlots.map((slot,i)=>{
+        
+        //Gör det till en komponent, i komponenten fixar vi så man kan boka från förslaget.
+        return(
+          <RecommendedBooking 
+            key={i} 
+            slot={slot}
+            date={dateRef.current.value}
+            thisWeeksDatesStrings={props.thisWeeksDatesStrings}
+            currentUser={currentUser}
+            setError={setError}
+            setMessage={setMessage}
+          />
+        )
+      })}
     </div>
   );
 }

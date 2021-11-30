@@ -39,7 +39,7 @@ export default function SeatBooker(props) {
             selectedOffice={props.selectedOffice}
           />
         )}
-        {booking === "automatic" && <AutomaticBooking today={today} />}
+        {booking === "automatic" && <AutomaticBooking today={today} thisWeeksDatesStrings={props.thisWeeksDatesStrings} />}
       </div>
     </>
   );

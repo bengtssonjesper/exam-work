@@ -63,7 +63,6 @@ export default function SeatViewer(props) {
     var tmpArr = [];
     const data = bookingsByOffice[props.selectedOffice];
     if (data && dateRef !== null && dateRef.current.value !== "Select a date") {
-      console.log("dispatch: ", dateRef.current.value);
       dispatch(bookingsActions.setViewDate(dateRef.current.value));
       data.forEach((booking) => {
         if (booking.date === dateRef.current.value) {
@@ -116,7 +115,6 @@ export default function SeatViewer(props) {
   }
 
   function handleViewChange() {
-    console.log("Setting view to: ", viewRef.current.value);
     setView(viewRef.current.value);
   }
 
@@ -162,33 +160,7 @@ export default function SeatViewer(props) {
             )}
           </Form>
         </Col>
-        {/* <Col className="d-flex mt-3 justify-content-evenly align-items-end">
-          <Col xs="6">
-          <Button
-            id="setTextViewBtn"
-            variant={view === "text" ? "dark" : "outline-dark"}
-            onClick={handleTextViewClick}
-          >
-            Text View
-          </Button>
-          </Col>
-          <Col xs="6">
-          <Button
-            id="setScheduleViewBtn"
-            variant={view === "schedule" ? "dark" : "outline-dark"}
-            onClick={handleScheduleViewClick}
-          >
-            Schedule View
-          </Button>
-          <Button
-            id="setTextViewBtn"
-            variant={view === "graphic" ? "dark" : "outline-dark"}
-            onClick={handleGraphicViewClick}
-          >
-            Graphic View
-          </Button>
-          </Col>
-        </Col> */}
+
       </Row>
       <Row>
         <Col xs md="3" className="mt-3 mb-3">
@@ -210,8 +182,8 @@ export default function SeatViewer(props) {
                   aria-label="Default select example"
                 >
                   {dayHours &&
-                    dayHours.map((hour) => {
-                      return <option>{hour}</option>;
+                    dayHours.map((hour,i) => {
+                      return <option key={i}>{hour}</option>;
                     })}
                 </Form.Select>
                 <Form.Select
@@ -219,8 +191,8 @@ export default function SeatViewer(props) {
                   aria-label="Default select example"
                 >
                   {dayHours &&
-                    dayHours.map((hour) => {
-                      return <option>{hour}</option>;
+                    dayHours.map((hour,i) => {
+                      return <option key={i}>{hour}</option>;
                     })}
                 </Form.Select>
               </Form.Group>

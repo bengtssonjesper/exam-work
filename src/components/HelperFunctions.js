@@ -212,7 +212,6 @@ export function reduxFormatData(data, currentUser, dispatch) {
   dispatch(
     bookingsActions.setCurrentUsersBookings(currentUsersBookingsByDateObj)
   );
-  console.log("Currentusersbooking: ", currentUsersBookingsByDateObj);
   dispatch(bookingsActions.setBookingsByDate(bookingsByDateObj));
   dispatch(bookingsActions.setBookingsByOffice(bookingsByOfficeObj));
   dispatch(bookingsActions.setOffices(offices));
