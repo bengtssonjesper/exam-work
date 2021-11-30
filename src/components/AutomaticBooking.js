@@ -4,6 +4,7 @@ import Button from "@mui/material/Button";
 import { Form,Row,Col, Alert } from "react-bootstrap";
 import RecommendedBooking from "./RecommendedBooking";
 import { useAuth } from "../contexts/AuthContext";
+import Pagination from '@mui/material/Pagination';
 
 export default function AutomaticBooking(props) {
   //Leta igenom och hitta lediga luckor? Filtrera bort för korta luckor
@@ -16,6 +17,9 @@ export default function AutomaticBooking(props) {
   const[recommendedSlots,setRecommendedSlots]=useState([]);
   const[error,setError]=useState("")
   const[message,setMessage]=useState("")
+  const [page, setPage] = useState(1);
+  const [rowsPerPage, setRowsPerPage] = useState(4);
+  const[slotsToView, setSlotsToView] = useState([])
 
   const bookingsByOffice = useSelector(
     (state) => state.bookings.bookingsByOffice
@@ -23,6 +27,10 @@ export default function AutomaticBooking(props) {
   const bookingsByDate = useSelector((state) => state.bookings.bookingsByDate);
   const seatsByOffice = useSelector((state) => state.bookings.seatsByOffice);
   const selectedOffice = useSelector((state) => state.bookings.selectedOffice);
+
+    useEffect(()=>{
+      setSlotsToView(recommendedSlots.slice((page-1)*rowsPerPage,page*rowsPerPage))
+    },[recommendedSlots])
 
   function handleSearch(e) {
     e.preventDefault();
@@ -74,10 +82,11 @@ export default function AutomaticBooking(props) {
         },
       ];
     });
-
-    var compareArray = bookingsByDate[dateRef.current.value].filter(
+    var compareArray = []
+    if(bookingsByDate[dateRef.current.value]){
+      compareArray = bookingsByDate[dateRef.current.value].filter(
       (booking) => booking.office === selectedOffice
-    );
+    )}
 
     compareArray.forEach((booking) => {
       var compareStartDate = new Date();
@@ -145,12 +154,22 @@ export default function AutomaticBooking(props) {
       });
     });
 
+    
+
     //Nu har vi de luckor som är tillräckligt stora, nu ska vi ge förslag baserade på dessa.
 
     var endTime = performance.now();
     console.log("takes: (ms) ", endTime - startTime);
     setRecommendedSlots(viableOptions)
   }
+
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+    var tmpArr=[]
+    tmpArr=recommendedSlots.slice((newPage-1)*rowsPerPage,newPage*rowsPerPage)
+    setSlotsToView(tmpArr)
+  };
+
 
   return (
     <div>
@@ -194,15 +213,16 @@ export default function AutomaticBooking(props) {
             required
           />
         </Form.Group>
-        <Button type="submit">Search</Button>
+        <Col className="mt-2 mb-2">
+        <Button variant="outlined" type="submit">Search</Button>
+        </Col>
       </Form>
       {error && <Alert variant="danger">{error}</Alert>}
       {message && <Alert variant="success">{message}</Alert>}
 
       {recommendedSlots.length>0 && <p>Available seats: </p>}
-      {recommendedSlots && recommendedSlots.map((slot,i)=>{
+      {recommendedSlots && slotsToView.map((slot,i)=>{
         
-        //Gör det till en komponent, i komponenten fixar vi så man kan boka från förslaget.
         return(
           <RecommendedBooking 
             key={i} 
@@ -215,6 +235,9 @@ export default function AutomaticBooking(props) {
           />
         )
       })}
+      {slotsToView.length>0&&
+      <Pagination color='primary' page={page} onChange={handleChangePage} count={Math.ceil(recommendedSlots.length/rowsPerPage)} />
+      }
     </div>
   );
 }
