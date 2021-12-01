@@ -85,10 +85,11 @@ export default function BookingDashboard() {
 
   return (
     <>
-      <Container className="shadow-container min-height-full">
+    
+      <Container className=" shadow-container min-height-full">
         <div>
-          <Form>
-            <Form.Label>Office</Form.Label>
+          <Form className="mt-2">
+            {/* <Form.Label>Office</Form.Label> */}
             <Form.Select
               aria-label="Default select example"
               onChange={handleOnChange}
@@ -108,6 +109,7 @@ export default function BookingDashboard() {
               <SeatViewer
                 selectedOffice={selectedOffice}
                 thisWeeksDates={thisWeeksDates}
+                thisWeeksDatesStrings={thisWeeksDatesStrings}
               ></SeatViewer>
             </div>
             <div id="seatBooker">

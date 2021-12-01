@@ -56,7 +56,7 @@ export default function ManualBooking(props) {
     <div>
       {error && <Alert variant="danger">{error}</Alert>}
       {message && <Alert variant="success">{message}</Alert>}
-      <Button
+      {/* <Button
         variant="contained"
         className="text-center mt-2 mb-2"
         id="formToggleBtn"
@@ -64,8 +64,8 @@ export default function ManualBooking(props) {
         onClick={handleFormToggle}
       >
         {toggleButtonInnerHTML}
-      </Button>
-      {showForm && (
+      </Button> */}
+      {/* {showForm && (*/}
         <Form onSubmit={handleSubmit}>
           <Form.Group>
             <Form.Label>Date</Form.Label>
@@ -102,7 +102,7 @@ export default function ManualBooking(props) {
             Submit
           </Button>
         </Form>
-      )}
+      {/* // )} */}
     </div>
   );
 }

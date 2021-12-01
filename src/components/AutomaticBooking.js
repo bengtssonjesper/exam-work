@@ -32,8 +32,14 @@ export default function AutomaticBooking(props) {
       setSlotsToView(recommendedSlots.slice((page-1)*rowsPerPage,page*rowsPerPage))
     },[recommendedSlots])
 
+    useEffect(()=>{
+      handleSearch();
+    },[bookingsByOffice])
+
   function handleSearch(e) {
-    e.preventDefault();
+    if(e){
+      e.preventDefault();
+    }
     var startTime = performance.now();
     const selectedDuration =
       parseInt(durationRef.current.value.substr(0, 2)) +
@@ -153,10 +159,6 @@ export default function AutomaticBooking(props) {
         }
       });
     });
-
-    
-
-    //Nu har vi de luckor som är tillräckligt stora, nu ska vi ge förslag baserade på dessa.
 
     var endTime = performance.now();
     console.log("takes: (ms) ", endTime - startTime);

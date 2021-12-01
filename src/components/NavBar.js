@@ -36,7 +36,7 @@ export default function NavBar() {
   }
 
   return (
-    <Navbar expand="md" bg="dark" variant="dark">
+    <Navbar collapseOnSelect expand="md" bg="dark" variant="dark">
       <Container>
         <Navbar.Brand>Booking System</Navbar.Brand>
         <Navbar.Toggle aria-controls="responsive-navbar-nav" />

@@ -14,8 +14,8 @@ function App() {
   return (
     <Router>
       <AuthProvider>
+        <div className="background">
         <NavBar />
-        <div id="background">
           <Routes>
             <Route exact path="/" element={<PrivateRoute />}>
               <Route exact path="/" element={<Profile />} />

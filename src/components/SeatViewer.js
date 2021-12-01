@@ -124,8 +124,8 @@ export default function SeatViewer(props) {
       <Row className="mt-2 mb-4">
         <Col sm lg="3" className="d-flex align-items-end md-6">
           <Form>
-            <Form.Group>
-              <Form.Label>Date</Form.Label>
+            <Form.Group className="mt-1 mb-1">
+              {/* <Form.Label>Date</Form.Label> */}
               <Form.Select
                 aria-label="Default select example"
                 ref={dateRef}
@@ -143,8 +143,8 @@ export default function SeatViewer(props) {
               </Form.Select>
             </Form.Group>
             {dateRef && dateRef.current.value !== "Select a date" && (
-              <Form.Group>
-                <Form.Label>Select view</Form.Label>
+              <Form.Group className="mt-1 mb-1">
+                {/* <Form.Label>Select view</Form.Label> */}
                 <Form.Select
                   aria-label="Default select example"
                   ref={viewRef}
