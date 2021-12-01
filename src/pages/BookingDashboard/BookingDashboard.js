@@ -1,13 +1,14 @@
 import React, { useRef, useState, useEffect } from "react";
 import { Container, Form } from "react-bootstrap";
-import SeatViewer from "./SeatViewer";
-import SeatBooker from "./SeatBooker";
+import SeatViewer from "../../domain/SeatViewer/SeatViewer";
+// import SeatBooker from "./SeatBooker";
+import SeatBooker from '../../domain/SeatBooker/SeatBooker'
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { ref, getDatabase, onValue } from "firebase/database";
-import { bookingsActions } from "../store/bookings";
-import { reduxFormatData } from "./HelperFunctions";
-import { useAuth } from "../contexts/AuthContext";
+import { bookingsActions } from "../../store/bookings";
+import { reduxFormatData } from "../../helper/HelperFunctions";
+import { useAuth } from "../../contexts/AuthContext";
 
 export default function BookingDashboard() {
   const { currentUser } = useAuth();

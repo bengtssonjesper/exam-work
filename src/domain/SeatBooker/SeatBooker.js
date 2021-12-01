@@ -1,10 +1,9 @@
 import React, { useState, useRef } from "react";
-import "./styles.css";
-
+// import "./styles.css";
 import Button from "@mui/material/Button";
-
-import ManualBooking from "./ManualBooking";
-import AutomaticBooking from "./AutomaticBooking";
+// import ManualBooking from "./ManualBooking";
+import ManualBooking from './ManualBooking/ManualBooking'
+import AutomaticBooking from './AutomaticBooking/AutomaticBooking'
 
 export default function SeatBooker(props) {
   const [booking, setBooking] = useState("manual");

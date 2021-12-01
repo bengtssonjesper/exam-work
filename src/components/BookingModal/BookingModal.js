@@ -2,7 +2,7 @@ import React, { useRef, useState } from "react";
 import { Modal, Form, Alert } from "react-bootstrap";
 import Button from "@mui/material/Button";
 import { set, ref, getDatabase } from "firebase/database";
-import { updateBooking } from "./HelperFunctions";
+import { updateBooking } from "../../helper/HelperFunctions";
 import { useSelector } from "react-redux";
 
 export default function BookingModal(props) {

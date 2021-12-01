@@ -1,7 +1,7 @@
 import React from 'react'
 import {Row, Col} from 'react-bootstrap'
 import Button from "@mui/material/Button";
-import { createBooking } from './HelperFunctions';
+import { createBooking } from '../../../helper/HelperFunctions';
 import { useSelector } from "react-redux";
 
 export default function RecommendedBooking(props) {

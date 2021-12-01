@@ -1,10 +1,8 @@
 import React, {useRef,useState, useEffect} from 'react'
 import { useSelector } from "react-redux";
-import { isCollision } from './HelperFunctions';
+import { isCollision } from '../helper/HelperFunctions';
 
 
-// export const canvasWidth = window.innerWidth * .9;
-// export const canvasHeight = window.innerHeight * .9;
 export const canvasWidth = Math.min(400,window.innerWidth * .9);
 export const canvasHeight = 400;
 

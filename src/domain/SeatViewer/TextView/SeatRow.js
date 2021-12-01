@@ -1,7 +1,7 @@
 import React from 'react'
 import {Row,Col} from 'react-bootstrap'
 import SeatRowBooking from './SeatRowBooking'
-import {useAuth} from '../contexts/AuthContext'
+import {useAuth} from '../../../contexts/AuthContext'
 
 export default function SeatRow(props) {
 

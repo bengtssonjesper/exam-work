@@ -3,7 +3,7 @@ import { useSelector } from "react-redux";
 import Button from "@mui/material/Button";
 import { Form,Row,Col, Alert } from "react-bootstrap";
 import RecommendedBooking from "./RecommendedBooking";
-import { useAuth } from "../contexts/AuthContext";
+import { useAuth } from "../../../contexts/AuthContext";
 import Pagination from '@mui/material/Pagination';
 
 export default function AutomaticBooking(props) {

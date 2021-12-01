@@ -1,6 +1,6 @@
 import React, {useState} from 'react'
 import {Row,Col} from 'react-bootstrap'
-import BookingModal from './BookingModal'
+import BookingModal from '../../../components/BookingModal/BookingModal';
 
 export default function SeatRowBooking(props) {
 

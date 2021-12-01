@@ -2,7 +2,7 @@ import React, { useRef, useState } from "react";
 import { Form, Alert, Container } from "react-bootstrap";
 import Button from "@mui/material/Button";
 import { getDatabase, set, ref } from "firebase/database";
-import { useAuth } from "../contexts/AuthContext";
+import {useAuth} from '../../contexts/AuthContext'
 import { useNavigate } from "react-router-dom";
 
 export default function EditProfile() {

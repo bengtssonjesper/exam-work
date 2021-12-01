@@ -1,6 +1,6 @@
 import React, { useState, useRef } from "react";
 import { Popover, OverlayTrigger } from "react-bootstrap";
-import BookingModal from "./BookingModal";
+import BookingModal from "../../../components/BookingModal/BookingModal";
 
 export default function ScheduleBooking(props) {
   const target = useRef(null);

@@ -1,13 +1,13 @@
 import React, { useEffect, useState, useRef } from "react";
-import SeatRow from "./SeatRow";
-import ScheduleRow from "./ScheduleRow";
-import SeatRowHeadings from "./SeatRowHeadings";
-import ScheduleHeadings from "./ScheduleHeadings";
-import GraphicView from "./GraphicView";
+import SeatRow from "./TextView/SeatRow";
+import ScheduleRow from "./ScheduleView/ScheduleRow";
+import SeatRowHeadings from "./TextView/SeatRowHeadings";
+import ScheduleHeadings from "./ScheduleView/ScheduleHeadings";
+import GraphicView from "./GraphicView/GraphicView";
 import { Form, Row, Col, Container } from "react-bootstrap";
 import Button from "@mui/material/Button";
 import { useSelector, useDispatch } from "react-redux";
-import { bookingsActions } from "../store/bookings";
+import { bookingsActions } from "../../store/bookings";
 
 export default function SeatViewer(props) {
   const [view, setView] = useState("");

@@ -1,9 +1,10 @@
 import React, { useEffect, useRef, useState } from "react";
-import { useCanvas, drawDesk } from "./useCanvas";
+// import { useCanvas, drawDesk } from "./useCanvas";
+import { useCanvas } from "../../../hooks/useCanvas";
 import { Form } from "react-bootstrap";
 import Button from "@mui/material/Button";
 import { useDispatch } from "react-redux";
-import { bookingsActions } from "../store/bookings";
+import { bookingsActions } from "../../../store/bookings";
 
 export default function GraphicView() {
   const [seats, canvasRef, canvasWidth, canvasHeight] = useCanvas();

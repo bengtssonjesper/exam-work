@@ -1,9 +1,9 @@
 import React, { useState, useRef } from "react";
 import { Form, Alert } from "react-bootstrap";
 import Button from "@mui/material/Button";
-import { useAuth } from "../contexts/AuthContext";
+import {useAuth} from '../../../contexts/AuthContext'
 import { useSelector } from "react-redux";
-import { createBooking } from "./HelperFunctions";
+import { createBooking } from "../../../helper/HelperFunctions";
 
 export default function ManualBooking(props) {
   const [error, setError] = useState();

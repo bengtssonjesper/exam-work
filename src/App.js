@@ -1,13 +1,13 @@
-import { AuthProvider } from "../contexts/AuthContext";
-import Signup from "./Signup";
-import Login from "./Login";
-import ForgotPassword from "./ForgotPassword";
-import PrivateRoute from "./PrivateRoute";
-import Profile from "./Profile";
-import BookingDashboard from "./BookingDashboard";
-import EditProfile from "./EditProfile";
-import NavBar from "./NavBar";
-import AdminPage from "./AdminPage";
+import { AuthProvider } from "./contexts/AuthContext";
+import Signup from "./pages/Signup/Signup";
+import Login from "./pages/Login/Login";
+import ForgotPassword from "./pages/ForgotPassword/ForgotPassword";
+import PrivateRoute from "./components/PrivateRoute/PrivateRoute";
+import Profile from "./pages/Profile/Profile";
+import BookingDashboard from "./pages/BookingDashboard/BookingDashboard";
+import EditProfile from "./pages/EditProfile/EditProfile";
+import NavBar from "./components/Navbar/NavBar";
+import AdminPage from "./pages/AdminPage/AdminPage";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 function App() {

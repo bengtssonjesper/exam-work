@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from "react";
-import "./styles.css";
+// import "./styles.css";
+import '../../styles/styles.css'
 import { ref, getDatabase } from "firebase/database";
-import { useAuth } from "../contexts/AuthContext";
+import { useAuth } from "../../contexts/AuthContext";
 import { Alert, Container, Accordion } from "react-bootstrap";
 import Button from "@mui/material/Button";
 import { useNavigate } from "react-router-dom";
 import { onValue } from "@firebase/database";
 import { useSelector, useDispatch } from "react-redux";
-import { reduxFormatData } from "./HelperFunctions";
+import { reduxFormatData } from "../../helper/HelperFunctions";
 
 export default function Profile() {
   const { currentUser } = useAuth();
