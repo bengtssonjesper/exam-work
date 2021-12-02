@@ -55,5 +55,12 @@ Bättre lösning på vilka timmar som ska visas i schedule? Klart
    Att göra nu: Sorteringen för profilebokningarna, har fixat en sorterad version av dagarna för boknigarna.
 
    2021-12-01:
-   Folder structure:
-      
+   Changed folder structure.
+
+   Strukturfunderingar:
+   Helperfunctions, kan flera ligga i samma fil eller bör dessa separeras till enskilda filer?
+   Bör vi separera komponenter till UI/logik-filer?
+
+   2021-12-02: 
+   Applicera styled-components, bli av med BS Row/Col
+   

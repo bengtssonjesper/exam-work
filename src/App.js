@@ -8,13 +8,15 @@ import BookingDashboard from "./pages/BookingDashboard/BookingDashboard";
 import EditProfile from "./pages/EditProfile/EditProfile";
 import NavBar from "./components/Navbar/NavBar";
 import AdminPage from "./pages/AdminPage/AdminPage";
+import {Background} from "./styles/styles"
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 function App() {
   return (
     <Router>
       <AuthProvider>
-        <div className="background">
+        <Background>
+        {/* <div className="background"> */}
         <NavBar />
           <Routes>
             <Route exact path="/" element={<PrivateRoute />}>
@@ -33,7 +35,8 @@ function App() {
             <Route path="/signup" element={<Signup />} />
             <Route path="/forgotpassword" element={<ForgotPassword />} />
           </Routes>
-        </div>
+        {/* </div> */}
+        </Background>
       </AuthProvider>
     </Router>
   );

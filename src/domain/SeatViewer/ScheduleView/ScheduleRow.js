@@ -2,6 +2,7 @@ import React from "react";
 import { Row, Col } from "react-bootstrap";
 import ScheduleBooking from "./ScheduleBooking";
 import { useAuth } from "../../../contexts/AuthContext";
+import { MyScheduleRow } from "./styles";
 
 export default function ScheduleRow(props) {
   const { currentUser } = useAuth();

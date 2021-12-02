@@ -8,10 +8,6 @@ import { createBooking } from "../../../helper/HelperFunctions";
 export default function ManualBooking(props) {
   const [error, setError] = useState();
   const [message, setMessage] = useState();
-  const [loading, setLoading] = useState(false);
-  const [showForm, setShowForm] = useState(false);
-  const [toggleButtonInnerHTML, setToggleButtonInnerHTML] =
-    useState("Show Booker");
   const dateRef = useRef();
   const seatRef = useRef();
   const startTimeRef = useRef();
@@ -22,17 +18,6 @@ export default function ManualBooking(props) {
   );
   const seatsByOffice = useSelector((state) => state.bookings.seatsByOffice);
 
-  function handleFormToggle() {
-    setLoading(true);
-    if (showForm) {
-      setToggleButtonInnerHTML("Show Booker");
-      setShowForm(false);
-    } else {
-      setToggleButtonInnerHTML("Hide Booker");
-      setShowForm(true);
-    }
-    setLoading(false);
-  }
 
   function handleSubmit(e) {
     e.preventDefault();
@@ -56,16 +41,7 @@ export default function ManualBooking(props) {
     <div>
       {error && <Alert variant="danger">{error}</Alert>}
       {message && <Alert variant="success">{message}</Alert>}
-      {/* <Button
-        variant="contained"
-        className="text-center mt-2 mb-2"
-        id="formToggleBtn"
-        disabled={loading}
-        onClick={handleFormToggle}
-      >
-        {toggleButtonInnerHTML}
-      </Button> */}
-      {/* {showForm && (*/}
+
         <Form onSubmit={handleSubmit}>
           <Form.Group>
             <Form.Label>Date</Form.Label>
@@ -102,7 +78,6 @@ export default function ManualBooking(props) {
             Submit
           </Button>
         </Form>
-      {/* // )} */}
     </div>
   );
 }

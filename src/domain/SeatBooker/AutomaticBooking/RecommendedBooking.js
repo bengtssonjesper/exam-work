@@ -15,12 +15,12 @@ export default function RecommendedBooking(props) {
     function handleCreateBooking(){
         const startTime=
             (props.slot.from.getHours()<10?"0"+props.slot.from.getHours():props.slot.from.getHours())+
-            ":"
-            +(props.slot.from.getMinutes()<10?"0"+props.slot.from.getMinutes():props.slot.from.getMinutes())
+            ":"+
+            (props.slot.from.getMinutes()<10?"0"+props.slot.from.getMinutes():props.slot.from.getMinutes())
         const endTime=
             (props.slot.to.getHours()<10?"0"+props.slot.to.getHours():props.slot.to.getHours())+
-            ":"
-            +(props.slot.to.getMinutes()<10?"0"+props.slot.to.getMinutes():props.slot.to.getMinutes())
+            ":"+
+            (props.slot.to.getMinutes()<10?"0"+props.slot.to.getMinutes():props.slot.to.getMinutes())
 
         props.setError("")
         props.setMessage("")

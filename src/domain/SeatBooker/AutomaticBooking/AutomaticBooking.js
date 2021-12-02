@@ -7,20 +7,18 @@ import { useAuth } from "../../../contexts/AuthContext";
 import Pagination from '@mui/material/Pagination';
 
 export default function AutomaticBooking(props) {
-  //Leta igenom och hitta lediga luckor? Filtrera bort för korta luckor
   const { currentUser } = useAuth();
   const dateRef = useRef();
   const fromRef = useRef();
   const toRef = useRef();
   const durationRef = useRef();
+  const rowsPerPage=4;
   const today = new Date();
-  const[recommendedSlots,setRecommendedSlots]=useState([]);
-  const[error,setError]=useState("")
-  const[message,setMessage]=useState("")
+  const [recommendedSlots,setRecommendedSlots]=useState([]);
+  const [error,setError]=useState("")
+  const [message,setMessage]=useState("")
   const [page, setPage] = useState(1);
-  const [rowsPerPage, setRowsPerPage] = useState(4);
-  const[slotsToView, setSlotsToView] = useState([])
-
+  const [slotsToView, setSlotsToView] = useState([])
   const bookingsByOffice = useSelector(
     (state) => state.bookings.bookingsByOffice
   );
@@ -28,27 +26,28 @@ export default function AutomaticBooking(props) {
   const seatsByOffice = useSelector((state) => state.bookings.seatsByOffice);
   const selectedOffice = useSelector((state) => state.bookings.selectedOffice);
 
-    useEffect(()=>{
-      setSlotsToView(recommendedSlots.slice((page-1)*rowsPerPage,page*rowsPerPage))
-    },[recommendedSlots])
+  useEffect(()=>{
+    setSlotsToView(recommendedSlots.slice((page-1)*rowsPerPage,page*rowsPerPage))
+  },[recommendedSlots])
 
-    useEffect(()=>{
-      handleSearch();
-    },[bookingsByOffice])
+  useEffect(()=>{
+    handleSearch();
+  },[bookingsByOffice])
 
   function handleSearch(e) {
+    //Called both from buttonclick and useEffect
     if(e){
       e.preventDefault();
     }
     var startTime = performance.now();
-    const selectedDuration =
-      parseInt(durationRef.current.value.substr(0, 2)) +
-      parseInt(durationRef.current.value.substr(3, 2)) / 60;
-
     var selectedFrom = new Date();
     var selectedTo = new Date();
     var initStartTime = new Date();
     var initEndTime = new Date();
+    
+    const selectedDuration =
+      parseInt(durationRef.current.value.substr(0, 2)) +
+      parseInt(durationRef.current.value.substr(3, 2)) / 60;
 
     selectedFrom.setFullYear(
       dateRef.current.value.substr(0, 4),
@@ -60,7 +59,6 @@ export default function AutomaticBooking(props) {
       fromRef.current.value.substr(3, 2),
       0
     );
-
     selectedTo.setFullYear(
       dateRef.current.value.substr(0, 4),
       parseInt(dateRef.current.value.substr(5, 2)) - 1,
@@ -76,8 +74,9 @@ export default function AutomaticBooking(props) {
     initEndTime.setHours(23, 59, 0);
 
     //emptySlots should contain what available spots there are,
-    //a slot is structured as follows: {startTime:hh:mm, endTime:hh:mm, duration:minutes? seat:seat office? date?}
+    //a slot is structured as follows: {startTime:hh:mm, endTime:hh:mm, duration:minutes seat:seat}
     var emptySlots = {};
+    //For every seat in the chosen office add a slot from 00:00 to 23:59
     Object.keys(seatsByOffice[selectedOffice]).map((seat, i) => {
       emptySlots[seatsByOffice[selectedOffice][seat].name] = [
         {
@@ -88,11 +87,14 @@ export default function AutomaticBooking(props) {
         },
       ];
     });
+
+    //compareArray contains all the bookings in selectedOffice and selectedDate
     var compareArray = []
     if(bookingsByDate[dateRef.current.value]){
       compareArray = bookingsByDate[dateRef.current.value].filter(
       (booking) => booking.office === selectedOffice
     )}
+
 
     compareArray.forEach((booking) => {
       var compareStartDate = new Date();
@@ -107,7 +109,7 @@ export default function AutomaticBooking(props) {
         0
       );
       emptySlots[booking.seat].forEach((slot, i) => {
-        //Letar efter den slot vi krockar med.
+        //Searching for the slot we collide with.
         if (compareStartDate >= slot.from && compareStartDate <= slot.to) {
           var compareEndDate = new Date();
           compareEndDate.setFullYear(
@@ -138,18 +140,23 @@ export default function AutomaticBooking(props) {
         }
       });
     });
+
     var viableOptions = [];
     Object.keys(emptySlots).forEach((seat, i) => {
       emptySlots[seat].forEach((slot) => {
         var compareStart = new Date();
         var compareEnd = new Date();
+        //Used so that the slot starts on slot.from or selectedFrom, whichever starts latest.
         if(slot.from>selectedFrom){
           compareStart = slot.from;
-          
         }else{
           compareStart=selectedFrom;
         }
-        compareEnd.setHours(compareStart.getHours(),compareStart.getMinutes(),compareStart.getSeconds())
+
+        compareEnd.setHours(
+          compareStart.getHours(),
+          compareStart.getMinutes(),
+          compareStart.getSeconds())
         compareEnd.setMinutes(compareStart.getMinutes()+selectedDuration*60)
         if (
           compareStart>=slot.from && compareEnd <=slot.to && compareEnd<=selectedTo
