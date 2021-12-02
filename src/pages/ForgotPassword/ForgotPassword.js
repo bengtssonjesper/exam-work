@@ -3,6 +3,7 @@ import { Form, Card, Alert, Container } from "react-bootstrap";
 import Button from "@mui/material/Button";
 import { useAuth } from "../../contexts/AuthContext";
 import { Link } from "react-router-dom";
+import {AuthContainer, AuthCard, AuthCardBody} from '../../styles/styles'
 
 export default function ForgotPassword() {
   const emailRef = useRef();
@@ -28,13 +29,10 @@ export default function ForgotPassword() {
   }
 
   return (
-    <Container
-      className="d-flex align-items-center justify-content-center"
-      style={{ minHeight: "100vh", maxWidth: "400px" }}
-    >
+    <AuthContainer>
       <div className="w-100">
-        <Card>
-          <Card.Body>
+        <AuthCard>
+          <AuthCardBody>
             <h2 className="text-center">Reset Password</h2>
             {error && <Alert variant="danger">{error}</Alert>}
             {message && <Alert variant="success">{message}</Alert>}
@@ -52,12 +50,12 @@ export default function ForgotPassword() {
                 Reset Password
               </Button>
             </Form>
-          </Card.Body>
-        </Card>
+          </AuthCardBody>
+        </AuthCard>
         <div className="w-100 text-center mt-2">
           Already have an account? <Link to="/login">Log In</Link>
         </div>
       </div>
-    </Container>
+    </AuthContainer>
   );
 }

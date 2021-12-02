@@ -4,6 +4,7 @@ import Button from "@mui/material/Button";
 // import ManualBooking from "./ManualBooking";
 import ManualBooking from './ManualBooking/ManualBooking'
 import AutomaticBooking from './AutomaticBooking/AutomaticBooking'
+import { BookerContainer } from "./styles";
 
 export default function SeatBooker(props) {
   const [booking, setBooking] = useState("manual");
@@ -18,7 +19,28 @@ export default function SeatBooker(props) {
 
   return (
     <>
-      <div className="shadow-container mt-3 p-2">
+    <BookerContainer>
+    {/* <Button
+          variant={booking === "manual" ? "outlined" : "text"}
+          onClick={handleManualBooking}
+        >
+          Manual
+        </Button>
+        <Button
+          variant={booking === "automatic" ? "outlined" : "text"}
+          onClick={handleAutomaticBooking}
+        >
+          Automatic
+        </Button> */}
+        {props.booker === "manual" && (
+          <ManualBooking
+            thisWeeksDatesStrings={props.thisWeeksDatesStrings}
+            selectedOffice={props.selectedOffice}
+          />
+        )}
+        {props.booker === "automatic" && <AutomaticBooking today={today} thisWeeksDatesStrings={props.thisWeeksDatesStrings} />}
+    </BookerContainer>
+      {/* <div className="shadow-container mt-3 p-2">
         <h1 className="text-center">Seat Booker</h1>
         <Button
           variant={booking === "manual" ? "outlined" : "text"}
@@ -39,7 +61,7 @@ export default function SeatBooker(props) {
           />
         )}
         {booking === "automatic" && <AutomaticBooking today={today} thisWeeksDatesStrings={props.thisWeeksDatesStrings} />}
-      </div>
+      </div> */}
     </>
   );
 }

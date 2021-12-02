@@ -8,6 +8,7 @@ import { Form, Row, Col, Container } from "react-bootstrap";
 import Button from "@mui/material/Button";
 import { useSelector, useDispatch } from "react-redux";
 import { bookingsActions } from "../../store/bookings";
+import { ViewerContainer } from "./styles";
 
 export default function SeatViewer(props) {
   const [view, setView] = useState("");
@@ -54,9 +55,6 @@ export default function SeatViewer(props) {
     handleDateChange();
   }, [props.selectedOffice, allBookings]);
 
-  // useEffect(() => {
-  //   handleDateChange();
-  // }, [allBookings, props.selectedOffice]);
 
   function handleDateChange() {
     //Denna funktion ska returnera en array av alla bokningar på det valda officet och datumet
@@ -119,13 +117,13 @@ export default function SeatViewer(props) {
   }
 
   return (
-    <div className="shadow-container">
-      <h1 className="text-center">Seat Viewer</h1>
+    <ViewerContainer>
+      {props.viewer==='text' && <h3>Text viewer</h3>}
+      {props.viewer==='schedule' && <h3>Schedule viewer</h3>}
       <Row className="mt-2 mb-4">
         <Col sm lg="3" className="d-flex align-items-end md-6">
           <Form>
             <Form.Group className="mt-1 mb-1">
-              {/* <Form.Label>Date</Form.Label> */}
               <Form.Select
                 aria-label="Default select example"
                 ref={dateRef}
@@ -142,28 +140,13 @@ export default function SeatViewer(props) {
                   })}
               </Form.Select>
             </Form.Group>
-            {dateRef && dateRef.current.value !== "Select a date" && (
-              <Form.Group className="mt-1 mb-1">
-                {/* <Form.Label>Select view</Form.Label> */}
-                <Form.Select
-                  aria-label="Default select example"
-                  ref={viewRef}
-                  onChange={handleViewChange}
-                >
-                  <option>Select a view</option>
-                  {views.map((view, i) => {
-                    return <option key={i}>{view}</option>;
-                  })}
-                </Form.Select>
-              </Form.Group>
-            )}
           </Form>
         </Col>
-
       </Row>
+
       <Row>
         <Col xs md="3" className="mt-3 mb-3">
-          {view === "Schedule" && (
+          {props.viewer === "schedule" && (
             <Button
               variant="contained"
               disabled={loading}
@@ -172,7 +155,7 @@ export default function SeatViewer(props) {
               Change View Times
             </Button>
           )}
-          {view === "Schedule" && showTimeChange && (
+          {props.viewer === "schedule" && showTimeChange && (
             <Form onSubmit={handleTimeChange}>
               <Form.Group>
                 <Form.Label>View Hours:</Form.Label>
@@ -205,10 +188,10 @@ export default function SeatViewer(props) {
 
       {view === "Graphic" && <GraphicView />}
 
-      {view === "Text" && dateRef.current.value !== "Select a date" && (
+      {props.viewer === "text" && dateRef.current.value !== "Select a date" && (
         <SeatRowHeadings />
       )}
-      {view === "Text" && (
+      {props.viewer === "text" && (
         <div>
           {dateRef.current.value !== "Select a date" &&
             daySortedData &&
@@ -226,7 +209,7 @@ export default function SeatViewer(props) {
         </div>
       )}
 
-      {view === "Schedule" && (
+      {props.viewer === "schedule" && (
         <div style={{ margin: "5px" }}>
           {dateRef && dateRef.current.value !== "Select a date" && (
             <ScheduleHeadings workHoursArray={workHoursArray} />
@@ -252,7 +235,7 @@ export default function SeatViewer(props) {
             })}
         </div>
       )}
-      {(view === "Text" || view === "Schedule") &&
+      {(props.viewer === "text" || props.viewer === "schedule") &&
         dateRef &&
         dateRef.current.value !== "Select a date" && (
           <Container>
@@ -264,6 +247,6 @@ export default function SeatViewer(props) {
             </div>
           </Container>
         )}
-    </div>
+    </ViewerContainer>
   );
 }

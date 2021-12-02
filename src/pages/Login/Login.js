@@ -1,9 +1,9 @@
 import { useRef, useState } from "react";
 import { Card, Form, Alert, Container } from "react-bootstrap";
 import Button from "@mui/material/Button";
-// import { useAuth } from "../contexts/AuthContext";
 import {useAuth } from '../../contexts/AuthContext'
 import { Link, useNavigate } from "react-router-dom";
+import {AuthContainer, AuthCard, AuthCardBody} from '../../styles/styles'
 
 export default function Login() {
   const emailRef = useRef();
@@ -28,13 +28,10 @@ export default function Login() {
   }
 
   return (
-    <Container
-      className="d-flex align-items-center justify-content-center"
-      style={{ minHeight: "100vh", maxWidth: "400px" }}
-    >
+    <AuthContainer>
       <div className="w-100">
-        <Card>
-          <Card.Body>
+        <AuthCard>
+          <AuthCardBody>
             <h2 className="text-center">Log In</h2>
             {error && <Alert variant="danger">{error}</Alert>}
             <Form onSubmit={handleSubmit}>
@@ -55,8 +52,8 @@ export default function Login() {
                 Log In
               </Button>
             </Form>
-          </Card.Body>
-        </Card>
+          </AuthCardBody>
+        </AuthCard>
         <div className="w-100 text-center mt-2">
           Need an account? <Link to="/signup">Sign Up</Link>
         </div>
@@ -64,6 +61,6 @@ export default function Login() {
           Forgot password? <Link to="/forgotpassword">Reset Password</Link>
         </div>
       </div>
-    </Container>
+    </AuthContainer>
   );
 }

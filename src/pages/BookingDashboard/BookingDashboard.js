@@ -9,6 +9,11 @@ import { ref, getDatabase, onValue } from "firebase/database";
 import { bookingsActions } from "../../store/bookings";
 import { reduxFormatData } from "../../helper/HelperFunctions";
 import { useAuth } from "../../contexts/AuthContext";
+import { DashboardHeader,DashboardHeaderRow ,DashboardHeaderItem, DashboardBody,ViewerBookerContainer,ChangeOfficePicker } from "./styles";
+import Tabs from '@mui/material/Tabs';
+import Tab from '@mui/material/Tab';
+import Divider from '@mui/material/Divider'
+import { theme } from "../../styles/theme";
 
 export default function BookingDashboard() {
   const { currentUser } = useAuth();
@@ -17,9 +22,12 @@ export default function BookingDashboard() {
   const [showViewerAndBooker, setShowViewerAndBooker] = useState(false);
   const [thisWeeksDates, setThisWeeksDates] = useState([]);
   const [thisWeeksDatesStrings, setThisWeeksDatesStrings] = useState([]);
+  const [whatViewer, setWhatViewer] = useState("schedule");
+  const [whatBooker, setWhatBooker] = useState("manual");
   const offices = useSelector((state) => state.bookings.offices);
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  
 
   useEffect(() => {
     getThisWeeksDates();
@@ -80,17 +88,79 @@ export default function BookingDashboard() {
     }
   }
 
-  function navigateToProfile() {
-    navigate("/");
-  }
+  const handleChangeViewer = (event, newValue) => {
+    setWhatViewer(newValue)
+  };
+  const handleChangeBooker = (event, newValue) => {
+    setWhatBooker(newValue);
+  };
+
 
   return (
     <>
-    
-      <Container className=" shadow-container min-height-full">
+    <DashboardHeader>
+      <DashboardHeaderItem>
+      {/* <h1>Some header</h1> */}
+      </DashboardHeaderItem>
+      <DashboardHeaderRow>
+        <DashboardHeaderItem>
+          <h3>
+          Viewing option
+          </h3>
+          <Divider/>
+          <Tabs value={whatViewer} onChange={handleChangeViewer} aria-label="primary tabs example">
+            <Tab value="text" label="Text" sx={{color:`${theme.palette.secondary.main}`}}/>
+            <Tab value="schedule" label="Schedule" sx={{color:`${theme.palette.secondary.main}`}}/>
+          </Tabs>
+        </DashboardHeaderItem> 
+        <Divider orientation="vertical" variant="middle" />
+        <DashboardHeaderItem>
+          <h3>
+          Booking option
+          </h3>
+          <Divider/>
+          <Tabs value={whatBooker} onChange={handleChangeBooker} aria-label="icon label tabs example" >
+            <Tab value="manual" label="Manual" sx={{color:`${theme.palette.secondary.main}`}}	 />
+            <Tab value="automatic" label="Automatic" sx={{color:`${theme.palette.secondary.main}`}}/>
+          </Tabs>
+        </DashboardHeaderItem>
+      </DashboardHeaderRow>
+    </DashboardHeader>
+    <DashboardBody>
+      <div style={ChangeOfficePicker}>
+        <Form className="mt-2" >
+          <Form.Select
+            aria-label="Default select example"
+            onChange={handleOnChange}
+            ref={selectedOfficeRef}
+          >
+            <option>Select an office</option>
+            {offices &&
+              offices.map((office, i) => {
+                return <option key={i}>{office}</option>;
+              })}
+          </Form.Select>
+        </Form>
+      </div>
+      {showViewerAndBooker && 
+      <ViewerBookerContainer>
+        <SeatViewer
+        selectedOffice={selectedOffice}
+        thisWeeksDates={thisWeeksDates}
+        thisWeeksDatesStrings={thisWeeksDatesStrings}
+        viewer={whatViewer}/>
+        <div className="vr"/>
+        <SeatBooker
+        selectedOffice={selectedOffice}
+        thisWeeksDates={thisWeeksDates}
+        thisWeeksDatesStrings={thisWeeksDatesStrings}
+        booker={whatBooker}/>
+      </ViewerBookerContainer>
+      }
+    </DashboardBody>
+      {/* <Container className=" shadow-container min-height-full">
         <div>
           <Form className="mt-2">
-            {/* <Form.Label>Office</Form.Label> */}
             <Form.Select
               aria-label="Default select example"
               onChange={handleOnChange}
@@ -122,11 +192,7 @@ export default function BookingDashboard() {
             </div>
           </div>
         )}
-        {/* <Button className="mt-2 place-bottom" onClick={navigateToProfile}>
-          Profile
-        </Button> */}
-        {/* <Button onClick={testAdd}>Add to db</Button> */}
-      </Container>
+      </Container> */}
     </>
   );
 }

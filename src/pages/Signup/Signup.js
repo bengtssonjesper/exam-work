@@ -1,9 +1,9 @@
 import React, { useRef, useState } from "react";
 import { Card, Form, Container, Alert } from "react-bootstrap";
 import Button from "@mui/material/Button";
-// import { useAuth } from "../contexts/AuthContext";
 import { useAuth } from "../../contexts/AuthContext";
 import { Link, useNavigate } from "react-router-dom";
+import {AuthContainer, AuthCard, AuthCardBody} from '../../styles/styles'
 
 export default function Signup() {
   const emailRef = useRef();
@@ -35,13 +35,10 @@ export default function Signup() {
   }
 
   return (
-    <Container
-      className="d-flex align-items-center justify-content-center"
-      style={{ minHeight: "100vh", maxWidth: "400px" }}
-    >
+    <AuthContainer>
       <div className="w-100">
-        <Card>
-          <Card.Body>
+        <AuthCard>
+          <AuthCardBody>
             <h2 className="text-center">Sign Up</h2>
             {error && <Alert variant="danger">{error}</Alert>}
             <Form onSubmit={handleSubmit}>
@@ -70,12 +67,12 @@ export default function Signup() {
                 Sign Up
               </Button>
             </Form>
-          </Card.Body>
-        </Card>
+          </AuthCardBody>
+        </AuthCard>
         <div className="w-100 text-center mt-2">
           Already have an account? <Link to="/login">Log In</Link>
         </div>
       </div>
-    </Container>
+    </AuthContainer>
   );
 }

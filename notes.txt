@@ -63,4 +63,10 @@ Bättre lösning på vilka timmar som ska visas i schedule? Klart
 
    2021-12-02: 
    Applicera styled-components, bli av med BS Row/Col
-   
+   Fixa dark/light-mode? Skulle kunna sätta ett objekt med colors som man sedan tar primary/secondary från.
+
+   Om jag vill overrida styles på en accordion hämtad från t.ex. bootstrap, hur gör jag? Vill ej göra inline? Går det med styled-components?
+   Mobile 640 och under, Desktop 1024
+   Ändra färg på inactive tabs i profile och seatDashboard, klart, går att overrida med sx-prop
+
+   - Måste fixa så att samma användare endast kan ha en bokning samtidigt.

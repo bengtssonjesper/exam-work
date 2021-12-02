@@ -182,6 +182,7 @@ export default function AutomaticBooking(props) {
 
   return (
     <div>
+      <h3>Automatic booking</h3>
       <Form onSubmit={handleSearch}>
         {today && (
           <Form.Group>

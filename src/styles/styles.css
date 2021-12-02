@@ -65,3 +65,7 @@ body {
 .overflow-hidden {
   overflow: hidden;
 }
+
+.rgbaTest{
+  background-color: rgba(80, 80, 80, 0.521);
+}

@@ -10,13 +10,16 @@ import NavBar from "./components/Navbar/NavBar";
 import AdminPage from "./pages/AdminPage/AdminPage";
 import {Background} from "./styles/styles"
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import {theme} from './styles/theme'
+import { ThemeProvider } from '@mui/material/styles';
 
 function App() {
   return (
     <Router>
       <AuthProvider>
-        <Background>
+        {/* <Background> */}
         {/* <div className="background"> */}
+        <ThemeProvider theme={theme}>
         <NavBar />
           <Routes>
             <Route exact path="/" element={<PrivateRoute />}>
@@ -35,8 +38,10 @@ function App() {
             <Route path="/signup" element={<Signup />} />
             <Route path="/forgotpassword" element={<ForgotPassword />} />
           </Routes>
+        </ThemeProvider>
         {/* </div> */}
-        </Background>
+        {/* </Background> */}
+        
       </AuthProvider>
     </Router>
   );

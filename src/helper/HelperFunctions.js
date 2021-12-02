@@ -24,6 +24,7 @@ export function createBooking(
     } else if (!thisWeeksDates.includes(date)) {
       throw "You can only book one week ahead";
     } else if (isBookingAllowed(startTime, endTime, compareArray)) {
+
       const db = getDatabase();
       const uid = uuidv4();
       try {

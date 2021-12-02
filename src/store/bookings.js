@@ -10,6 +10,7 @@ const initialBookingState = {
   graphicViewTimeRefs: {},
   selectedOffice: null,
   viewDate: null,
+  darkMode: false,
 };
 
 const bookingsSlice = createSlice({
@@ -42,6 +43,9 @@ const bookingsSlice = createSlice({
     },
     setViewDate(state, action) {
       state.viewDate = action.payload;
+    },
+    setDarkMode(state, action) {
+      state.darkMode = action.payload;
     },
   },
 });
