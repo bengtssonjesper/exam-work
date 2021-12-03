@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import {MainContainer} from '../../styles/styles'
 import '../../styles/styles.css'
-import { ref, getDatabase } from "firebase/database";
+import {set, ref, getDatabase } from "firebase/database";
 import { useAuth } from "../../contexts/AuthContext";
 import { Alert, Container, Accordion } from "react-bootstrap";
 import Button from "@mui/material/Button";
@@ -22,6 +22,7 @@ import Tab from '@mui/material/Tab';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import MenuBookIcon from '@mui/icons-material/MenuBook';
 import { theme } from "../../styles/theme";
+import { v4 as uuidv4 } from "uuid";
 
 export default function Profile() {
   const { currentUser } = useAuth();
@@ -70,6 +71,24 @@ export default function Profile() {
   const handleChangeView = (event, newValue) => {
     setWhatView(newValue);
   };
+
+  // function addBooking(){
+  //   var bookingId=uuidv4();
+  //   const db = getDatabase();
+  //   set(
+  //     ref(
+  //       db,
+  //       "bookings/"+currentUser._delegate.uid+"/"+bookingId),{
+  //         bookingId:bookingId,
+  //         startTime:"11:00",
+  //         endTime:"12:00",
+  //         office:"Behrn Tower",
+  //         seat:"seat5",
+  //         date:"2021-12-08",
+  //         user:currentUser._delegate.uid
+  //       })
+  //       }
+      
 
 
   return (
@@ -137,6 +156,7 @@ export default function Profile() {
               </Accordion.Item>
             </Accordion>
           </ProfileBookings>}
+          {/* <Button onClick={addBooking}>Add Booking</Button> */}
       </ProfileBody>
     </>
   );

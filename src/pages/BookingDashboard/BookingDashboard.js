@@ -7,7 +7,8 @@ import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { ref, getDatabase, onValue } from "firebase/database";
 import { bookingsActions } from "../../store/bookings";
-import { reduxFormatData } from "../../helper/HelperFunctions";
+// import { reduxFormatData } from "../../helper/HelperFunctions";
+import { reduxFormatOffices,reduxFormatBookings } from "../../helper/HelperFunctions";
 import { useAuth } from "../../contexts/AuthContext";
 import { DashboardHeader,DashboardHeaderRow ,DashboardHeaderItem, DashboardBody,ViewerBookerContainer,ChangeOfficePicker } from "./styles";
 import Tabs from '@mui/material/Tabs';
@@ -35,13 +36,24 @@ export default function BookingDashboard() {
 
   useEffect(() => {
     const db = getDatabase();
-    const reduxAllOfficesRef = ref(db, "Offices");
-    if (offices.length === 0) {
-      onValue(reduxAllOfficesRef, (snapshot) => {
+    const reduxBookingsRef = ref(db, "bookings");
+    // if (offices.length === 0) {
+      onValue(reduxBookingsRef, (snapshot) => {
         const data = snapshot.val();
-        reduxFormatData(data, currentUser, dispatch);
+        reduxFormatBookings(data, currentUser, dispatch);
+      })
+    // }
+  }, []);
+
+  useEffect(() => {
+    const db = getDatabase();
+    const reduxOfficesRef = ref(db, "offices");
+    // if (offices.length === 0) {
+      onValue(reduxOfficesRef, (snapshot) => {
+        const data = snapshot.val();
+        reduxFormatOffices(data, dispatch);
       });
-    }
+    // }
   }, []);
 
   function getThisWeeksDates() {

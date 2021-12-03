@@ -54,7 +54,7 @@ export default function ManualBooking(props) {
               <option>Select a seat</option>
               {seatsByOffice &&
                 seatsByOffice[props.selectedOffice].map((seat, i) => {
-                  return <option key={i}>{seat.name}</option>;
+                  return <option key={i}>{seat}</option>;
                 })}
             </Form.Control>
           </Form.Group>

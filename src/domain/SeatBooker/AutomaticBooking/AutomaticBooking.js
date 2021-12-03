@@ -78,12 +78,12 @@ export default function AutomaticBooking(props) {
     var emptySlots = {};
     //For every seat in the chosen office add a slot from 00:00 to 23:59
     Object.keys(seatsByOffice[selectedOffice]).map((seat, i) => {
-      emptySlots[seatsByOffice[selectedOffice][seat].name] = [
+      emptySlots[seatsByOffice[selectedOffice][seat]] = [
         {
           from: initStartTime,
           to: initEndTime,
           duration: (initEndTime - initStartTime) / (60 * 60 * 1000),
-          seat:seatsByOffice[selectedOffice][seat].name
+          seat:seatsByOffice[selectedOffice][seat]
         },
       ];
     });

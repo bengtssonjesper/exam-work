@@ -31,9 +31,7 @@ export function createBooking(
         set(
           ref(
             db,
-            "Offices/" +
-              selectedOffice +
-              "/bookings/" +
+              "bookings/" +
               currentUser._delegate.uid +
               "/" +
               uid
@@ -72,9 +70,7 @@ export function updateBooking(
   setError("");
   setMessage("");
   const refStr =
-    "Offices/" +
-    booking["office"] +
-    "/bookings/" +
+  "bookings/" +
     booking["user"] +
     "/" +
     booking["bookingId"];
@@ -164,50 +160,52 @@ export function reduxFormatData(data, currentUser, dispatch) {
   var currentUsersBookingsDays = [];
 
   console.log("Redux format: ", data);
-  for (const [officeName, officeObject] of Object.entries(data)) {
-    offices.push(officeName);
-    if ("seats" in officeObject) {
-      seatsByOffice[officeName] = officeObject["seats"];
-    }
-    if ("bookings" in officeObject) {
-      for (const [bookerId, bookingsObject] of Object.entries(
-        officeObject.bookings
-      )) {
-        for (const [bookingId, booking] of Object.entries(bookingsObject)) {
-          allBookingsArr.push(booking);
-          if (booking.date in bookingsByDateObj) {
-            bookingsByDateObj[booking.date].push(booking);
-          } else {
-            bookingsByDateObj[booking.date] = [booking];
-          }
 
-          if (booking.user === currentUser._delegate.uid) {
-            var cmpDate = new Date();
-            const year = booking.date.substr(0, 4);
-            const month = booking.date.substr(5, 2);
-            const date = booking.date.substr(8, 2);
 
-            cmpDate.setFullYear(year, month - 1, date);
-            cmpDate.setHours(23, 59, 59);
+  // for (const [officeName, officeObject] of Object.entries(data)) {
+  //   offices.push(officeName);
+  //   if ("seats" in officeObject) {
+  //     seatsByOffice[officeName] = officeObject["seats"];
+  //   }
+  //   if ("bookings" in officeObject) {
+  //     for (const [bookerId, bookingsObject] of Object.entries(
+  //       officeObject.bookings
+  //     )) {
+  //       for (const [bookingId, booking] of Object.entries(bookingsObject)) {
+  //         allBookingsArr.push(booking);
+  //         if (booking.date in bookingsByDateObj) {
+  //           bookingsByDateObj[booking.date].push(booking);
+  //         } else {
+  //           bookingsByDateObj[booking.date] = [booking];
+  //         }
 
-            if (cmpDate >= today) {
-              if (booking.date in currentUsersBookingsByDateObj) {
-                currentUsersBookingsByDateObj[booking.date].push(booking);
-              } else {
-                currentUsersBookingsByDateObj[booking.date] = [booking];
-              }
-            }
-          }
+  //         if (booking.user === currentUser._delegate.uid) {
+  //           var cmpDate = new Date();
+  //           const year = booking.date.substr(0, 4);
+  //           const month = booking.date.substr(5, 2);
+  //           const date = booking.date.substr(8, 2);
 
-          if (booking.office in bookingsByOfficeObj) {
-            bookingsByOfficeObj[booking.office].push(booking);
-          } else {
-            bookingsByOfficeObj[booking.office] = [booking];
-          }
-        }
-      }
-    }
-  }
+  //           cmpDate.setFullYear(year, month - 1, date);
+  //           cmpDate.setHours(23, 59, 59);
+
+  //           if (cmpDate >= today) {
+  //             if (booking.date in currentUsersBookingsByDateObj) {
+  //               currentUsersBookingsByDateObj[booking.date].push(booking);
+  //             } else {
+  //               currentUsersBookingsByDateObj[booking.date] = [booking];
+  //             }
+  //           }
+  //         }
+
+  //         if (booking.office in bookingsByOfficeObj) {
+  //           bookingsByOfficeObj[booking.office].push(booking);
+  //         } else {
+  //           bookingsByOfficeObj[booking.office] = [booking];
+  //         }
+  //       }
+  //     }
+  //   }
+  // }
   dispatch(bookingsActions.setAllBookings(allBookingsArr));
   dispatch(bookingsActions.setSeatsByOffice(seatsByOffice));
   dispatch(
@@ -216,6 +214,12 @@ export function reduxFormatData(data, currentUser, dispatch) {
   dispatch(bookingsActions.setBookingsByDate(bookingsByDateObj));
   dispatch(bookingsActions.setBookingsByOffice(bookingsByOfficeObj));
   dispatch(bookingsActions.setOffices(offices));
+  console.log("redux allBookings: ", allBookingsArr)
+  console.log("redux seatsByOffice: ", seatsByOffice)
+  console.log("redux currentusersbooking: ", currentUsersBookingsByDateObj)
+  console.log("redux bookingsbydate: ", bookingsByDateObj)
+  console.log("redux bookingsbyoffice: ", bookingsByOfficeObj)
+  console.log("redux offices: ", offices)
   // Object.keys(currentUsersBookingsByDateObj).forEach((day) =>
   //   currentUsersBookingsDays.push(day)
   // );
@@ -232,4 +236,63 @@ export function reduxFormatData(data, currentUser, dispatch) {
   //     return 0;
   //   }
   // });
+}
+
+export function reduxFormatBookings(data,currentUser,dispatch){
+  console.log("reduxbookings: ", data)
+  var allBookingsArr = [];
+  var currentUsersBookingsByDateObj = {};
+  var bookingsByDateObj = {};
+  var bookingsByOfficeObj = {};
+  var currentUsersBookingsDays = [];
+  //Go through the bookings, add them to respective array
+
+  Object.keys(data).forEach((uid,i)=>{
+    console.log("uid: ", uid)
+    console.log("i: ", i)
+    Object.keys(data[uid]).forEach((bookingId,j)=>{
+      const booking = data[uid][bookingId]
+      allBookingsArr.push(booking)
+      if(booking.user===currentUser._delegate.uid){
+        if(booking.date in currentUsersBookingsByDateObj){
+          currentUsersBookingsByDateObj[booking.date].push(booking)
+        }else{
+          currentUsersBookingsByDateObj[booking.date]=[booking]
+        }
+
+        if(!(currentUsersBookingsDays.includes(booking.date))){
+          currentUsersBookingsDays.push(booking.date)
+        }
+      }
+      if(booking.date in bookingsByDateObj){
+        bookingsByDateObj[booking.date].push(booking)
+      }else{
+        bookingsByDateObj[booking.date]=[booking]
+      }
+      if(booking.office in bookingsByOfficeObj){
+        bookingsByOfficeObj[booking.office].push(booking)
+      }else{
+        bookingsByOfficeObj[booking.office]=[booking]
+      }
+
+
+    })
+  })
+  dispatch(bookingsActions.setAllBookings(allBookingsArr));
+  dispatch(
+    bookingsActions.setCurrentUsersBookings(currentUsersBookingsByDateObj)
+  );
+  dispatch(bookingsActions.setBookingsByDate(bookingsByDateObj));
+  dispatch(bookingsActions.setBookingsByOffice(bookingsByOfficeObj));
+}
+
+export function reduxFormatOffices(data,dispatch){
+  var offices=[]
+  var seatsByOffice={}
+  Object.keys(data).forEach(element=>{
+    seatsByOffice[element]=data[element].seats
+    offices.push(element)
+  })
+  dispatch(bookingsActions.setOffices(offices));
+  dispatch(bookingsActions.setSeatsByOffice(seatsByOffice));
 }

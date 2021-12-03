@@ -69,4 +69,26 @@ Bättre lösning på vilka timmar som ska visas i schedule? Klart
    Mobile 640 och under, Desktop 1024
    Ändra färg på inactive tabs i profile och seatDashboard, klart, går att overrida med sx-prop
 
-   - Måste fixa så att samma användare endast kan ha en bokning samtidigt.
+   - Måste(?) fixa så att samma användare endast kan ha en bokning samtidigt.
+
+   Kolla på om vi kan bör använda REST istället, verkar smidigt med de filtreringar som finns
+
+2021-12-03:
+   Admin ska göra konton, i framtiden implementera Admin
+   För att göra adminkonto: Gör ett konto, lägg manuellt in uid't i "Admins" i firebase. Lås sedan skrivar och läsarrättigheter till den pathen.
+   
+   Rules:
+   Stötte på problem när jag vill sätta adminbegränsning på vem som får "write" i Offices. Detta går då ner till alla childs vilket innebär att endast admins kan "write" i t.ex. bookings. Måste strukturera om appen.
+   Strukturen ser ut som följer:
+   offices:
+      office1:
+         bookings:
+            useruid:
+               bookinguid1:
+               bookinguid2:
+         seats:
+            seat1...
+   users: 
+      useruid1:
+      useruid2:
+   admins:

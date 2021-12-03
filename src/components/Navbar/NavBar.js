@@ -9,7 +9,7 @@ import Brightness6Icon from '@mui/icons-material/Brightness6';
 
 export default function NavBar() {
   const navigate = useNavigate();
-  const { currentUser, logout } = useAuth();
+  const { currentUser, logout, isAdmin } = useAuth();
   const [darkMode, setDarkMode] = useState(false);
 
   function navigateToBookingDashboard() {
@@ -46,14 +46,6 @@ export default function NavBar() {
   }
 
   return (
-    // <Navbar>
-    //   <div>
-    //     test1
-    //   </div>
-    //   <div>
-    //     test2
-    //   </div>
-    // </Navbar>
     <Navbar collapseOnSelect expand="md" bg="dark" variant="dark">
       <Container>
         <Navbar.Brand>Booking System</Navbar.Brand>
@@ -68,13 +60,14 @@ export default function NavBar() {
                 Book Seat
               </Nav.Link>
             )}
-            {currentUser && (
+            {currentUser && isAdmin &&  (
               <Nav.Link onClick={navigateToAdmin}>Admin page</Nav.Link>
             )}
             
+            
           </Nav>
 
-          <Nav  style={{display:'flex', alignItems:'center'}}>
+          <Nav style={{display:'flex', alignItems:'center'}}>
           <FormGroup  > 
             <FormControl  onChange={handleDarkMode} control={<Switch defaultChecked />} label="DarkMode" />
 

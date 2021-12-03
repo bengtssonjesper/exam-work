@@ -199,9 +199,9 @@ export default function SeatViewer(props) {
               return (
                 <SeatRow
                   key={i}
-                  seat={seat.name}
+                  seat={seat}
                   bookings={daySortedData
-                    .filter((booking) => booking.seat === seat.name)
+                    .filter((booking) => booking.seat === seat)
                     .sort(sortBookings)}
                 />
               );
@@ -225,9 +225,9 @@ export default function SeatViewer(props) {
                     key={i}
                     start={scheduleStartTime}
                     end={scheduleEndTime}
-                    seat={seat.name}
+                    seat={seat}
                     bookings={daySortedData
-                      .filter((booking) => booking.seat === seat.name)
+                      .filter((booking) => booking.seat === seat)
                       .sort(sortBookings)}
                   />
                 </div>

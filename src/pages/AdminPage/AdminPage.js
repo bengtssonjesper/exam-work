@@ -1,10 +1,22 @@
-import React, { useState, useEffect } from "react";
-import { Row } from "react-bootstrap";
+import React, { useState, useEffect, useRef } from "react";
+import { Form, Row, Alert } from "react-bootstrap";
 import Button from "@mui/material/Button";
 import { ref, set, getDatabase, onValue } from "firebase/database";
+import { theme } from "../../styles/theme";
+import Tabs from '@mui/material/Tabs';
+import Tab from '@mui/material/Tab';
+import {AdminHeader, AdminBody} from './styles'
+import { useAuth} from '../../contexts/AuthContext'
+
 
 export default function AdminPage() {
+  const {currentUser} = useAuth();
+  const [message, setMessage] = useState("")
+  const [error, setError] = useState("")
   const [dbData, setDbData] = useState([]);
+  const [whatView, setWhatView] = useState("addOffice");
+  const adminUidRef = useRef();
+
 
   useEffect(() => {
     //Förmdoligen bättre att köra detta när man klickar med clean database
@@ -58,15 +70,77 @@ export default function AdminPage() {
     }
   }
 
+  function handleAddAdmin(e){
+    e.preventDefault()
+    console.log("hit")
+    setMessage("")
+    setError("")
+    const db = getDatabase();
+      set(
+        ref(
+          db, 
+          "Admins/"+adminUidRef.current.value),{
+            uid:adminUidRef.current.value
+          }).then(()=>{
+            setMessage("Admin added");
+          })
+          .catch((error)=>{
+            setError(error['code'])
+          });
+  }
+
+  const handleChangeView = (event, newValue) => {
+    setWhatView(newValue);
+  };
+
+
+
+  // function addOffices(){
+  //   setMessage("")
+  //   setError("")
+  //   const db = getDatabase();
+  //   set(
+  //     ref(
+  //       db,
+  //       "offices/Fabriksgatan"),{
+  //         seats:["seat1","seat2","seat3","seat4","seat5","seat6","seat7","seat8","seat9","seat10","seat11","seat12","seat13","seat14","seat15","seat16", ]
+  //       }
+        
+  //     )}
+    
+
   return (
-    <div className="shadow-container">
-      <Row>
-        <h3>Admin functions</h3>
-      </Row>
-      {/* FIX ADMIN PERMISSION FOR THIS FUNCTIONALITY */}
-      <Button variant="contained" onClick={handleDatabaseClean}>
-        Clean database
-      </Button>
-    </div>
+  <>
+
+    <AdminHeader>
+    <h1>PROFILE</h1>
+    <Tabs value={whatView} onChange={handleChangeView} aria-label="icon label tabs example"  >
+      <Tab value="addOffice" label="ADD OFFICE" sx={{color:`${theme.palette.secondary.main}`}} />
+      <Tab value="addAdmin" label="ADD ADMIN" sx={{color:`${theme.palette.secondary.main}`}} />
+    </Tabs>
+  </AdminHeader>
+
+  <AdminBody>
+    {message && <Alert variant="success">{message}</Alert>}
+      {error && <Alert variant="danger">{error}</Alert>}
+    {whatView==='addOffice'&&
+      <p>Add Office</p>
+      //Lista alla offices och seats, fixa input fields så man kan lägga till offices och seats.
+    }
+    {whatView==='addAdmin'&&
+        <Form onSubmit={handleAddAdmin}>
+          <Form.Group>
+            <Form.Label>Admin UID</Form.Label>
+            <Form.Control type="text" ref={adminUidRef}/>
+          </Form.Group>
+          <Button type="submit">Add admin</Button>
+        </Form>
+    }
+
+    {/* <Button onClick={addOffices}>Add Offices</Button> */}
+    
+  </AdminBody>
+
+</>
   );
 }
