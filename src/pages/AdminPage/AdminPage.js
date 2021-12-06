@@ -3,28 +3,62 @@ import { Form, Row, Alert } from "react-bootstrap";
 import Button from "@mui/material/Button";
 import { ref, set, getDatabase, onValue } from "firebase/database";
 import { theme } from "../../styles/theme";
-import Tabs from '@mui/material/Tabs';
-import Tab from '@mui/material/Tab';
-import {AdminHeader, AdminBody} from './styles'
-import { useAuth} from '../../contexts/AuthContext'
+import Tabs from "@mui/material/Tabs";
+import Tab from "@mui/material/Tab";
+import { AdminHeader, AdminBody } from "./styles";
+import { useAuth } from "../../contexts/AuthContext";
 import { useSelector, useDispatch } from "react-redux";
-
+import HandleBookings from "../../domain/AdminViews/HandleBookings/HandleBookings";
+import HandleSeats from "../../domain/AdminViews/HandleSeats/HandleSeats";
+import HandleOffices from "../../domain/AdminViews/HandleOffices/HandleOffices";
+import HandleUsers from "../../domain/AdminViews/HandleUsers/HandleUsers";
+import {
+  reduxFormatBookings,
+  reduxFormatOffices,
+} from "../../helper/HelperFunctions";
 
 export default function AdminPage() {
-  const {currentUser} = useAuth();
-  const [message, setMessage] = useState("")
-  const [error, setError] = useState("")
+  const dispatch = useDispatch();
+  const { currentUser } = useAuth();
+  const [message, setMessage] = useState("");
+  const [error, setError] = useState("");
   const [dbData, setDbData] = useState([]);
-  const [whatView, setWhatView] = useState("addOffice");
+  const [whatView, setWhatView] = useState("handleOffices");
   const adminUidRef = useRef();
   const newOfficeRef = useRef();
   const offices = useSelector((state) => state.bookings.offices);
-
+  const allBookings = useSelector((state) => state.bookings.allBookings);
+  const bookingsByOffice = useSelector(
+    (state) => state.bookings.bookingsByOffice
+  );
+  const seatsByOffice = useSelector((state) => state.bookings.seatsByOffice);
 
   useEffect(() => {
     //Förmdoligen bättre att köra detta när man klickar med clean database
     //Får dock problem med asynd/await
     getDbData();
+  }, []);
+
+  useEffect(() => {
+    const db = getDatabase();
+    const reduxBookingsRef = ref(db, "bookings");
+    if (allBookings.length === 0) {
+      onValue(reduxBookingsRef, (snapshot) => {
+        const data = snapshot.val();
+        reduxFormatBookings(data, currentUser, dispatch);
+      });
+    }
+  }, []);
+
+  useEffect(() => {
+    const db = getDatabase();
+    const reduxOfficesRef = ref(db, "offices");
+    if (offices.length === 0) {
+      onValue(reduxOfficesRef, (snapshot) => {
+        const data = snapshot.val();
+        reduxFormatOffices(data, dispatch);
+      });
+    }
   }, []);
 
   function getDbData() {
@@ -73,108 +107,113 @@ export default function AdminPage() {
     }
   }
 
-  function handleAddAdmin(e){
-    e.preventDefault()
-    console.log("hit")
-    setMessage("")
-    setError("")
+  function handleAddAdmin(e) {
+    e.preventDefault();
+    console.log("hit");
+    setMessage("");
+    setError("");
     const db = getDatabase();
-      set(
-        ref(
-          db, 
-          "Admins/"+adminUidRef.current.value),{
-            uid:adminUidRef.current.value
-          }).then(()=>{
-            setMessage("Admin added");
-          })
-          .catch((error)=>{
-            setError(error['code'])
-          });
+    set(ref(db, "Admins/" + adminUidRef.current.value), {
+      uid: adminUidRef.current.value,
+    })
+      .then(() => {
+        setMessage("Admin added");
+      })
+      .catch((error) => {
+        setError(error["code"]);
+      });
   }
 
   const handleChangeView = (event, newValue) => {
     setWhatView(newValue);
   };
 
-
-
-  // function addOffices(){
-  //   setMessage("")
-  //   setError("")
-  //   const db = getDatabase();
-  //   set(
-  //     ref(
-  //       db,
-  //       "offices/Fabriksgatan"),{
-  //         seats:["seat1","seat2","seat3","seat4","seat5","seat6","seat7","seat8","seat9","seat10","seat11","seat12","seat13","seat14","seat15","seat16", ]
-  //       }
-        
-  //     )}
-
-  function handleAddOffice(e){
+  function handleAddOffice(e) {
     e.preventDefault();
     const db = getDatabase();
-    set(
-      ref(
-        db,
-        "offices/"+newOfficeRef.current.value),{
-          seats:['seat1']
-        }
-      )
+    set(ref(db, "offices/" + newOfficeRef.current.value), {
+      seats: ["seat1"],
+    })
+      .then(() => {
+        setMessage("Office added");
+      })
+      .catch((error) => {
+        setError(error["code"]);
+        console.log(error["code"]);
+      });
   }
-    
 
   return (
-  <>
+    <>
+      <AdminHeader>
+        <h1>ADMIN PAGE</h1>
+        <Tabs
+          value={whatView}
+          onChange={handleChangeView}
+          aria-label="icon label tabs example"
+        >
+          <Tab
+            value="handleOffices"
+            label="HANDLE OFFICES"
+            sx={{ color: `${theme.palette.secondary.main}` }}
+          />
+          <Tab
+            value="handleSeats"
+            label="HANDLE SEATS"
+            sx={{ color: `${theme.palette.secondary.main}` }}
+          />
+          <Tab
+            value="handleBookings"
+            label="HANDLE BOOKINGS"
+            sx={{ color: `${theme.palette.secondary.main}` }}
+          />
+          <Tab
+            value="handleUsers"
+            label="ADD USER"
+            sx={{ color: `${theme.palette.secondary.main}` }}
+          />
+          <Tab
+            value="addAdmin"
+            label="ADD ADMIN"
+            sx={{ color: `${theme.palette.secondary.main}` }}
+          />
+        </Tabs>
+      </AdminHeader>
 
-    <AdminHeader>
-    <h1>PROFILE</h1>
-    <Tabs value={whatView} onChange={handleChangeView} aria-label="icon label tabs example"  >
-      <Tab value="addOffice" label="ADD OFFICE" sx={{color:`${theme.palette.secondary.main}`}} />
-      <Tab value="addAdmin" label="ADD ADMIN" sx={{color:`${theme.palette.secondary.main}`}} />
-    </Tabs>
-  </AdminHeader>
+      <AdminBody>
+        {message && <Alert variant="success">{message}</Alert>}
+        {error && <Alert variant="danger">{error}</Alert>}
 
-  <AdminBody>
-    {message && <Alert variant="success">{message}</Alert>}
-      {error && <Alert variant="danger">{error}</Alert>}
-    {whatView==='addOffice'&&
-      //Lista alla offices och seats, fixa input fields så man kan lägga till offices och seats.
-      <div>
-      <h3>Offices </h3>
-      {offices && offices.map(office=>{
-        return(
-          <div>
-          <p>{office}</p>
-          </div>
-        )
-      })}
-      <Form onSubmit={handleAddOffice}>
-        <Form.Group >
-          <Form.Label>
-            New office name
-          </Form.Label>
-          <Form.Control ref={newOfficeRef} type="text"/>
-        </Form.Group>
-        <Button type="submit">Add office</Button>
-      </Form>
-    </div>
-    }
-    
-    {whatView==='addAdmin'&&
-        <Form onSubmit={handleAddAdmin}>
-          <Form.Group>
-            <Form.Label>Admin UID</Form.Label>
-            <Form.Control type="text" ref={adminUidRef}/>
-          </Form.Group>
-          <Button type="submit">Add admin</Button>
-        </Form>
-    }
+        {whatView === "addAdmin" && (
+          <Form onSubmit={handleAddAdmin}>
+            <Form.Group>
+              <Form.Label>Admin UID</Form.Label>
+              <Form.Control type="text" ref={adminUidRef} />
+            </Form.Group>
+            <Button type="submit">Add admin</Button>
+          </Form>
+        )}
 
-    {/* <Button onClick={addOffices}>Add Offices</Button> */}
-    
-  </AdminBody>
-
-</>
+        {whatView === "handleBookings" && allBookings && (
+          <HandleBookings bookings={allBookings} />
+        )}
+        {whatView === "handleUsers" && allBookings && (
+          <HandleUsers bookings={allBookings} />
+        )}
+        {whatView === "handleOffices" && offices && (
+          <HandleOffices
+            offices={offices}
+            bookingsByOffice={bookingsByOffice}
+          />
+        )}
+        {whatView === "handleSeats" && offices && (
+          <HandleSeats
+            offices={offices}
+            seatsByOffice={seatsByOffice}
+            bookingsByOffice={bookingsByOffice}
+          />
+        )}
+      </AdminBody>
+    </>
   );
 }

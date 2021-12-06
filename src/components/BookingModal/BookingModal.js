@@ -18,12 +18,7 @@ export default function BookingModal(props) {
     const db = getDatabase();
     const removeRef = ref(
       db,
-      "Offices/" +
-        props.booking["office"] +
-        "/bookings/" +
-        props.booking["user"] +
-        "/" +
-        props.booking["bookingId"]
+      "bookings/" + props.booking.user + "/" + props.booking.bookingId
     );
     set(removeRef, {
       //Setting an empty object will delete the booking

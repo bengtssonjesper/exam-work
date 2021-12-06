@@ -1,7 +1,7 @@
 import React, { useState, useRef } from "react";
 import { Form, Alert } from "react-bootstrap";
 import Button from "@mui/material/Button";
-import {useAuth} from '../../../contexts/AuthContext'
+import { useAuth } from "../../../contexts/AuthContext";
 import { useSelector } from "react-redux";
 import { createBooking } from "../../../helper/HelperFunctions";
 
@@ -17,7 +17,6 @@ export default function ManualBooking(props) {
     (state) => state.bookings.bookingsByOffice
   );
   const seatsByOffice = useSelector((state) => state.bookings.seatsByOffice);
-
 
   function handleSubmit(e) {
     e.preventDefault();
@@ -43,42 +42,38 @@ export default function ManualBooking(props) {
       {error && <Alert variant="danger">{error}</Alert>}
       {message && <Alert variant="success">{message}</Alert>}
 
-        <Form onSubmit={handleSubmit}>
-          <Form.Group>
-            <Form.Label>Date</Form.Label>
-            <Form.Control type="date" ref={dateRef} required></Form.Control>
-          </Form.Group>
-          <Form.Group>
-            <Form.Label>Seat</Form.Label>
-            <Form.Control as="select" ref={seatRef} required>
-              <option>Select a seat</option>
-              {seatsByOffice &&
-                seatsByOffice[props.selectedOffice].map((seat, i) => {
-                  return <option key={i}>{seat}</option>;
-                })}
-            </Form.Control>
-          </Form.Group>
-          <Form.Group>
-            <Form.Label>Start Time</Form.Label>
-            <Form.Control
-              ref={startTimeRef}
-              type="time"
-              required
-            ></Form.Control>
-          </Form.Group>
-          <Form.Group>
-            <Form.Label>End Time</Form.Label>
-            <Form.Control ref={endTimeRef} type="time" required></Form.Control>
-          </Form.Group>
-          <Button
-            variant="contained"
-            color="success"
-            type="submit"
-            className="mt-2"
-          >
-            Submit
-          </Button>
-        </Form>
+      <Form onSubmit={handleSubmit}>
+        <Form.Group>
+          <Form.Label>Date</Form.Label>
+          <Form.Control type="date" ref={dateRef} required></Form.Control>
+        </Form.Group>
+        <Form.Group>
+          <Form.Label>Seat</Form.Label>
+          <Form.Control as="select" ref={seatRef} required>
+            <option>Select a seat</option>
+            {seatsByOffice &&
+              seatsByOffice[props.selectedOffice].map((seat, i) => {
+                return <option key={i}>{seat}</option>;
+              })}
+          </Form.Control>
+        </Form.Group>
+        <Form.Group>
+          <Form.Label>Start Time</Form.Label>
+          <Form.Control ref={startTimeRef} type="time" required></Form.Control>
+        </Form.Group>
+        <Form.Group>
+          <Form.Label>End Time</Form.Label>
+          <Form.Control ref={endTimeRef} type="time" required></Form.Control>
+        </Form.Group>
+        <Button
+          variant="contained"
+          color="success"
+          type="submit"
+          className="mt-2"
+        >
+          Submit
+        </Button>
+      </Form>
     </div>
   );
 }

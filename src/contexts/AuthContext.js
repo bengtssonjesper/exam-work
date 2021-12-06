@@ -1,6 +1,8 @@
 import react, { useContext, useState, useEffect } from "react";
 import { auth } from "../firebase";
-import {set,ref,getDatabase, onValue} from 'firebase/database'
+import { set, ref, getDatabase, onValue } from "firebase/database";
+
+import { getAuth, updatePassword } from "firebase/auth";
 
 const AuthContext = react.createContext();
 
@@ -13,22 +15,22 @@ export function AuthProvider({ children }) {
   const [currentUser, setCurrentUser] = useState();
   const [loading, setLoading] = useState(true);
 
-  useEffect(()=>{
+  useEffect(() => {
     //Är det dåligt att vem som helst kan läsa UID av admins? Går det att "hacka" currentUser och sätta sitt uid på något sätt?
     //Sätter vi så endast admins kan läsa "admins" kan vi inte kolla om det är en admin från första början.
     const db = getDatabase();
-    const adminRef = ref(db,"Admins");
-    onValue(adminRef,(snapshot)=>{
+    const adminRef = ref(db, "Admins");
+    onValue(adminRef, (snapshot) => {
       const admins = snapshot.val();
-      if(admins && currentUser && currentUser._delegate.uid in admins){
-        setIsAdmin(true)
-        console.log("is admin true")
-      }else{
-        setIsAdmin(false)
-        console.log("is admin false")
+      if (admins && currentUser && currentUser._delegate.uid in admins) {
+        setIsAdmin(true);
+        console.log("is admin true");
+      } else {
+        setIsAdmin(false);
+        console.log("is admin false");
       }
-    })
-  },[currentUser])
+    });
+  }, [currentUser]);
 
   function signup(email, password) {
     return auth.createUserWithEmailAndPassword(email, password);
@@ -39,12 +41,15 @@ export function AuthProvider({ children }) {
   }
 
   function logout() {
-    return auth.signOut()
-
+    return auth.signOut();
   }
 
   function resetPassword(email) {
     return auth.sendPasswordResetEmail(email);
+  }
+
+  function ownUpdatePassword(user, password) {
+    return updatePassword(user, password);
   }
 
   useEffect(() => {
@@ -61,7 +66,8 @@ export function AuthProvider({ children }) {
     signup,
     logout,
     resetPassword,
-    isAdmin
+    isAdmin,
+    ownUpdatePassword,
   };
 
   return (

@@ -14,9 +14,16 @@ export function createBooking(
   setError,
   setMessage
 ) {
-  var compareArray = bookingsByOffice[selectedOffice].filter(
-    (booking) => booking.date === date && booking.seat === seat
-  );
+  console.log("bookingsbyoff: ", bookingsByOffice);
+  console.log("selected: ", selectedOffice);
+
+  if (Object.entries(bookingsByOffice).length > 0) {
+    var compareArray = bookingsByOffice[selectedOffice].filter(
+      (booking) => booking.date === date && booking.seat === seat
+    );
+  } else {
+    var compareArray = [];
+  }
 
   try {
     if (seat === "Select a seat") {
@@ -24,28 +31,18 @@ export function createBooking(
     } else if (!thisWeeksDates.includes(date)) {
       throw "You can only book one week ahead";
     } else if (isBookingAllowed(startTime, endTime, compareArray)) {
-
       const db = getDatabase();
       const uid = uuidv4();
       try {
-        set(
-          ref(
-            db,
-              "bookings/" +
-              currentUser._delegate.uid +
-              "/" +
-              uid
-          ),
-          {
-            user: currentUser._delegate.uid,
-            seat: seat,
-            date: date,
-            startTime: startTime,
-            endTime: endTime,
-            office: selectedOffice,
-            bookingId: uid,
-          }
-        );
+        set(ref(db, "bookings/" + currentUser._delegate.uid + "/" + uid), {
+          user: currentUser._delegate.uid,
+          seat: seat,
+          date: date,
+          startTime: startTime,
+          endTime: endTime,
+          office: selectedOffice,
+          bookingId: uid,
+        });
         setMessage("Booking successful");
       } catch (error) {
         setError("Failed to post to database");
@@ -69,11 +66,7 @@ export function updateBooking(
   const db = getDatabase();
   setError("");
   setMessage("");
-  const refStr =
-  "bookings/" +
-    booking["user"] +
-    "/" +
-    booking["bookingId"];
+  const refStr = "bookings/" + booking["user"] + "/" + booking["bookingId"];
   try {
     if (isBookingAllowed(newStartTime, newEndTime, arrayOfBookings)) {
       set(ref(db, refStr), {
@@ -161,7 +154,6 @@ export function reduxFormatData(data, currentUser, dispatch) {
 
   console.log("Redux format: ", data);
 
-
   // for (const [officeName, officeObject] of Object.entries(data)) {
   //   offices.push(officeName);
   //   if ("seats" in officeObject) {
@@ -214,12 +206,12 @@ export function reduxFormatData(data, currentUser, dispatch) {
   dispatch(bookingsActions.setBookingsByDate(bookingsByDateObj));
   dispatch(bookingsActions.setBookingsByOffice(bookingsByOfficeObj));
   dispatch(bookingsActions.setOffices(offices));
-  console.log("redux allBookings: ", allBookingsArr)
-  console.log("redux seatsByOffice: ", seatsByOffice)
-  console.log("redux currentusersbooking: ", currentUsersBookingsByDateObj)
-  console.log("redux bookingsbydate: ", bookingsByDateObj)
-  console.log("redux bookingsbyoffice: ", bookingsByOfficeObj)
-  console.log("redux offices: ", offices)
+  console.log("redux allBookings: ", allBookingsArr);
+  console.log("redux seatsByOffice: ", seatsByOffice);
+  console.log("redux currentusersbooking: ", currentUsersBookingsByDateObj);
+  console.log("redux bookingsbydate: ", bookingsByDateObj);
+  console.log("redux bookingsbyoffice: ", bookingsByOfficeObj);
+  console.log("redux offices: ", offices);
   // Object.keys(currentUsersBookingsByDateObj).forEach((day) =>
   //   currentUsersBookingsDays.push(day)
   // );
@@ -238,61 +230,66 @@ export function reduxFormatData(data, currentUser, dispatch) {
   // });
 }
 
-export function reduxFormatBookings(data,currentUser,dispatch){
-  console.log("reduxbookings: ", data)
-  var allBookingsArr = [];
-  var currentUsersBookingsByDateObj = {};
-  var bookingsByDateObj = {};
-  var bookingsByOfficeObj = {};
-  var currentUsersBookingsDays = [];
-  //Go through the bookings, add them to respective array
+export function reduxFormatBookings(data, currentUser, dispatch) {
+  console.log("reduxbookings: ", data);
+  if (data) {
+    var allBookingsArr = [];
+    var currentUsersBookingsByDateObj = {};
+    var bookingsByDateObj = {};
+    var bookingsByOfficeObj = {};
+    var currentUsersBookingsDays = [];
+    //Go through the bookings, add them to respective array
+    if (data !== null) {
+      Object.keys(data).forEach((uid, i) => {
+        console.log("uid: ", uid);
+        console.log("i: ", i);
+        Object.keys(data[uid]).forEach((bookingId, j) => {
+          const booking = data[uid][bookingId];
+          allBookingsArr.push(booking);
+          if (booking.user === currentUser._delegate.uid) {
+            if (booking.date in currentUsersBookingsByDateObj) {
+              currentUsersBookingsByDateObj[booking.date].push(booking);
+            } else {
+              currentUsersBookingsByDateObj[booking.date] = [booking];
+            }
 
-  Object.keys(data).forEach((uid,i)=>{
-    console.log("uid: ", uid)
-    console.log("i: ", i)
-    Object.keys(data[uid]).forEach((bookingId,j)=>{
-      const booking = data[uid][bookingId]
-      allBookingsArr.push(booking)
-      if(booking.user===currentUser._delegate.uid){
-        if(booking.date in currentUsersBookingsByDateObj){
-          currentUsersBookingsByDateObj[booking.date].push(booking)
-        }else{
-          currentUsersBookingsByDateObj[booking.date]=[booking]
-        }
-
-        if(!(currentUsersBookingsDays.includes(booking.date))){
-          currentUsersBookingsDays.push(booking.date)
-        }
-      }
-      if(booking.date in bookingsByDateObj){
-        bookingsByDateObj[booking.date].push(booking)
-      }else{
-        bookingsByDateObj[booking.date]=[booking]
-      }
-      if(booking.office in bookingsByOfficeObj){
-        bookingsByOfficeObj[booking.office].push(booking)
-      }else{
-        bookingsByOfficeObj[booking.office]=[booking]
-      }
-
-
-    })
-  })
-  dispatch(bookingsActions.setAllBookings(allBookingsArr));
-  dispatch(
-    bookingsActions.setCurrentUsersBookings(currentUsersBookingsByDateObj)
-  );
-  dispatch(bookingsActions.setBookingsByDate(bookingsByDateObj));
-  dispatch(bookingsActions.setBookingsByOffice(bookingsByOfficeObj));
+            if (!currentUsersBookingsDays.includes(booking.date)) {
+              currentUsersBookingsDays.push(booking.date);
+            }
+          }
+          if (booking.date in bookingsByDateObj) {
+            bookingsByDateObj[booking.date].push(booking);
+          } else {
+            bookingsByDateObj[booking.date] = [booking];
+          }
+          if (booking.office in bookingsByOfficeObj) {
+            bookingsByOfficeObj[booking.office].push(booking);
+          } else {
+            bookingsByOfficeObj[booking.office] = [booking];
+          }
+        });
+      });
+      dispatch(bookingsActions.setAllBookings(allBookingsArr));
+      dispatch(
+        bookingsActions.setCurrentUsersBookings(currentUsersBookingsByDateObj)
+      );
+      dispatch(bookingsActions.setBookingsByDate(bookingsByDateObj));
+      dispatch(bookingsActions.setBookingsByOffice(bookingsByOfficeObj));
+    }
+  }
 }
 
-export function reduxFormatOffices(data,dispatch){
-  var offices=[]
-  var seatsByOffice={}
-  Object.keys(data).forEach(element=>{
-    seatsByOffice[element]=data[element].seats
-    offices.push(element)
-  })
+export function reduxFormatOffices(data, dispatch) {
+  console.log("reduxoffcies: ", data);
+
+  var offices = [];
+  var seatsByOffice = {};
+  if (data !== null) {
+    Object.keys(data).forEach((element) => {
+      seatsByOffice[element] = data[element].seats;
+      offices.push(element);
+    });
+  }
   dispatch(bookingsActions.setOffices(offices));
   dispatch(bookingsActions.setSeatsByOffice(seatsByOffice));
 }
