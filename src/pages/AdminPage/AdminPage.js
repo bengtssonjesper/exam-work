@@ -7,6 +7,7 @@ import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import {AdminHeader, AdminBody} from './styles'
 import { useAuth} from '../../contexts/AuthContext'
+import { useSelector, useDispatch } from "react-redux";
 
 
 export default function AdminPage() {
@@ -16,6 +17,8 @@ export default function AdminPage() {
   const [dbData, setDbData] = useState([]);
   const [whatView, setWhatView] = useState("addOffice");
   const adminUidRef = useRef();
+  const newOfficeRef = useRef();
+  const offices = useSelector((state) => state.bookings.offices);
 
 
   useEffect(() => {
@@ -107,6 +110,18 @@ export default function AdminPage() {
   //       }
         
   //     )}
+
+  function handleAddOffice(e){
+    e.preventDefault();
+    const db = getDatabase();
+    set(
+      ref(
+        db,
+        "offices/"+newOfficeRef.current.value),{
+          seats:['seat1']
+        }
+      )
+  }
     
 
   return (
@@ -124,9 +139,28 @@ export default function AdminPage() {
     {message && <Alert variant="success">{message}</Alert>}
       {error && <Alert variant="danger">{error}</Alert>}
     {whatView==='addOffice'&&
-      <p>Add Office</p>
       //Lista alla offices och seats, fixa input fields så man kan lägga till offices och seats.
+      <div>
+      <h3>Offices </h3>
+      {offices && offices.map(office=>{
+        return(
+          <div>
+          <p>{office}</p>
+          </div>
+        )
+      })}
+      <Form onSubmit={handleAddOffice}>
+        <Form.Group >
+          <Form.Label>
+            New office name
+          </Form.Label>
+          <Form.Control ref={newOfficeRef} type="text"/>
+        </Form.Group>
+        <Button type="submit">Add office</Button>
+      </Form>
+    </div>
     }
+    
     {whatView==='addAdmin'&&
         <Form onSubmit={handleAddAdmin}>
           <Form.Group>
