@@ -36,7 +36,6 @@ export default function GraphicView() {
         clickY >= seat.y &&
         clickY <= seat.y + 40
       ) {
-        console.log("You clicked on ", seat.name);
         //Här vill vi veta om den klickade platsen var röd eller grön, hur får vi reda på det?
       }
     });

@@ -16,9 +16,13 @@ export const AdminHeader = styled.div`
 `
 
 export const AdminBody = styled.div`
-    width:100vw;
-    
+    width:90vw;
+    margin: 0 auto;
+    display:flex;
+    justify-content:center
+
 `
+
 export const ProfileInfo = styled.div`
     width:90vw;
     margin:0 auto;

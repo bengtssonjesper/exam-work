@@ -11,6 +11,7 @@ import { bookingsActions } from "../../store/bookings";
 import {
   reduxFormatOffices,
   reduxFormatBookings,
+  reduxFormatUsers
 } from "../../helper/HelperFunctions";
 import { useAuth } from "../../contexts/AuthContext";
 import {
@@ -63,6 +64,15 @@ export default function BookingDashboard() {
       reduxFormatOffices(data, dispatch);
     });
     // }
+  }, []);
+
+  useEffect(() => {
+    const db = getDatabase();
+    const reduxUsersRef = ref(db, "users");
+    onValue(reduxUsersRef, (snapshot) => {
+      const data = snapshot.val();
+      reduxFormatUsers(data, dispatch);
+    });
   }, []);
 
   function getThisWeeksDates() {

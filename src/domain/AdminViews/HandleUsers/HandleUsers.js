@@ -1,9 +1,11 @@
 import React, { useEffect, useRef, useState } from "react";
-
+import {getDatabase, set,ref} from 'firebase/database'
 import { useAuth } from "../../../contexts/AuthContext";
 import { Form, Alert } from "react-bootstrap";
 import Button from "@mui/material/Button";
+import { useSelector, useDispatch } from "react-redux";
 var generator = require("generate-password");
+
 
 export default function HandleUsers(props) {
   const { signup } = useAuth();
@@ -14,15 +16,13 @@ export default function HandleUsers(props) {
   const [error, setError] = useState("");
   const emailRef = useRef();
   const passwordRef = useRef();
-  useEffect(() => {
-    console.log("props: ", props.users);
-  }, []);
+  const allUsers = useSelector((state) => state.bookings.users);
+
 
   function generatePassword() {
     const passwordInput = document.getElementById("passwordInput");
     const password = generator.generate({ length: 10, numbers: true });
     passwordInput.value = password;
-    console.log("pass: ", password);
   }
 
   function handleShowPassword(e) {
@@ -35,13 +35,18 @@ export default function HandleUsers(props) {
 
   async function handleAddUser(e) {
     e.preventDefault();
-
+    setMessage("")
+    setError("")
+    const db = getDatabase();
     try {
-      setError("");
       setLoading(true);
-      await signup(emailRef.current.value, passwordRef.current.value);
+      const promise = await signup(emailRef.current.value, passwordRef.current.value)
+      set(ref(db,"users/"+promise.user._delegate.uid),{
+        uid:promise.user._delegate.uid,
+        email:emailRef.current.value
+      })
       setMessage("User created");
-    } catch {
+    } catch(error) {
       setError("Failed to create an account");
     }
     setLoading(false);

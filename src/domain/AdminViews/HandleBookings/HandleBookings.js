@@ -8,14 +8,25 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import Button from "@mui/material/Button";
+import { useSelector } from "react-redux";
+import {Alert} from 'react-bootstrap'
+import BookingModal from "../../../components/BookingModal/BookingModal";
+
 
 export default function HandleBookings(props) {
+  const[message,setMessage] = useState("")
+  const[error,setError] = useState("")
   const [rows, setRows] = useState([]);
+  const bookingsByDate = useSelector((state) => state.bookings.bookingsByDate);
+  const [show, setShow] = useState(false);
+  const [clickedBooking, setClickedBooking] = useState({})
 
   useEffect(() => {
-    console.log("props: ", props);
     setupRows();
   }, [props.bookings]);
+
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
 
   const columns = [
     { field: "id", headerName: "ID" },
@@ -34,11 +45,10 @@ export default function HandleBookings(props) {
 
   function setupRows() {
     var rows = [];
-    console.log("props: ", props.bookings);
 
     props.bookings.forEach((booking) => {
       rows.push({
-        id: booking.bookingId,
+        bookingId: booking.bookingId,
         date: booking.date,
         office: booking.office,
         seat: booking.seat,
@@ -47,24 +57,35 @@ export default function HandleBookings(props) {
         user: booking.user,
       });
     });
-    console.log("bookings: ", rows);
     setRows(rows);
   }
 
   function handleDeleteBooking(booking) {
     const db = getDatabase();
-    console.log("ref: ", "bookings/" + booking.user + "/" + booking.id);
     set(ref(db, "bookings/" + booking.user + "/" + booking.id), {
       //Passing empty object will delete the booking
     })
-      .then(console.log("success"))
-      .catch((error) => {
-        console.log("error");
-      });
+  }
+
+  function handleUpdateBooking(booking){
+    setClickedBooking(booking)
+    handleShow()
+    // const bookingsOnSameSeat = bookingsByDate[booking["date"]].filter(
+    //   (booking_)=>
+    //     booking_["seat"] === booking["seat"] &&
+    //     booking_["bookingId"] !== booking["bookingId"]
+      
+    // )
+    // console.log("bookingonsamesaet: ", bookingsOnSameSeat)
   }
 
   return (
     <div>
+      {message && <Alert variant="success">{message}</Alert>}
+      {error && <Alert variant="success">{error}</Alert>}
+      {show&&
+            <BookingModal setShow={setShow} show={show} booking={clickedBooking} handleClose={handleClose} />
+        }
       {rows && (
         <TableContainer component={Paper}>
           <Table sx={{ minWidth: 650 }} size="small" aria-label="simple table">
@@ -98,6 +119,13 @@ export default function HandleBookings(props) {
                       color="danger"
                     >
                       Delete
+                    </Button>
+                    <Button
+                      onClick={() => handleUpdateBooking(booking)}
+                      variant="contained"
+                      color="warning"
+                    >
+                      Update
                     </Button>
                   </TableCell>
                 </TableRow>

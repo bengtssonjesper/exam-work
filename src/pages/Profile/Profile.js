@@ -8,7 +8,7 @@ import Button from "@mui/material/Button";
 import { useNavigate } from "react-router-dom";
 import { onValue, update } from "@firebase/database";
 import { useSelector, useDispatch } from "react-redux";
-import { reduxFormatData } from "../../helper/HelperFunctions";
+import { reduxFormatData, reduxFormatUsers } from "../../helper/HelperFunctions";
 import {
   ProfileHeader,
   ProfileBody,
@@ -17,6 +17,7 @@ import {
   ProfileBodyHeaderText,
   AccordionStyles,
   EditProfileButtonStyles,
+  ShowOnDesktop,ShowOnMobile
 } from "./styles";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
@@ -24,6 +25,10 @@ import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import MenuBookIcon from "@mui/icons-material/MenuBook";
 import { theme } from "../../styles/theme";
 import { v4 as uuidv4 } from "uuid";
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
+import Select from '@mui/material/Select';
 
 export default function Profile() {
   const oldPasswordRef = useRef();
@@ -70,19 +75,29 @@ export default function Profile() {
     }
   }, []);
 
+  useEffect(() => {
+    const db = getDatabase();
+    const reduxUsersRef = ref(db, "users");
+    onValue(reduxUsersRef, (snapshot) => {
+      const data = snapshot.val();
+      reduxFormatUsers(data, dispatch);
+    });
+  }, []);
+
+
   function handleEditProfile() {
     navigate("/editprofile");
   }
 
   const handleChangeView = (event, newValue) => {
-    setWhatView(newValue);
+    console.log("new val: ", newValue.props.value)
+    setWhatView(newValue.props.value);
   };
 
   async function handlePasswordChange(e) {
     e.preventDefault();
     setMessage("");
     setError("");
-    console.log("password: ", currentUser);
     try {
       //This is to confirm the old password
       const loginPromise = await login(
@@ -106,46 +121,53 @@ export default function Profile() {
     }
   }
 
-  // function addBooking() {
-  //   var bookingId = uuidv4();
-  //   var testDate = new Date();
-  //   const db = getDatabase();
-  //   set(ref(db, "test/"), {
-  //     bookingId: bookingId,
-  //     startTime: "11:00",
-  //     endTime: "12:00",
-  //     office: "Behrn Tower",
-  //     seat: "seat5",
-  //     date: "2021-12-08",
-  //     user: currentUser._delegate.uid,
-  //   });
-  // }
-
   return (
     <>
       <ProfileHeader>
         <h1>PROFILE</h1>
-        <Tabs
-          value={whatView}
-          onChange={handleChangeView}
-          aria-label="icon label tabs example"
-        >
-          <Tab
-            icon={<AccountCircleIcon />}
-            label="PROFILE INFO"
-            sx={{ color: `${theme.palette.secondary.main}` }}
-          />
-          <Tab
-            icon={<MenuBookIcon />}
-            label="YOUR BOOKINGS"
-            sx={{ color: `${theme.palette.secondary.main}` }}
-          />
-          <Tab
-            icon={<MenuBookIcon />}
-            label="UPDATE PASSWORD"
-            sx={{ color: `${theme.palette.secondary.main}` }}
-          />
-        </Tabs>
+        <ShowOnDesktop>
+          <Tabs
+            value={whatView}
+            onChange={handleChangeView}
+            aria-label="icon label tabs example"
+          >
+            <Tab
+              icon={<AccountCircleIcon />}
+              label="PROFILE INFO"
+              sx={{ color: `${theme.palette.secondary.main}` }}
+              value={0}
+            />
+            <Tab
+              icon={<MenuBookIcon />}
+              label="YOUR BOOKINGS"
+              sx={{ color: `${theme.palette.secondary.main}` }}
+              value={1}
+            />
+            <Tab
+              icon={<MenuBookIcon />}
+              label="UPDATE PASSWORD"
+              sx={{ color: `${theme.palette.secondary.main}` }}
+              value={2}
+            />
+          </Tabs>
+        </ShowOnDesktop>
+        <ShowOnMobile>
+          <FormControl fullWidth>
+            <InputLabel id="demo-simple-select-label">Select</InputLabel>
+            <Select
+              labelId="demo-simple-select-label"
+              id="demo-simple-select"
+              value={whatView}
+              label="Age"
+              onChange={handleChangeView}
+            >
+              <MenuItem value={0}>PROFILE INFO</MenuItem>
+              <MenuItem value={1}>YOUR BOOKINGS</MenuItem>
+              <MenuItem value={2}>UPDATE PASSWORD</MenuItem>
+              
+            </Select>
+          </FormControl>
+        </ShowOnMobile>
       </ProfileHeader>
 
       <ProfileBody>

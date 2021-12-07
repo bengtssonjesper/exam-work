@@ -23,7 +23,6 @@ export default function HandleSeats(props) {
   const [selectedOffice, setSelectedOffice] = useState("");
 
   useEffect(() => {
-    console.log("props: ", props);
     setupOffices();
   }, [props.bookings]);
 
@@ -44,7 +43,6 @@ export default function HandleSeats(props) {
 
   function setupOffices() {
     var offices = [];
-    console.log("props: ", props.offices);
 
     props.offices.forEach((booking) => {
       offices.push({
@@ -57,7 +55,6 @@ export default function HandleSeats(props) {
         user: booking.user,
       });
     });
-    console.log("offices: ", offices);
     setOffices(offices);
   }
 
@@ -86,8 +83,6 @@ export default function HandleSeats(props) {
   }
 
   function handleOfficeChange(event) {
-    console.log("event: ", event);
-    console.log("newValue: ", event.target.value);
     setSelectedOffice(event.target.value);
   }
 

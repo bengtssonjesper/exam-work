@@ -11,6 +11,7 @@ const initialBookingState = {
   selectedOffice: null,
   viewDate: null,
   darkMode: false,
+  users: [],
 };
 
 const bookingsSlice = createSlice({
@@ -46,6 +47,9 @@ const bookingsSlice = createSlice({
     },
     setDarkMode(state, action) {
       state.darkMode = action.payload;
+    },
+    setUsers(state, action) {
+      state.users = action.payload;
     },
   },
 });

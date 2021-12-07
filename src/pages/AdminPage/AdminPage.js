@@ -15,6 +15,7 @@ import HandleUsers from "../../domain/AdminViews/HandleUsers/HandleUsers";
 import {
   reduxFormatBookings,
   reduxFormatOffices,
+  reduxFormatUsers
 } from "../../helper/HelperFunctions";
 
 export default function AdminPage() {
@@ -59,6 +60,15 @@ export default function AdminPage() {
         reduxFormatOffices(data, dispatch);
       });
     }
+  }, []);
+
+  useEffect(() => {
+    const db = getDatabase();
+    const reduxUsersRef = ref(db, "users");
+    onValue(reduxUsersRef, (snapshot) => {
+      const data = snapshot.val();
+      reduxFormatUsers(data, dispatch);
+    });
   }, []);
 
   function getDbData() {
@@ -109,7 +119,6 @@ export default function AdminPage() {
 
   function handleAddAdmin(e) {
     e.preventDefault();
-    console.log("hit");
     setMessage("");
     setError("");
     const db = getDatabase();
@@ -139,7 +148,6 @@ export default function AdminPage() {
       })
       .catch((error) => {
         setError(error["code"]);
-        console.log(error["code"]);
       });
   }
 

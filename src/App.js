@@ -1,5 +1,5 @@
 import { AuthProvider } from "./contexts/AuthContext";
-import Signup from "./pages/Signup/Signup";
+// import Signup from "./pages/Signup/Signup";
 import Login from "./pages/Login/Login";
 import ForgotPassword from "./pages/ForgotPassword/ForgotPassword";
 import PrivateRoute from "./components/PrivateRoute/PrivateRoute";
@@ -36,7 +36,7 @@ function App() {
               <Route path="/admin" element={<AdminPage />} />
             </Route>
             <Route path="/login" element={<Login />} />
-            <Route path="/signup" element={<Signup />} />
+            {/* <Route path="/signup" element={<Signup />} /> */}
             <Route path="/forgotpassword" element={<ForgotPassword />} />
           </Routes>
         </ThemeProvider>

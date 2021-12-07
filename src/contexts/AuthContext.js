@@ -11,7 +11,7 @@ export function useAuth() {
 }
 
 export function AuthProvider({ children }) {
-  const [isAdmin, setIsAdmin] = useState();
+  const [isAdmin, setIsAdmin] = useState(false);
   const [currentUser, setCurrentUser] = useState();
   const [loading, setLoading] = useState(true);
 
@@ -24,10 +24,8 @@ export function AuthProvider({ children }) {
       const admins = snapshot.val();
       if (admins && currentUser && currentUser._delegate.uid in admins) {
         setIsAdmin(true);
-        console.log("is admin true");
-      } else {
+      }else{
         setIsAdmin(false);
-        console.log("is admin false");
       }
     });
   }, [currentUser]);

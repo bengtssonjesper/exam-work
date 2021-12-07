@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, {useState, useEffect} from 'react'
 import {Row,Col} from 'react-bootstrap'
 import BookingModal from '../../../components/BookingModal/BookingModal';
 
@@ -8,6 +8,10 @@ export default function SeatRowBooking(props) {
 
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
+
+    useEffect(()=>{
+        console.log("props.booking: ", props.booking)
+    },[])
 
     const myStyles={
         // width:"100%",

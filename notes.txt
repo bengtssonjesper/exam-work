@@ -96,9 +96,9 @@ Bättre lösning på vilka timmar som ska visas i schedule? Klart
  2021-12-06
  Göra idag:
 - Kolla över dates, känns som vi har många konversteringar mellan strings och dates,
-- Så enbart admin kan göra konton.
-- Så admin kan lägga till och ta bort offices/seats
-- Så admin kan redigera/ta bort bokningar. 
+- Så enbart admin kan göra konton. Klart
+- Så admin kan lägga till och ta bort offices/seats, Klart
+- Så admin kan redigera/ta bort bokningar. Klart,
 - Darkmode
-- Private route for admin!!!
+- Private route for admin!!! Klart,
 - Fixa filtrering/sortering till handlebookings för admins

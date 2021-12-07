@@ -168,7 +168,6 @@ export default function AutomaticBooking(props) {
     });
 
     var endTime = performance.now();
-    console.log("takes: (ms) ", endTime - startTime);
     setRecommendedSlots(viableOptions)
   }
 

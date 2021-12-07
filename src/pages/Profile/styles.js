@@ -48,4 +48,19 @@ export const EditProfileButtonStyles = {
     width:'auto',
 }
 
+export const ShowOnDesktop = styled.div`
+display:block;
+@media(max-width:700px){
+    display:none;
+}
+
+`
+export const ShowOnMobile = styled.div`
+display:block;
+@media(min-width:700px){
+    display:none;
+}
+
+`
+
 

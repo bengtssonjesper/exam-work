@@ -24,9 +24,9 @@ export default function NavBar() {
     navigate("/login");
   }
 
-  function navigateToSignUp() {
-    navigate("/signup");
-  }
+  // function navigateToSignUp() {
+  //   navigate("/signup");
+  // }
   function navigateToAdmin() {
     navigate("/admin");
   }
@@ -42,7 +42,6 @@ export default function NavBar() {
 
   function handleDarkMode(){
     setDarkMode(!darkMode)
-    console.log("darkmode: ", darkMode)
   }
 
   return (
@@ -77,9 +76,7 @@ export default function NavBar() {
               <Nav.Link onClick={navigateToLogin}>Log In</Nav.Link>
             )}
             {currentUser && <Nav.Link onClick={handleLogOut}>Log Out</Nav.Link>}
-            {!currentUser && (
-              <Nav.Link onClick={navigateToSignUp}>Sign Up</Nav.Link>
-            )}
+
             
           </Nav>
         </Navbar.Collapse>

@@ -14,8 +14,6 @@ export function createBooking(
   setError,
   setMessage
 ) {
-  console.log("bookingsbyoff: ", bookingsByOffice);
-  console.log("selected: ", selectedOffice);
 
   if (Object.entries(bookingsByOffice).length > 0) {
     var compareArray = bookingsByOffice[selectedOffice].filter(
@@ -152,7 +150,6 @@ export function reduxFormatData(data, currentUser, dispatch) {
   var offices = [];
   var currentUsersBookingsDays = [];
 
-  console.log("Redux format: ", data);
 
   // for (const [officeName, officeObject] of Object.entries(data)) {
   //   offices.push(officeName);
@@ -206,12 +203,6 @@ export function reduxFormatData(data, currentUser, dispatch) {
   dispatch(bookingsActions.setBookingsByDate(bookingsByDateObj));
   dispatch(bookingsActions.setBookingsByOffice(bookingsByOfficeObj));
   dispatch(bookingsActions.setOffices(offices));
-  console.log("redux allBookings: ", allBookingsArr);
-  console.log("redux seatsByOffice: ", seatsByOffice);
-  console.log("redux currentusersbooking: ", currentUsersBookingsByDateObj);
-  console.log("redux bookingsbydate: ", bookingsByDateObj);
-  console.log("redux bookingsbyoffice: ", bookingsByOfficeObj);
-  console.log("redux offices: ", offices);
   // Object.keys(currentUsersBookingsByDateObj).forEach((day) =>
   //   currentUsersBookingsDays.push(day)
   // );
@@ -231,7 +222,6 @@ export function reduxFormatData(data, currentUser, dispatch) {
 }
 
 export function reduxFormatBookings(data, currentUser, dispatch) {
-  console.log("reduxbookings: ", data);
   if (data) {
     var allBookingsArr = [];
     var currentUsersBookingsByDateObj = {};
@@ -241,8 +231,6 @@ export function reduxFormatBookings(data, currentUser, dispatch) {
     //Go through the bookings, add them to respective array
     if (data !== null) {
       Object.keys(data).forEach((uid, i) => {
-        console.log("uid: ", uid);
-        console.log("i: ", i);
         Object.keys(data[uid]).forEach((bookingId, j) => {
           const booking = data[uid][bookingId];
           allBookingsArr.push(booking);
@@ -280,7 +268,6 @@ export function reduxFormatBookings(data, currentUser, dispatch) {
 }
 
 export function reduxFormatOffices(data, dispatch) {
-  console.log("reduxoffcies: ", data);
 
   var offices = [];
   var seatsByOffice = {};
@@ -292,4 +279,12 @@ export function reduxFormatOffices(data, dispatch) {
   }
   dispatch(bookingsActions.setOffices(offices));
   dispatch(bookingsActions.setSeatsByOffice(seatsByOffice));
+}
+
+export function reduxFormatUsers(data,dispatch){
+  var users=[]
+  Object.keys(data).forEach(user=>{
+    users.push(user)
+  })
+  dispatch(bookingsActions.setUsers(users));
 }

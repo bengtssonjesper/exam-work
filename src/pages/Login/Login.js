@@ -54,9 +54,9 @@ export default function Login() {
             </Form>
           </AuthCardBody>
         </AuthCard>
-        <div className="w-100 text-center mt-2">
+        {/* <div className="w-100 text-center mt-2">
           Need an account? <Link to="/signup">Sign Up</Link>
-        </div>
+        </div> */}
         <div className="w-100 text-center mt-2">
           Forgot password? <Link to="/forgotpassword">Reset Password</Link>
         </div>

@@ -18,7 +18,6 @@ export default function HandleOffices(props) {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    console.log("props: ", props);
     setupOffices();
   }, [props.bookings]);
 
@@ -39,7 +38,6 @@ export default function HandleOffices(props) {
 
   function setupOffices() {
     var offices = [];
-    console.log("props: ", props.offices);
 
     props.offices.forEach((booking) => {
       offices.push({
@@ -52,7 +50,6 @@ export default function HandleOffices(props) {
         user: booking.user,
       });
     });
-    console.log("offices: ", offices);
     setOffices(offices);
   }
 
@@ -83,8 +80,6 @@ export default function HandleOffices(props) {
     setError("");
     setMessage("");
     const db = getDatabase();
-    console.log("ref: ", newOfficeRef.current.value);
-    console.log("ref: ", props.offices);
     if (props.offices.includes(newOfficeRef.current.value)) {
       setError("Office already exist");
     } else {

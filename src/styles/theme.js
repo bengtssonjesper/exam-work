@@ -1,5 +1,5 @@
 import { createTheme } from "@mui/material/styles";
-import { grey, blueGrey, red } from "@mui/material/colors";
+import { grey, blueGrey, red, green,yellow } from "@mui/material/colors";
 
 export const theme = createTheme({
   palette: {
@@ -17,11 +17,11 @@ export const theme = createTheme({
     },
     warning: {
       // This is green.A700 as hex.
-      main: grey[700],
+      main: yellow[200],
     },
     danger: {
       // This is green.A700 as hex.
-      main: red[900],
+      main: red[200],
     },
     info: {
       // This is green.A700 as hex.
@@ -29,7 +29,7 @@ export const theme = createTheme({
     },
     success: {
       // This is green.A700 as hex.
-      main: grey[700],
+      main: green[400],
     },
   },
 });
