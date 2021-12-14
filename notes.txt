@@ -102,3 +102,10 @@ Bättre lösning på vilka timmar som ska visas i schedule? Klart
 - Darkmode
 - Private route for admin!!! Klart,
 - Fixa filtrering/sortering till handlebookings för admins
+
+2021-12-07:
+  Problem: När ta bort användare uppdateras inte databasen automatiskt, hur fixa detta. Kan inte ta bort användare via API.
+
+  Fixa så automatiska bokningen känner av att endast en bokning får finnas samtidigt??
+  Dela upp Storen, så inte allt ligger i bookings
+   Inkludera namn i bokningen? Checkbox för att gå med på detta 

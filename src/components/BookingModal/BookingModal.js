@@ -12,6 +12,8 @@ export default function BookingModal(props) {
   const [error, setError] = useState();
   const [message, setMessage] = useState();
   const bookingsByDate = useSelector((state) => state.bookings.bookingsByDate);
+  const currentUsersBookings = useSelector((state) => state.bookings.currentUsersBookings);
+
 
   function handleDeleteBooking() {
     props.setShow(false);
@@ -44,7 +46,8 @@ export default function BookingModal(props) {
       props.booking,
       bookingsOnSameSeat,
       setError,
-      setMessage
+      setMessage,
+      currentUsersBookings
     );
   }
 

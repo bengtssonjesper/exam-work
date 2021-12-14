@@ -11,6 +11,9 @@ export default function RecommendedBooking(props) {
       const selectedOffice = useSelector(
         (state) => state.bookings.selectedOffice
       );
+      const currentUsersBookings = useSelector(
+        (state) => state.bookings.currentUsersBookings
+      );
 
     function handleCreateBooking(){
         const startTime=
@@ -34,7 +37,8 @@ export default function RecommendedBooking(props) {
                 bookingsByOffice,
                 selectedOffice,
                 props.setError,
-                props.setMessage
+                props.setMessage,
+                currentUsersBookings
             )
     }
 

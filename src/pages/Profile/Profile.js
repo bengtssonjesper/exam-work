@@ -90,8 +90,12 @@ export default function Profile() {
   }
 
   const handleChangeView = (event, newValue) => {
-    console.log("new val: ", newValue.props.value)
-    setWhatView(newValue.props.value);
+    console.log("new val: ", newValue)
+    setWhatView(newValue);
+  };
+  const handleChangeViewMobile = (event, newValue) => {
+    console.log("new val: ", event.target.value)
+    setWhatView(parseInt(event.target.value));
   };
 
   async function handlePasswordChange(e) {
@@ -135,38 +139,29 @@ export default function Profile() {
               icon={<AccountCircleIcon />}
               label="PROFILE INFO"
               sx={{ color: `${theme.palette.secondary.main}` }}
-              value={0}
             />
             <Tab
               icon={<MenuBookIcon />}
               label="YOUR BOOKINGS"
               sx={{ color: `${theme.palette.secondary.main}` }}
-              value={1}
             />
             <Tab
               icon={<MenuBookIcon />}
               label="UPDATE PASSWORD"
               sx={{ color: `${theme.palette.secondary.main}` }}
-              value={2}
             />
           </Tabs>
         </ShowOnDesktop>
         <ShowOnMobile>
-          <FormControl fullWidth>
-            <InputLabel id="demo-simple-select-label">Select</InputLabel>
-            <Select
-              labelId="demo-simple-select-label"
-              id="demo-simple-select"
-              value={whatView}
-              label="Age"
-              onChange={handleChangeView}
-            >
-              <MenuItem value={0}>PROFILE INFO</MenuItem>
-              <MenuItem value={1}>YOUR BOOKINGS</MenuItem>
-              <MenuItem value={2}>UPDATE PASSWORD</MenuItem>
-              
-            </Select>
-          </FormControl>
+        <Form>
+          <Form.Group className="mb-3">
+            <Form.Control as="select" onChange={handleChangeViewMobile}>
+              <option value={0}>PROFILE INFO</option>
+              <option value={1}>YOUR BOOKINGS</option>
+              </Form.Control>
+            
+          </Form.Group>
+          </Form>
         </ShowOnMobile>
       </ProfileHeader>
 

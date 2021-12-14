@@ -18,8 +18,6 @@ function App() {
   return (
     <Router>
       <AuthProvider>
-        {/* <Background> */}
-        {/* <div className="background"> */}
         <ThemeProvider theme={theme}>
           <NavBar />
           <Routes>
@@ -36,12 +34,9 @@ function App() {
               <Route path="/admin" element={<AdminPage />} />
             </Route>
             <Route path="/login" element={<Login />} />
-            {/* <Route path="/signup" element={<Signup />} /> */}
             <Route path="/forgotpassword" element={<ForgotPassword />} />
           </Routes>
         </ThemeProvider>
-        {/* </div> */}
-        {/* </Background> */}
       </AuthProvider>
     </Router>
   );

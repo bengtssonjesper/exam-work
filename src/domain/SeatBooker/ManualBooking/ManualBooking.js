@@ -16,6 +16,9 @@ export default function ManualBooking(props) {
   const bookingsByOffice = useSelector(
     (state) => state.bookings.bookingsByOffice
   );
+  const currentUsersBookings = useSelector(
+    (state) => state.bookings.currentUsersBookings
+  );
   const seatsByOffice = useSelector((state) => state.bookings.seatsByOffice);
 
   function handleSubmit(e) {
@@ -32,7 +35,8 @@ export default function ManualBooking(props) {
       bookingsByOffice,
       props.selectedOffice,
       setError,
-      setMessage
+      setMessage,
+      currentUsersBookings
     );
   }
 
