@@ -2,7 +2,7 @@ import React, { useRef, useState } from "react";
 import { Form, Alert, Container } from "react-bootstrap";
 import Button from "@mui/material/Button";
 import { getDatabase, set, ref } from "firebase/database";
-import {useAuth} from '../../contexts/AuthContext'
+import { useAuth } from "../../contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 
 export default function EditProfile() {
@@ -16,7 +16,6 @@ export default function EditProfile() {
     setMessage("");
     setError("");
     e.preventDefault();
-    //Kanske hämta hem nuvarande informationen, lägg till det som lagts till i formet, gör ett tmpobj som sedan postas.
 
     try {
       const db = getDatabase();

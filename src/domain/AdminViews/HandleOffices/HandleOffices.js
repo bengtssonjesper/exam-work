@@ -10,12 +10,14 @@ import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
+import Box from "@mui/material/Box";
 
 export default function HandleOffices(props) {
   const [offices, setOffices] = useState([]);
   const newOfficeRef = useRef();
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
+  const [enteredOffice, setEnteredOffice] = useState("");
 
   useEffect(() => {
     setupOffices();
@@ -62,16 +64,16 @@ export default function HandleOffices(props) {
         })
           .then(setMessage("Office and its bookings deleted"))
           .catch((error) => {
-            setError("error");
+            setError("Something went wrong, office was not deleted");
           });
       });
     }
     set(ref(db, "offices/" + office), {
       //Empty to delete
     })
-      .then(setMessage("success"))
+      .then(setMessage("Office deleted"))
       .catch((error) => {
-        setError("errrorrr");
+        setError("Something went wrong, office was not deleted");
       });
   }
 
@@ -79,15 +81,36 @@ export default function HandleOffices(props) {
     e.preventDefault();
     setError("");
     setMessage("");
+    console.log("props.offices: ", props.offices);
     const db = getDatabase();
-    if (props.offices.includes(newOfficeRef.current.value)) {
+    if (enteredOffice === "") {
+      setError("You must enter an office name");
+    } else if (props.offices.includes(enteredOffice)) {
       setError("Office already exist");
     } else {
-      set(ref(db, "offices/" + newOfficeRef.current.value), {
+      set(ref(db, "offices/" + enteredOffice), {
         seats: ["seat1"],
       });
-      setMessage("Success");
+      setMessage("Office was added");
     }
+  }
+  // function handleAddOffice(e) {
+  //   e.preventDefault();
+  //   setError("");
+  //   setMessage("");
+  //   const db = getDatabase();
+  //   if (props.offices.includes(newOfficeRef.current.value)) {
+  //     setError("Office already exist");
+  //   } else {
+  //     set(ref(db, "offices/" + newOfficeRef.current.value), {
+  //       seats: ["seat1"],
+  //     });
+  //     setMessage("Success");
+  //   }
+  // }
+
+  function handleOfficeInputChange(e) {
+    setEnteredOffice(e.target.value);
   }
 
   return (
@@ -96,7 +119,11 @@ export default function HandleOffices(props) {
       {error && <Alert variant="danger">{error}</Alert>}
       {offices && (
         <TableContainer component={Paper}>
-          <Table sx={{ minWidth: 650 }} size="small" aria-label="simple table">
+          <Table
+            // sx={{ minWidth: 650 }}
+            size="small"
+            aria-label="simple table"
+          >
             <TableHead>
               <TableRow>
                 <TableCell>Office</TableCell>
@@ -113,11 +140,11 @@ export default function HandleOffices(props) {
                     <TableCell component="th" scope="row">
                       {office}
                     </TableCell>
-                    <TableCell>
+                    <TableCell align="right">
                       <Button
                         onClick={() => handleDeleteOffice(office)}
                         variant="contained"
-                        color="danger"
+                        color="warning"
                       >
                         Delete
                       </Button>
@@ -125,8 +152,9 @@ export default function HandleOffices(props) {
                   </TableRow>
                 ))}
               <TableRow>
-                {/* <TableCell>
+                <TableCell>
                   <TextField
+                    onChange={handleOfficeInputChange}
                     inputRef={newOfficeRef}
                     label="New office"
                     variant="standard"
@@ -140,9 +168,9 @@ export default function HandleOffices(props) {
                   >
                     Add
                   </Button>
-                </TableCell> */}
-                <TableCell>
-                  <Form onSubmit={handleAddOffice}>
+                </TableCell>
+                {/* <TableCell> */}
+                {/* <Form onSubmit={handleAddOffice}>
                     <Form.Group>
                       <Form.Label>New office</Form.Label>
                       <Form.Control ref={newOfficeRef} type="text" required />
@@ -150,8 +178,8 @@ export default function HandleOffices(props) {
                         Add
                       </Button>
                     </Form.Group>
-                  </Form>
-                </TableCell>
+                  </Form> */}
+                {/* </TableCell> */}
               </TableRow>
             </TableBody>
           </Table>

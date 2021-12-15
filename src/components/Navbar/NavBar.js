@@ -1,16 +1,21 @@
-import React, {useState} from "react";
-import { Navbar,Nav, Container } from "react-bootstrap";
+import React, { useState } from "react";
+import { Navbar, Nav, Container } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthContext";
-import Switch from '@mui/material/Switch'
-import FormGroup from '@mui/material/FormGroup';
-import FormControl from '@mui/material/FormControl';
-import Brightness6Icon from '@mui/icons-material/Brightness6';
+import Switch from "@mui/material/Switch";
+import FormGroup from "@mui/material/FormGroup";
+import FormControl from "@mui/material/FormControl";
+import Brightness6Icon from "@mui/icons-material/Brightness6";
+import { bookingsActions } from "../../store/bookings";
+import { useSelector, useDispatch } from "react-redux";
+import DarkModeIcon from "@mui/icons-material/DarkMode";
+import LightModeIcon from "@mui/icons-material/LightMode";
 
 export default function NavBar() {
   const navigate = useNavigate();
   const { currentUser, logout, isAdmin } = useAuth();
-  const [darkMode, setDarkMode] = useState(false);
+  const darkMode = useSelector((state) => state.bookings.darkMode);
+  const dispatch = useDispatch();
 
   function navigateToBookingDashboard() {
     navigate("/bookingdashboard");
@@ -40,8 +45,10 @@ export default function NavBar() {
     }
   }
 
-  function handleDarkMode(){
-    setDarkMode(!darkMode)
+  function toggleDarkMode() {
+    darkMode
+      ? dispatch(bookingsActions.setDarkMode(false))
+      : dispatch(bookingsActions.setDarkMode(true));
   }
 
   return (
@@ -59,25 +66,20 @@ export default function NavBar() {
                 Book Seat
               </Nav.Link>
             )}
-            {currentUser && isAdmin &&  (
+            {currentUser && isAdmin && (
               <Nav.Link onClick={navigateToAdmin}>Admin page</Nav.Link>
             )}
-            
-            
           </Nav>
 
-          <Nav style={{display:'flex', alignItems:'center'}}>
-          <FormGroup  > 
-            <FormControl  onChange={handleDarkMode} control={<Switch defaultChecked />} label="DarkMode" />
-
-          </FormGroup>
-
+          <Nav>
+            <Nav.Link onClick={toggleDarkMode}>
+              {!darkMode && <DarkModeIcon />}
+              {darkMode && <LightModeIcon />}
+            </Nav.Link>
             {!currentUser && (
               <Nav.Link onClick={navigateToLogin}>Log In</Nav.Link>
             )}
             {currentUser && <Nav.Link onClick={handleLogOut}>Log Out</Nav.Link>}
-
-            
           </Nav>
         </Navbar.Collapse>
       </Container>

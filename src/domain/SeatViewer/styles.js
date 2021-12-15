@@ -1,6 +1,6 @@
-import styled from 'styled-components'
+import styled from "styled-components";
 
 export const ViewerContainer = styled.div`
-    width:100%;
-    margin:15px;
-`
+  width: 100%;
+  padding: 10px;
+`;

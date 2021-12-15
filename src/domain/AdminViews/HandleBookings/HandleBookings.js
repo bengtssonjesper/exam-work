@@ -9,17 +9,16 @@ import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import Button from "@mui/material/Button";
 import { useSelector } from "react-redux";
-import {Alert} from 'react-bootstrap'
+import { Alert } from "react-bootstrap";
 import BookingModal from "../../../components/BookingModal/BookingModal";
 
-
 export default function HandleBookings(props) {
-  const[message,setMessage] = useState("")
-  const[error,setError] = useState("")
+  const [message, setMessage] = useState("");
+  const [error, setError] = useState("");
   const [rows, setRows] = useState([]);
   const bookingsByDate = useSelector((state) => state.bookings.bookingsByDate);
   const [show, setShow] = useState(false);
-  const [clickedBooking, setClickedBooking] = useState({})
+  const [clickedBooking, setClickedBooking] = useState({});
 
   useEffect(() => {
     setupRows();
@@ -64,31 +63,29 @@ export default function HandleBookings(props) {
     const db = getDatabase();
     set(ref(db, "bookings/" + booking.user + "/" + booking.id), {
       //Passing empty object will delete the booking
-    })
+    });
   }
 
-  function handleUpdateBooking(booking){
-    setClickedBooking(booking)
-    handleShow()
-    // const bookingsOnSameSeat = bookingsByDate[booking["date"]].filter(
-    //   (booking_)=>
-    //     booking_["seat"] === booking["seat"] &&
-    //     booking_["bookingId"] !== booking["bookingId"]
-      
-    // )
-    // console.log("bookingonsamesaet: ", bookingsOnSameSeat)
+  function handleUpdateBooking(booking) {
+    setClickedBooking(booking);
+    handleShow();
   }
 
   return (
     <div>
       {message && <Alert variant="success">{message}</Alert>}
       {error && <Alert variant="success">{error}</Alert>}
-      {show&&
-            <BookingModal setShow={setShow} show={show} booking={clickedBooking} handleClose={handleClose} />
-        }
+      {show && (
+        <BookingModal
+          setShow={setShow}
+          show={show}
+          booking={clickedBooking}
+          handleClose={handleClose}
+        />
+      )}
       {rows && (
         <TableContainer component={Paper}>
-          <Table sx={{ minWidth: 650 }} size="small" aria-label="simple table">
+          <Table sx={{ minWidth: 650 }} aria-label="simple table">
             <TableHead>
               <TableRow>
                 <TableCell>Date</TableCell>
@@ -116,7 +113,7 @@ export default function HandleBookings(props) {
                     <Button
                       onClick={() => handleDeleteBooking(booking)}
                       variant="contained"
-                      color="danger"
+                      color="warning"
                     >
                       Delete
                     </Button>

@@ -15,8 +15,7 @@ export function createBooking(
   setMessage,
   currentUsersBookings
 ) {
-
-  if (Object.entries(bookingsByOffice).length > 0) {
+  if (selectedOffice in bookingsByOffice) {
     var compareArray = bookingsByOffice[selectedOffice].filter(
       (booking) => booking.date === date && booking.seat === seat
     );
@@ -24,19 +23,27 @@ export function createBooking(
     var compareArray = [];
   }
 
-  var currentUsersBookingsArr=[]
-  Object.keys(currentUsersBookings).forEach(element=>{
-    currentUsersBookings[element].forEach(booking_=>{
-      currentUsersBookingsArr.push(booking_)
-    })
-  })
+  var currentUsersBookingsArr = [];
+  Object.keys(currentUsersBookings).forEach((element) => {
+    currentUsersBookings[element].forEach((booking_) => {
+      currentUsersBookingsArr.push(booking_);
+    });
+  });
 
   try {
     if (seat === "Select a seat") {
       throw "Please select a seat";
     } else if (!thisWeeksDates.includes(date)) {
       throw "You can only book one week ahead";
-    } else if (isBookingAllowed(startTime, endTime, compareArray, currentUsersBookingsArr,date)) {
+    } else if (
+      isBookingAllowed(
+        startTime,
+        endTime,
+        compareArray,
+        currentUsersBookingsArr,
+        date
+      )
+    ) {
       const db = getDatabase();
       const uid = uuidv4();
       try {
@@ -74,16 +81,24 @@ export function updateBooking(
   setError("");
   setMessage("");
   const refStr = "bookings/" + booking["user"] + "/" + booking["bookingId"];
-  var currentUsersBookingsArr=[]
-  Object.keys(currentUsersBookings).forEach(element=>{
-    currentUsersBookings[element].forEach(booking_=>{
-      if(booking.bookingId!==booking_.bookingId){
-      currentUsersBookingsArr.push(booking_)
+  var currentUsersBookingsArr = [];
+  Object.keys(currentUsersBookings).forEach((element) => {
+    currentUsersBookings[element].forEach((booking_) => {
+      if (booking.bookingId !== booking_.bookingId) {
+        currentUsersBookingsArr.push(booking_);
       }
-    })
-  })
+    });
+  });
   try {
-    if (isBookingAllowed(newStartTime, newEndTime, arrayOfBookings,currentUsersBookingsArr,booking["date"])) {
+    if (
+      isBookingAllowed(
+        newStartTime,
+        newEndTime,
+        arrayOfBookings,
+        currentUsersBookingsArr,
+        booking["date"]
+      )
+    ) {
       set(ref(db, refStr), {
         bookingId: booking["bookingId"],
         date: booking["date"],
@@ -102,25 +117,34 @@ export function updateBooking(
   }
 }
 
-function isBookingAllowed(selectedStartTime, selectedEndTime, compareArray,currentUsersBookings,date) {
+function isBookingAllowed(
+  selectedStartTime,
+  selectedEndTime,
+  compareArray,
+  currentUsersBookings,
+  date
+) {
   //Needed input: selectedStartTime, selectedEndTime, compareArray,
   var isAllowed = true;
   var startTimeDate = new Date();
   var endTimeDate = new Date();
   startTimeDate.setHours(
     parseInt(selectedStartTime.substr(0, 2)),
-    parseInt(selectedStartTime.substr(3, 2)),0
+    parseInt(selectedStartTime.substr(3, 2)),
+    0
   );
   endTimeDate.setHours(
     parseInt(selectedEndTime.substr(0, 2)),
-    parseInt(selectedEndTime.substr(3, 2)),0
+    parseInt(selectedEndTime.substr(3, 2)),
+    0
   );
   compareArray.forEach((booking) => {
     var cmpStart = new Date();
     var cmpEnd = new Date();
     cmpStart.setHours(
       booking.startTime.substr(0, 2),
-      booking.startTime.substr(3, 2),0
+      booking.startTime.substr(3, 2),
+      0
     );
     cmpEnd.setHours(booking.endTime.substr(0, 2), booking.endTime.substr(3, 2));
     if (startTimeDate >= endTimeDate) {
@@ -134,40 +158,42 @@ function isBookingAllowed(selectedStartTime, selectedEndTime, compareArray,curre
       throw "Collision with another booking, please change times";
     }
   });
-  console.log("currentusersbooking: ", currentUsersBookings)
+  console.log("currentusersbooking: ", currentUsersBookings);
 
-  if(currentUsersBookings){
+  if (currentUsersBookings) {
     // console.log("currentusersbooking")
     // Object.keys(currentUsersBookings).forEach((element,i)=>{
     //   console.log("date: ", date)
     //   console.log("element: ", element)
     //   console.log("element[]: ", currentUsersBookings[element])
     //   currentUsersBookings[element].forEach(booking=>{
-      currentUsersBookings.forEach(booking=>{
-        if(booking["date"]===date){
-        console.log("same date: ")
-        console.log("booking: ", booking)
-        
+    currentUsersBookings.forEach((booking) => {
+      if (booking["date"] === date) {
+        console.log("same date: ");
+        console.log("booking: ", booking);
+
         var cmpStart = new Date();
         var cmpEnd = new Date();
         cmpStart.setHours(
           booking.startTime.substr(0, 2),
-          booking.startTime.substr(3, 2),0
-          );
-          cmpEnd.setHours(
-            booking.endTime.substr(0, 2), 
-            booking.endTime.substr(3, 2),0
-            );
-        if(
-          (startTimeDate>cmpStart && startTimeDate<cmpEnd)|| 
-          (endTimeDate>cmpStart && endTimeDate<cmpEnd)
-          ){
-            isAllowed=false;
-            throw'Only one booking per user at a time allowed'
+          booking.startTime.substr(3, 2),
+          0
+        );
+        cmpEnd.setHours(
+          booking.endTime.substr(0, 2),
+          booking.endTime.substr(3, 2),
+          0
+        );
+        if (
+          (startTimeDate > cmpStart && startTimeDate < cmpEnd) ||
+          (endTimeDate > cmpStart && endTimeDate < cmpEnd)
+        ) {
+          isAllowed = false;
+          throw "Only one booking per user at a time allowed";
         }
       }
-    })
-}
+    });
+  }
 
   return isAllowed;
 }
@@ -201,7 +227,6 @@ export function reduxFormatData(data, currentUser, dispatch) {
   var seatsByOffice = {};
   var offices = [];
   var currentUsersBookingsDays = [];
-
 
   // for (const [officeName, officeObject] of Object.entries(data)) {
   //   offices.push(officeName);
@@ -320,7 +345,6 @@ export function reduxFormatBookings(data, currentUser, dispatch) {
 }
 
 export function reduxFormatOffices(data, dispatch) {
-
   var offices = [];
   var seatsByOffice = {};
   if (data !== null) {
@@ -333,10 +357,10 @@ export function reduxFormatOffices(data, dispatch) {
   dispatch(bookingsActions.setSeatsByOffice(seatsByOffice));
 }
 
-export function reduxFormatUsers(data,dispatch){
-  var users=[]
-  Object.keys(data).forEach(user=>{
-    users.push(user)
-  })
+export function reduxFormatUsers(data, dispatch) {
+  var users = [];
+  Object.keys(data).forEach((user) => {
+    users.push(user);
+  });
   dispatch(bookingsActions.setUsers(users));
 }

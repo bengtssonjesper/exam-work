@@ -15,8 +15,17 @@ import HandleUsers from "../../domain/AdminViews/HandleUsers/HandleUsers";
 import {
   reduxFormatBookings,
   reduxFormatOffices,
-  reduxFormatUsers
+  reduxFormatUsers,
 } from "../../helper/HelperFunctions";
+import Typography from "@mui/material/Typography";
+
+import { ShowOnMobile, ShowOnDesktop } from "./styles";
+import InputLabel from "@mui/material/InputLabel";
+import FormControl from "@mui/material/FormControl";
+import Select from "@mui/material/Select";
+import MenuItem from "@mui/material/MenuItem";
+import Card from "@mui/material/Card";
+import CardContent from "@mui/material/CardContent";
 
 export default function AdminPage() {
   const dispatch = useDispatch();
@@ -33,6 +42,7 @@ export default function AdminPage() {
     (state) => state.bookings.bookingsByOffice
   );
   const seatsByOffice = useSelector((state) => state.bookings.seatsByOffice);
+  const darkMode = useSelector((state) => state.bookings.darkMode);
 
   useEffect(() => {
     //Förmdoligen bättre att köra detta när man klickar med clean database
@@ -153,39 +163,72 @@ export default function AdminPage() {
 
   return (
     <>
-      <AdminHeader>
-        <h1>ADMIN PAGE</h1>
-        <Tabs
-          value={whatView}
-          onChange={handleChangeView}
-          aria-label="icon label tabs example"
+      <AdminHeader
+        style={{
+          backgroundColor: darkMode ? "rgb(50,50,50)" : "rgb(230,230,230)",
+          boxShadow: darkMode
+            ? "rgba(200, 200, 200, 0.35) 0px 5px 15px"
+            : "rgba(0, 0, 0, 0.35) 0px 5px 15px",
+        }}
+      >
+        <Typography
+          variant="h3"
+          color={darkMode ? "rgb(200,200,200)" : "rgb(50,50,50)"}
         >
-          <Tab
-            value="handleOffices"
-            label="HANDLE OFFICES"
-            sx={{ color: `${theme.palette.secondary.main}` }}
-          />
-          <Tab
-            value="handleSeats"
-            label="HANDLE SEATS"
-            sx={{ color: `${theme.palette.secondary.main}` }}
-          />
-          <Tab
-            value="handleBookings"
-            label="HANDLE BOOKINGS"
-            sx={{ color: `${theme.palette.secondary.main}` }}
-          />
-          <Tab
-            value="handleUsers"
-            label="ADD USER"
-            sx={{ color: `${theme.palette.secondary.main}` }}
-          />
-          <Tab
-            value="addAdmin"
-            label="ADD ADMIN"
-            sx={{ color: `${theme.palette.secondary.main}` }}
-          />
-        </Tabs>
+          ADMIN PAGE
+        </Typography>
+        <ShowOnDesktop>
+          <Tabs
+            value={whatView}
+            onChange={handleChangeView}
+            aria-label="icon label tabs example"
+          >
+            <Tab
+              value="handleOffices"
+              label="HANDLE OFFICES"
+              // sx={{ color: `${theme.palette.secondary.main}` }}
+            />
+            <Tab
+              value="handleSeats"
+              label="HANDLE SEATS"
+              // sx={{ color: `${theme.palette.secondary.main}` }}
+            />
+            <Tab
+              value="handleBookings"
+              label="HANDLE BOOKINGS"
+              // sx={{ color: `${theme.palette.secondary.main}` }}
+            />
+            <Tab
+              value="handleUsers"
+              label="ADD USER"
+              // sx={{ color: `${theme.palette.secondary.main}` }}
+            />
+            <Tab
+              value="addAdmin"
+              label="ADD ADMIN"
+              // sx={{ color: `${theme.palette.secondary.main}` }}
+            />
+          </Tabs>
+        </ShowOnDesktop>
+        <ShowOnMobile>
+          <FormControl fullWidth>
+            <InputLabel variant="standard" htmlFor="uncontrolled-native">
+              Select
+            </InputLabel>
+            <Select
+              onChange={(e) => {
+                setWhatView(e.target.value);
+              }}
+              defaultValue={"handleOffices"}
+            >
+              <MenuItem value={"handleOffices"}>HANDLE OFFICES</MenuItem>
+              <MenuItem value={"handleSeats"}>HANDLE SEATS</MenuItem>
+              <MenuItem value={"handleBookings"}>HANDLE BOOKINGS</MenuItem>
+              <MenuItem value={"handleUsers"}>HANDLE USERS</MenuItem>
+              <MenuItem value={"addAdmin"}>ADD ADMIN</MenuItem>
+            </Select>
+          </FormControl>
+        </ShowOnMobile>
       </AdminHeader>
 
       <AdminBody>
@@ -193,13 +236,17 @@ export default function AdminPage() {
         {error && <Alert variant="danger">{error}</Alert>}
 
         {whatView === "addAdmin" && (
-          <Form onSubmit={handleAddAdmin}>
-            <Form.Group>
-              <Form.Label>Admin UID</Form.Label>
-              <Form.Control type="text" ref={adminUidRef} />
-            </Form.Group>
-            <Button type="submit">Add admin</Button>
-          </Form>
+          <Card>
+            <CardContent>
+              <Form onSubmit={handleAddAdmin}>
+                <Form.Group>
+                  <Form.Label>Admin UID</Form.Label>
+                  <Form.Control type="text" ref={adminUidRef} />
+                </Form.Group>
+                <Button type="submit">Add admin</Button>
+              </Form>
+            </CardContent>
+          </Card>
         )}
 
         {whatView === "handleBookings" && allBookings && (

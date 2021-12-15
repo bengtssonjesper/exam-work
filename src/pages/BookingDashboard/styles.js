@@ -15,10 +15,10 @@ export const DashboardHeader = styled.div`
 
 export const DashboardHeaderRow = styled.div`
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
-  width: 40vw;
 `;
+
 export const DashboardHeaderItem = styled.div``;
 export const DashboardBody = styled.div`
   width: 95vw;
@@ -27,10 +27,30 @@ export const DashboardBody = styled.div`
 export const ViewerBookerContainer = styled.div`
   margin: 10px 0;
   display: flex;
+
   align-items: flex-start;
-  justify-content: space-between;
+  justify-content: center;
+  ${({ width }) =>
+    width > 1000
+      ? `
+  flex-direction: row;
+`
+      : `
+flex-direction: column;`}
 `;
 export const ChangeOfficePicker = {
   maxWidth: "400px",
   margin: "20px auto",
 };
+
+export const ShowOnDesktop = styled.div`
+  @media (max-width: 700px) {
+    display: none;
+  }
+`;
+export const ShowOnMobile = styled.div`
+  display: inline-block;
+  @media (min-width: 700px) {
+    display: none;
+  }
+`;

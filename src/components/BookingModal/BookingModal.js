@@ -12,8 +12,9 @@ export default function BookingModal(props) {
   const [error, setError] = useState();
   const [message, setMessage] = useState();
   const bookingsByDate = useSelector((state) => state.bookings.bookingsByDate);
-  const currentUsersBookings = useSelector((state) => state.bookings.currentUsersBookings);
-
+  const currentUsersBookings = useSelector(
+    (state) => state.bookings.currentUsersBookings
+  );
 
   function handleDeleteBooking() {
     props.setShow(false);
@@ -52,7 +53,11 @@ export default function BookingModal(props) {
   }
 
   return (
-    <Modal show={props.show} onHide={props.handleClose}>
+    <Modal
+      style={{ color: "black" }}
+      show={props.show}
+      onHide={props.handleClose}
+    >
       <Modal.Header closeButton>
         <Modal.Title>What do you wish to do with this booking?</Modal.Title>
       </Modal.Header>

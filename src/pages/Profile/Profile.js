@@ -1,14 +1,16 @@
 import React, { useState, useEffect, useRef } from "react";
-import { MainContainer } from "../../styles/styles";
 import "../../styles/styles.css";
-import { set, ref, getDatabase } from "firebase/database";
+import { ref, getDatabase } from "firebase/database";
 import { useAuth } from "../../contexts/AuthContext";
-import { Alert, Container, Accordion, Form } from "react-bootstrap";
+import { Alert, Accordion, Form } from "react-bootstrap";
 import Button from "@mui/material/Button";
 import { useNavigate } from "react-router-dom";
-import { onValue, update } from "@firebase/database";
+import { onValue } from "@firebase/database";
 import { useSelector, useDispatch } from "react-redux";
-import { reduxFormatData, reduxFormatUsers } from "../../helper/HelperFunctions";
+import {
+  reduxFormatData,
+  reduxFormatUsers,
+} from "../../helper/HelperFunctions";
 import {
   ProfileHeader,
   ProfileBody,
@@ -17,22 +19,31 @@ import {
   ProfileBodyHeaderText,
   AccordionStyles,
   EditProfileButtonStyles,
-  ShowOnDesktop,ShowOnMobile
+  ShowOnDesktop,
+  ShowOnMobile,
 } from "./styles";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import MenuBookIcon from "@mui/icons-material/MenuBook";
-import { theme } from "../../styles/theme";
-import { v4 as uuidv4 } from "uuid";
-import InputLabel from '@mui/material/InputLabel';
-import MenuItem from '@mui/material/MenuItem';
-import FormControl from '@mui/material/FormControl';
-import Select from '@mui/material/Select';
+
+import InputLabel from "@mui/material/InputLabel";
+import FormControl from "@mui/material/FormControl";
+import Select from "@mui/material/Select";
+import MenuItem from "@mui/material/MenuItem";
+import Grid from "@mui/material/Grid";
+import Card from "@mui/material/Card";
+import CardHeader from "@mui/material/CardHeader";
+import CardContent from "@mui/material/CardContent";
+import TextField from "@mui/material/TextField";
+import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
+import { useTheme } from "@material-ui/core/styles";
 
 export default function Profile() {
-  const oldPasswordRef = useRef();
-  const newPasswordRef = useRef();
+  const defaultTheme = useTheme();
+  const oldPasswordRef = useRef("");
+  const newPasswordRef = useRef("");
   const confirmPasswordRef = useRef();
   const { currentUser } = useAuth();
   const [error, setError] = useState("");
@@ -41,12 +52,25 @@ export default function Profile() {
   const [profileData, setProfileData] = useState();
   const [whatView, setWhatView] = useState(0);
   const { login, ownUpdatePassword } = useAuth();
+  const [enteredOldPassword, setEnteredOldPassword] = useState("");
+  const [enteredNewPassword, setEnteredNewPassword] = useState("");
+  const [enteredConfirmPassword, setEnteredConfirmPassword] = useState("");
 
   const dispatch = useDispatch();
   const offices = useSelector((state) => state.bookings.offices);
   const currentUsersBookings = useSelector(
     (state) => state.bookings.currentUsersBookings
   );
+  const darkMode = useSelector((state) => state.bookings.darkMode);
+
+  const inputDarkStyle = {
+    WebkitBoxShadow: "0 0 0 30px rgba(0,0,0,0.3) inset",
+    padding: "3px",
+  };
+  const inputLightStyle = {
+    WebkitBoxShadow: "0 0 0 30px rgba(0,50,0,0.5) inset",
+    padding: "3px",
+  };
 
   useEffect(() => {
     function getProfileData() {
@@ -84,18 +108,12 @@ export default function Profile() {
     });
   }, []);
 
-
   function handleEditProfile() {
     navigate("/editprofile");
   }
 
   const handleChangeView = (event, newValue) => {
-    console.log("new val: ", newValue)
     setWhatView(newValue);
-  };
-  const handleChangeViewMobile = (event, newValue) => {
-    console.log("new val: ", event.target.value)
-    setWhatView(parseInt(event.target.value));
   };
 
   async function handlePasswordChange(e) {
@@ -106,14 +124,13 @@ export default function Profile() {
       //This is to confirm the old password
       const loginPromise = await login(
         currentUser._delegate.email,
-        oldPasswordRef.current.value
+        enteredOldPassword
       );
       if (loginPromise) {
-        if (newPasswordRef.current.value === confirmPasswordRef.current.value) {
-          await ownUpdatePassword(
-            currentUser,
-            newPasswordRef.current.value
-          ).then(setMessage("Password updated"));
+        if (enteredNewPassword === enteredConfirmPassword) {
+          await ownUpdatePassword(currentUser, enteredNewPassword).then(
+            setMessage("Password updated")
+          );
         } else {
           throw "New Passwords not matching";
         }
@@ -121,56 +138,77 @@ export default function Profile() {
         throw "Old password wrong";
       }
     } catch (error) {
+      console.log("error: ", error);
       setError("error");
     }
   }
 
+  function handleOldPasswordInputChange(e) {
+    setEnteredOldPassword(e.target.value);
+  }
+  function handleNewPasswordInputChange(e) {
+    setEnteredNewPassword(e.target.value);
+  }
+  function handleConfirmPasswordInputChange(e) {
+    setEnteredConfirmPassword(e.target.value);
+  }
+
   return (
     <>
-      <ProfileHeader>
-        <h1>PROFILE</h1>
+      <ProfileHeader
+        style={{
+          backgroundColor: darkMode ? "rgb(50,50,50)" : "rgb(230,230,230)",
+          boxShadow: darkMode
+            ? "rgba(200, 200, 200, 0.35) 0px 5px 15px"
+            : "rgba(0, 0, 0, 0.35) 0px 5px 15px",
+        }}
+      >
+        <Typography
+          variant="h3"
+          color={darkMode ? "rgb(200,200,200)" : "rgb(50,50,50)"}
+        >
+          PROFILE
+        </Typography>
         <ShowOnDesktop>
           <Tabs
             value={whatView}
             onChange={handleChangeView}
             aria-label="icon label tabs example"
           >
-            <Tab
-              icon={<AccountCircleIcon />}
-              label="PROFILE INFO"
-              sx={{ color: `${theme.palette.secondary.main}` }}
-            />
-            <Tab
-              icon={<MenuBookIcon />}
-              label="YOUR BOOKINGS"
-              sx={{ color: `${theme.palette.secondary.main}` }}
-            />
-            <Tab
-              icon={<MenuBookIcon />}
-              label="UPDATE PASSWORD"
-              sx={{ color: `${theme.palette.secondary.main}` }}
-            />
+            <Tab icon={<AccountCircleIcon />} label="PROFILE INFO" />
+            <Tab icon={<MenuBookIcon />} label="YOUR BOOKINGS" />
+            <Tab icon={<MenuBookIcon />} label="UPDATE PASSWORD" />
           </Tabs>
         </ShowOnDesktop>
         <ShowOnMobile>
-        <Form>
-          <Form.Group className="mb-3">
-            <Form.Control as="select" onChange={handleChangeViewMobile}>
-              <option value={0}>PROFILE INFO</option>
-              <option value={1}>YOUR BOOKINGS</option>
-              </Form.Control>
-            
-          </Form.Group>
-          </Form>
+          <FormControl fullWidth>
+            <InputLabel variant="standard" htmlFor="uncontrolled-native">
+              Select
+            </InputLabel>
+            <Select
+              onChange={(e) => {
+                setWhatView(parseInt(e.target.value));
+              }}
+              defaultValue={0}
+            >
+              <MenuItem value={0}>PROFILE INFO</MenuItem>
+              <MenuItem value={1}>YOUR BOOKINGS</MenuItem>
+              <MenuItem value={2}>UPDATE PASSWORD</MenuItem>
+            </Select>
+          </FormControl>
         </ShowOnMobile>
       </ProfileHeader>
 
       <ProfileBody>
         {message && <Alert variant="success">{message}</Alert>}
         {error && <Alert variant="danger">{error}</Alert>}
+
         {whatView === 0 && (
           <ProfileInfo>
             <ProfileBodyHeaderText>Profile info</ProfileBodyHeaderText>
+            {currentUser && (
+              <p>You are logged in as: {currentUser._delegate.email}</p>
+            )}
             {profileData && "name" in profileData && (
               <p>Name: {profileData.name}</p>
             )}
@@ -203,8 +241,9 @@ export default function Profile() {
                             {currentUsersBookings[element].map((booking, j) => {
                               return (
                                 <div
+                                  style={{ color: "black" }}
                                   key={j}
-                                  className="d-flex justify-content-between"
+                                  className="d-flex justify-content-between "
                                 >
                                   <p>Office: {booking.office}</p>
                                   <p>Seat: {booking.seat}</p>
@@ -224,29 +263,83 @@ export default function Profile() {
           </ProfileBookings>
         )}
         {whatView === 2 && (
-          <div>
-            <Form onSubmit={handlePasswordChange}>
-              <Form.Group>
-                <Form.Label>Old Password</Form.Label>
-                <Form.Control ref={oldPasswordRef} type="password" required />
-              </Form.Group>
-              <Form.Group>
-                <Form.Label>New Password</Form.Label>
-                <Form.Control ref={newPasswordRef} type="password" required />
-              </Form.Group>
-              <Form.Group>
-                <Form.Label>Confirm Password</Form.Label>
-                <Form.Control
-                  ref={confirmPasswordRef}
-                  type="password"
-                  required
-                />
-              </Form.Group>
-              <Button variant="contained" type="submit">
-                Change Password
-              </Button>
-            </Form>
-          </div>
+          // <div>
+          <Grid
+            container
+            spacing={0}
+            direction="column"
+            alignItems="center"
+            justify="center"
+            // style={{ height: "40vh" }}
+          >
+            <Card
+              style={{
+                height: "100%",
+                width: "min(400px,85vw)",
+                textAlign: "center",
+                margin: "30px 0",
+              }}
+            >
+              <CardHeader title="Change Password" />
+              <CardContent
+              // sx={{
+              //   height: "90%",
+              //   display: "flex",
+              //   flexDirection: "column",
+              //   justifyContent: "space-evenly",
+              // }}
+              >
+                <Box
+                  component="form"
+                  onSubmit={handlePasswordChange}
+                  sx={{
+                    height: "300px",
+                    display: "flex",
+                    flexDirection: "column",
+                    justifyContent: "space-evenly",
+                  }}
+                >
+                  <TextField
+                    required
+                    id="old-password"
+                    label="Old Password"
+                    variant="standard"
+                    type="password"
+                    onChange={handleOldPasswordInputChange}
+                    inputProps={{
+                      style: darkMode ? inputDarkStyle : inputLightStyle,
+                    }}
+                  />
+                  <TextField
+                    required
+                    id="new-password"
+                    label="New Password"
+                    variant="standard"
+                    type="password"
+                    onChange={handleNewPasswordInputChange}
+                    inputProps={{
+                      style: darkMode ? inputDarkStyle : inputLightStyle,
+                    }}
+                  />
+                  <TextField
+                    required
+                    id="confirm-password"
+                    label="Confirm Password"
+                    variant="standard"
+                    type="password"
+                    onChange={handleConfirmPasswordInputChange}
+                    inputProps={{
+                      style: darkMode ? inputDarkStyle : inputLightStyle,
+                    }}
+                  />
+                  <Button variant="contained" type="submit">
+                    Change Password
+                  </Button>
+                </Box>
+              </CardContent>
+            </Card>
+          </Grid>
+          // </div>
         )}
         {/* <Button onClick={addBooking}>Add Booking</Button> */}
       </ProfileBody>

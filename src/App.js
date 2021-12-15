@@ -1,5 +1,5 @@
+import * as React from "react";
 import { AuthProvider } from "./contexts/AuthContext";
-// import Signup from "./pages/Signup/Signup";
 import Login from "./pages/Login/Login";
 import ForgotPassword from "./pages/ForgotPassword/ForgotPassword";
 import PrivateRoute from "./components/PrivateRoute/PrivateRoute";
@@ -9,16 +9,30 @@ import BookingDashboard from "./pages/BookingDashboard/BookingDashboard";
 import EditProfile from "./pages/EditProfile/EditProfile";
 import NavBar from "./components/Navbar/NavBar";
 import AdminPage from "./pages/AdminPage/AdminPage";
-import { Background } from "./styles/styles";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { theme } from "./styles/theme";
-import { ThemeProvider } from "@mui/material/styles";
+// import { theme } from "./styles/theme";
+import { ThemeProvider, createTheme } from "@mui/material/styles";
+import { useSelector } from "react-redux";
+import CssBaseline from "@mui/material/CssBaseline";
 
 function App() {
+  const darkMode = useSelector((state) => state.bookings.darkMode);
+
+  const theme = React.useMemo(
+    () =>
+      createTheme({
+        palette: {
+          mode: darkMode ? "dark" : "light",
+        },
+      }),
+    [darkMode]
+  );
+
   return (
     <Router>
       <AuthProvider>
         <ThemeProvider theme={theme}>
+          <CssBaseline />
           <NavBar />
           <Routes>
             <Route exact path="/" element={<PrivateRoute />}>

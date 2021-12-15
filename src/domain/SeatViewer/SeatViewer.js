@@ -55,7 +55,6 @@ export default function SeatViewer(props) {
     handleDateChange();
   }, [props.selectedOffice, allBookings]);
 
-
   function handleDateChange() {
     //Denna funktion ska returnera en array av alla bokningar på det valda officet och datumet
     var tmpArr = [];
@@ -118,25 +117,21 @@ export default function SeatViewer(props) {
 
   return (
     <ViewerContainer>
-      {props.viewer==='text' && <h3>Text viewer</h3>}
-      {props.viewer==='schedule' && <h3>Schedule viewer</h3>}
+      {props.viewer === "text" && <h3>Text viewer</h3>}
+      {props.viewer === "schedule" && <h3>Schedule viewer</h3>}
       <Row className="mt-2 mb-4">
-        <Col sm lg="3" className="d-flex align-items-end md-6">
+        <Col sm lg="3" className="d-flex md-6">
           <Form>
-            <Form.Group className="mt-1 mb-1">
+            <Form.Group style={{ width: "min(150px,80vw)" }}>
               <Form.Select
                 aria-label="Default select example"
                 ref={dateRef}
                 onChange={handleDateChange}
               >
                 <option>Select a date</option>
-                  {props.thisWeeksDatesStrings &&
+                {props.thisWeeksDatesStrings &&
                   props.thisWeeksDatesStrings.map((date, i) => {
-                    return (
-                      <option key={i}>
-                        {date}
-                      </option>
-                    );
+                    return <option key={i}>{date}</option>;
                   })}
               </Form.Select>
             </Form.Group>
@@ -164,7 +159,7 @@ export default function SeatViewer(props) {
                   aria-label="Default select example"
                 >
                   {dayHours &&
-                    dayHours.map((hour,i) => {
+                    dayHours.map((hour, i) => {
                       return <option key={i}>{hour}</option>;
                     })}
                 </Form.Select>
@@ -173,7 +168,7 @@ export default function SeatViewer(props) {
                   aria-label="Default select example"
                 >
                   {dayHours &&
-                    dayHours.map((hour,i) => {
+                    dayHours.map((hour, i) => {
                       return <option key={i}>{hour}</option>;
                     })}
                 </Form.Select>

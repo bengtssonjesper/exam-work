@@ -1,25 +1,48 @@
 import { useRef, useState } from "react";
-import { Card, Form, Alert, Container } from "react-bootstrap";
+import { Form, Alert } from "react-bootstrap";
 import Button from "@mui/material/Button";
-import {useAuth } from '../../contexts/AuthContext'
+import { useAuth } from "../../contexts/AuthContext";
 import { Link, useNavigate } from "react-router-dom";
-import {AuthContainer, AuthCard, AuthCardBody} from '../../styles/styles'
+import { AuthContainer, AuthCard, AuthCardBody } from "../../styles/styles";
+import Card from "@mui/material/Card";
+import Box from "@mui/material/Box";
+import CardActions from "@mui/material/CardActions";
+import CardContent from "@mui/material/CardContent";
+import Typography from "@mui/material/Typography";
+import TextField from "@mui/material/TextField";
+import CardHeader from "@mui/material/CardHeader";
+import Container from "@mui/material/Container";
+import Grid from "@mui/material/Grid";
+import { useSelector } from "react-redux";
 
 export default function Login() {
   const emailRef = useRef();
   const passwordRef = useRef();
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [enteredEmail, setEnteredEmail] = useState("");
+  const [enteredPassword, setEnteredPassword] = useState("");
   const { login } = useAuth();
+  const darkMode = useSelector((state) => state.bookings.darkMode);
+  const inputDarkStyle = {
+    WebkitBoxShadow: "0 0 0 30px rgba(0,0,0,0.3) inset",
+    padding: "3px",
+  };
+  const inputLightStyle = {
+    WebkitBoxShadow: "0 0 0 30px rgba(0,50,0,0.5) inset",
+    padding: "3px",
+  };
+
   const navigate = useNavigate();
 
   async function handleSubmit(e) {
     e.preventDefault();
-
+    console.log(emailRef);
+    console.log(this);
     try {
       setError("");
       setLoading(true);
-      await login(emailRef.current.value, passwordRef.current.value);
+      await login(enteredEmail, enteredPassword);
       navigate("/", { replace: true });
     } catch {
       setError("Failed to sign in");
@@ -27,40 +50,66 @@ export default function Login() {
     setLoading(false);
   }
 
+  function handleEmailInputChange(e) {
+    setEnteredEmail(e.target.value);
+  }
+  function handlePasswordInputChange(e) {
+    setEnteredPassword(e.target.value);
+  }
+
   return (
-    <AuthContainer>
-      <div className="w-100">
-        <AuthCard>
-          <AuthCardBody>
-            <h2 className="text-center">Log In</h2>
-            {error && <Alert variant="danger">{error}</Alert>}
-            <Form onSubmit={handleSubmit}>
-              <Form.Group id="email">
-                <Form.Label>Email</Form.Label>
-                <Form.Control type="email" ref={emailRef} required />
-              </Form.Group>
-              <Form.Group id="password">
-                <Form.Label>Password</Form.Label>
-                <Form.Control type="password" ref={passwordRef} required />
-              </Form.Group>
-              <Button
-                variant="contained"
-                disabled={loading}
-                className="mt-3 w-100"
-                type="submit"
-              >
-                Log In
-              </Button>
-            </Form>
-          </AuthCardBody>
-        </AuthCard>
-        {/* <div className="w-100 text-center mt-2">
-          Need an account? <Link to="/signup">Sign Up</Link>
-        </div> */}
-        <div className="w-100 text-center mt-2">
-          Forgot password? <Link to="/forgotpassword">Reset Password</Link>
-        </div>
-      </div>
-    </AuthContainer>
+    <>
+      <Grid
+        container
+        spacing={0}
+        direction="column"
+        alignItems="center"
+        justify="center"
+        style={{ minHeight: "90vh" }}
+      >
+        <Card
+          sx={{
+            width: "min(400px,85vw)",
+            height: "350px",
+            margin: "auto",
+          }}
+          variant="outlined"
+        >
+          <CardHeader title="Login" />
+          <CardContent
+            sx={{
+              height: "90%",
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "space-evenly",
+            }}
+          >
+            {error && <Alert variant="warning">{error}</Alert>}
+            <TextField
+              id="standard-basic"
+              label="Email"
+              variant="standard"
+              onChange={handleEmailInputChange}
+              inputProps={{
+                style: darkMode ? inputDarkStyle : inputLightStyle,
+              }}
+            />
+            <TextField
+              id="standard-basic"
+              label="Password"
+              variant="standard"
+              type="password"
+              onChange={handlePasswordInputChange}
+            />
+            <Button onClick={handleSubmit} variant="contained">
+              Log In
+            </Button>
+            <div className="w-100 text-center">
+              Forgot password? <Link to="/forgotpassword">Reset Password</Link>
+            </div>
+          </CardContent>
+        </Card>
+      </Grid>
+    </>
   );
 }

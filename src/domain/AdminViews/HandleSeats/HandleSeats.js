@@ -132,7 +132,7 @@ export default function HandleSeats(props) {
       </FormControl>
       {selectedOffice && (
         <TableContainer component={Paper}>
-          <Table sx={{ minWidth: 650 }} size="small" aria-label="simple table">
+          <Table size="small" aria-label="simple table">
             <TableHead>
               <TableRow>
                 <TableCell>Office</TableCell>
@@ -153,7 +153,7 @@ export default function HandleSeats(props) {
                       <Button
                         onClick={() => handleDeleteSeat(seat)}
                         variant="contained"
-                        color="danger"
+                        color="warning"
                       >
                         Delete
                       </Button>

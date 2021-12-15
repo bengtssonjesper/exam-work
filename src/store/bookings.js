@@ -10,7 +10,7 @@ const initialBookingState = {
   graphicViewTimeRefs: {},
   selectedOffice: null,
   viewDate: null,
-  darkMode: false,
+  darkMode: true,
   users: [],
 };
 

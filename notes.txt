@@ -109,3 +109,12 @@ Bättre lösning på vilka timmar som ska visas i schedule? Klart
   Fixa så automatiska bokningen känner av att endast en bokning får finnas samtidigt??
   Dela upp Storen, så inte allt ligger i bookings
    Inkludera namn i bokningen? Checkbox för att gå med på detta 
+
+   2021-12-14:
+   Fixa stylingen av autofillade rutorna i login/signup
+
+   2021-12-15:
+   AdminPage, handleBookings i mobile view, se till så det ser snyggt ut.
+   Funktionaliteten för endast en bokning samtidigt verkar inte fungera. Funkar för det mesta? När failar den? 
+   booker/viewer selectors syns ej i Light mode, FIXAT
+   Fixa updateProfile

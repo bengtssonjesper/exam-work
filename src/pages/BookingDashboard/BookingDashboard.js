@@ -11,7 +11,7 @@ import { bookingsActions } from "../../store/bookings";
 import {
   reduxFormatOffices,
   reduxFormatBookings,
-  reduxFormatUsers
+  reduxFormatUsers,
 } from "../../helper/HelperFunctions";
 import { useAuth } from "../../contexts/AuthContext";
 import {
@@ -21,11 +21,18 @@ import {
   DashboardBody,
   ViewerBookerContainer,
   ChangeOfficePicker,
+  ShowOnDesktop,
+  ShowOnMobile,
 } from "./styles";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import Divider from "@mui/material/Divider";
 import { theme } from "../../styles/theme";
+import FormControl from "@mui/material/FormControl";
+import InputLabel from "@mui/material/InputLabel";
+import Select from "@mui/material/Select";
+import MenuItem from "@mui/material/MenuItem";
+import useWindowSize from "../../hooks/useWindowSize";
 
 export default function BookingDashboard() {
   const { currentUser } = useAuth();
@@ -37,8 +44,10 @@ export default function BookingDashboard() {
   const [whatViewer, setWhatViewer] = useState("schedule");
   const [whatBooker, setWhatBooker] = useState("manual");
   const offices = useSelector((state) => state.bookings.offices);
+  const darkMode = useSelector((state) => state.bookings.darkMode);
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const [width, height] = useWindowSize();
 
   useEffect(() => {
     getThisWeeksDates();
@@ -50,6 +59,7 @@ export default function BookingDashboard() {
     // if (offices.length === 0) {
     onValue(reduxBookingsRef, (snapshot) => {
       const data = snapshot.val();
+      console.log("DEN KÖRS!");
       reduxFormatBookings(data, currentUser, dispatch);
     });
     // }
@@ -128,51 +138,82 @@ export default function BookingDashboard() {
 
   return (
     <>
-      <DashboardHeader>
-        <DashboardHeaderItem>{/* <h1>Some header</h1> */}</DashboardHeaderItem>
-        <DashboardHeaderRow>
-          <DashboardHeaderItem>
-            <h3>Viewing option</h3>
-            <Divider />
-            <Tabs
-              value={whatViewer}
-              onChange={handleChangeViewer}
-              aria-label="primary tabs example"
+      <DashboardHeader
+        style={{
+          backgroundColor: darkMode ? "rgb(50,50,50)" : "rgb(230,230,230)",
+        }}
+      >
+        <ShowOnDesktop>
+          <DashboardHeaderRow>
+            <div>
+              <h3>Viewing option</h3>
+              <Divider />
+              <Tabs
+                value={whatViewer}
+                onChange={handleChangeViewer}
+                aria-label="primary tabs example"
+              >
+                <Tab
+                  value="text"
+                  label="Text"
+                  sx={{ color: `${theme.palette.secondary.main}` }}
+                />
+                <Tab
+                  value="schedule"
+                  label="Schedule"
+                  sx={{ color: `${theme.palette.secondary.main}` }}
+                />
+              </Tabs>
+            </div>
+            <Divider orientation="vertical" variant="middle" />
+            <div>
+              <h3>Booking option</h3>
+              <Divider />
+              <Tabs
+                value={whatBooker}
+                onChange={handleChangeBooker}
+                aria-label="icon label tabs example"
+              >
+                <Tab
+                  value="manual"
+                  label="Manual"
+                  sx={{ color: `${theme.palette.secondary.main}` }}
+                />
+                <Tab
+                  value="automatic"
+                  label="Automatic"
+                  sx={{ color: `${theme.palette.secondary.main}` }}
+                />
+              </Tabs>
+            </div>
+          </DashboardHeaderRow>
+        </ShowOnDesktop>
+        <ShowOnMobile>
+          <FormControl style={{ width: "min(80vw,150px)", margin: "10px" }}>
+            <InputLabel variant="standard">Viewer</InputLabel>
+            <Select
+              onChange={(e) => {
+                setWhatViewer(e.target.value);
+              }}
+              defaultValue={"schedule"}
             >
-              <Tab
-                value="text"
-                label="Text"
-                sx={{ color: `${theme.palette.secondary.main}` }}
-              />
-              <Tab
-                value="schedule"
-                label="Schedule"
-                sx={{ color: `${theme.palette.secondary.main}` }}
-              />
-            </Tabs>
-          </DashboardHeaderItem>
-          <Divider orientation="vertical" variant="middle" />
-          <DashboardHeaderItem>
-            <h3>Booking option</h3>
-            <Divider />
-            <Tabs
-              value={whatBooker}
-              onChange={handleChangeBooker}
-              aria-label="icon label tabs example"
+              <MenuItem value="text">TEXT</MenuItem>
+              <MenuItem value="schedule">SCHEDULE</MenuItem>
+            </Select>
+          </FormControl>
+          <FormControl style={{ width: "min(80vw,150px)", margin: "10px" }}>
+            <InputLabel variant="standard">Booker</InputLabel>
+            <Select
+              onChange={(e) => {
+                setWhatBooker(e.target.value);
+              }}
+              defaultValue={"manual"}
             >
-              <Tab
-                value="manual"
-                label="Manual"
-                sx={{ color: `${theme.palette.secondary.main}` }}
-              />
-              <Tab
-                value="automatic"
-                label="Automatic"
-                sx={{ color: `${theme.palette.secondary.main}` }}
-              />
-            </Tabs>
-          </DashboardHeaderItem>
-        </DashboardHeaderRow>
+              <MenuItem value="manual">MANUAL</MenuItem>
+              <MenuItem value="automatic">AUTOMATIC</MenuItem>
+            </Select>
+          </FormControl>
+        </ShowOnMobile>
       </DashboardHeader>
       <DashboardBody>
         <div style={ChangeOfficePicker}>
@@ -191,58 +232,37 @@ export default function BookingDashboard() {
           </Form>
         </div>
         {showViewerAndBooker && (
-          <ViewerBookerContainer>
-            <SeatViewer
-              selectedOffice={selectedOffice}
-              thisWeeksDates={thisWeeksDates}
-              thisWeeksDatesStrings={thisWeeksDatesStrings}
-              viewer={whatViewer}
-            />
-            <div className="vr" />
-            <SeatBooker
-              selectedOffice={selectedOffice}
-              thisWeeksDates={thisWeeksDates}
-              thisWeeksDatesStrings={thisWeeksDatesStrings}
-              booker={whatBooker}
-            />
-          </ViewerBookerContainer>
-        )}
-      </DashboardBody>
-      {/* <Container className=" shadow-container min-height-full">
-        <div>
-          <Form className="mt-2">
-            <Form.Select
-              aria-label="Default select example"
-              onChange={handleOnChange}
-              ref={selectedOfficeRef}
-            >
-              <option>Select an office</option>
-              {offices &&
-                offices.map((office, i) => {
-                  return <option key={i}>{office}</option>;
-                })}
-            </Form.Select>
-          </Form>
-        </div>
-        {showViewerAndBooker && (
-          <div>
-            <div id="seatViewer">
+          <ViewerBookerContainer width={width}>
+            <div style={{ width: width < 1000 ? "90vw" : "55vw" }}>
               <SeatViewer
                 selectedOffice={selectedOffice}
                 thisWeeksDates={thisWeeksDates}
                 thisWeeksDatesStrings={thisWeeksDatesStrings}
-              ></SeatViewer>
+                viewer={whatViewer}
+              />
             </div>
-            <div id="seatBooker">
+            <div
+              className="vr"
+              style={{ display: width < 1000 ? "none" : "block" }}
+            />
+            <hr
+              style={{
+                width: "95%",
+                margin: "0 auto",
+                display: width < 1000 ? "block" : "none",
+              }}
+            />
+            <div style={{ width: width < 1000 ? "90vw" : "30vw" }}>
               <SeatBooker
                 selectedOffice={selectedOffice}
                 thisWeeksDates={thisWeeksDates}
                 thisWeeksDatesStrings={thisWeeksDatesStrings}
-              ></SeatBooker>
+                booker={whatBooker}
+              />
             </div>
-          </div>
+          </ViewerBookerContainer>
         )}
-      </Container> */}
+      </DashboardBody>
     </>
   );
 }
