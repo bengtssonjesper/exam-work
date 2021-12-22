@@ -1,17 +1,19 @@
 import React, { useState, useRef } from "react";
 import { Popover, OverlayTrigger } from "react-bootstrap";
 import BookingModal from "../../../components/BookingModal/BookingModal";
+import { useSelector } from "react-redux";
 
 export default function ScheduleBooking(props) {
   const target = useRef(null);
   const [show, setShow] = useState(false);
+  const darkMode = useSelector((state) => state.bookings.darkMode);
 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
   const myStyles = {
     height: "90%",
-    backgroundColor: "rgba(200,200,200,0.4)",
+    backgroundColor: "rgb(225,225,225)",
     border: "1px solid rgba(170,170,170,0.2)",
     borderRadius: "5px",
     position: "absolute",
@@ -23,7 +25,8 @@ export default function ScheduleBooking(props) {
   };
 
   const currentUserStyles = {
-    backgroundColor: "rgba(150,10,90,0.2)",
+    backgroundColor: "rgba(150,10,90,0.8)",
+    color: "black",
     cursor: "pointer",
   };
 
@@ -58,10 +61,22 @@ export default function ScheduleBooking(props) {
             onClick={props.isCurrentUsersBooking ? handleShow : null}
             className="d-flex justify-content-between align-items-center"
           >
-            <p style={{ pointerEvents: "none" }} className="m-1">
+            <p
+              style={{
+                pointerEvents: "none",
+                color: darkMode ? "black" : "black",
+              }}
+              className="m-1"
+            >
               {props.booking.startTime}
             </p>
-            <p style={{ pointerEvents: "none" }} className="m-1">
+            <p
+              style={{
+                pointerEvents: "none",
+                color: darkMode ? "black" : "black",
+              }}
+              className="m-1"
+            >
               {props.booking.endTime}
             </p>
           </div>

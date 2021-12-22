@@ -38,6 +38,7 @@ export default function NavBar() {
 
   async function handleLogOut() {
     try {
+      dispatch(bookingsActions.clearStore());
       await logout();
       navigate("/login");
     } catch (error) {

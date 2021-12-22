@@ -42,7 +42,7 @@ export default function ManualBooking(props) {
 
   return (
     <div>
-      <h3>Manual booking</h3>
+      <h3>Manual booker</h3>
       {error && <Alert variant="danger">{error}</Alert>}
       {message && <Alert variant="success">{message}</Alert>}
 

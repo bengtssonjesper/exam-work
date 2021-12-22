@@ -55,11 +55,11 @@ body {
 }
 
 .ownCube {
-  background-color: rgba(150, 10, 90, 0.3);
+  background-color: rgba(150, 10, 90, 0.8);
 }
 
 .othersCube {
-  background-color: rgba(200, 200, 200, 0.4);
+  background-color: rgb(225, 225, 225);
 }
 
 .overflow-hidden {

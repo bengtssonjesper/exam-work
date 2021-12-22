@@ -1,10 +1,10 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useSelector } from "react-redux";
 import Button from "@mui/material/Button";
-import { Form,Row,Col, Alert } from "react-bootstrap";
+import { Form, Row, Col, Alert } from "react-bootstrap";
 import RecommendedBooking from "./RecommendedBooking";
 import { useAuth } from "../../../contexts/AuthContext";
-import Pagination from '@mui/material/Pagination';
+import Pagination from "@mui/material/Pagination";
 
 export default function AutomaticBooking(props) {
   const { currentUser } = useAuth();
@@ -12,13 +12,13 @@ export default function AutomaticBooking(props) {
   const fromRef = useRef();
   const toRef = useRef();
   const durationRef = useRef();
-  const rowsPerPage=4;
+  const rowsPerPage = 4;
   const today = new Date();
-  const [recommendedSlots,setRecommendedSlots]=useState([]);
-  const [error,setError]=useState("")
-  const [message,setMessage]=useState("")
+  const [recommendedSlots, setRecommendedSlots] = useState([]);
+  const [error, setError] = useState("");
+  const [message, setMessage] = useState("");
   const [page, setPage] = useState(1);
-  const [slotsToView, setSlotsToView] = useState([])
+  const [slotsToView, setSlotsToView] = useState([]);
   const bookingsByOffice = useSelector(
     (state) => state.bookings.bookingsByOffice
   );
@@ -26,17 +26,19 @@ export default function AutomaticBooking(props) {
   const seatsByOffice = useSelector((state) => state.bookings.seatsByOffice);
   const selectedOffice = useSelector((state) => state.bookings.selectedOffice);
 
-  useEffect(()=>{
-    setSlotsToView(recommendedSlots.slice((page-1)*rowsPerPage,page*rowsPerPage))
-  },[recommendedSlots])
+  useEffect(() => {
+    setSlotsToView(
+      recommendedSlots.slice((page - 1) * rowsPerPage, page * rowsPerPage)
+    );
+  }, [recommendedSlots]);
 
-  useEffect(()=>{
+  useEffect(() => {
     handleSearch();
-  },[bookingsByOffice])
+  }, [bookingsByOffice]);
 
   function handleSearch(e) {
     //Called both from buttonclick and useEffect
-    if(e){
+    if (e) {
       e.preventDefault();
     }
     var startTime = performance.now();
@@ -44,7 +46,7 @@ export default function AutomaticBooking(props) {
     var selectedTo = new Date();
     var initStartTime = new Date();
     var initEndTime = new Date();
-    
+
     const selectedDuration =
       parseInt(durationRef.current.value.substr(0, 2)) +
       parseInt(durationRef.current.value.substr(3, 2)) / 60;
@@ -83,18 +85,18 @@ export default function AutomaticBooking(props) {
           from: initStartTime,
           to: initEndTime,
           duration: (initEndTime - initStartTime) / (60 * 60 * 1000),
-          seat:seatsByOffice[selectedOffice][seat]
+          seat: seatsByOffice[selectedOffice][seat],
         },
       ];
     });
 
     //compareArray contains all the bookings in selectedOffice and selectedDate
-    var compareArray = []
-    if(bookingsByDate[dateRef.current.value]){
+    var compareArray = [];
+    if (bookingsByDate[dateRef.current.value]) {
       compareArray = bookingsByDate[dateRef.current.value].filter(
-      (booking) => booking.office === selectedOffice
-    )}
-
+        (booking) => booking.office === selectedOffice
+      );
+    }
 
     compareArray.forEach((booking) => {
       var compareStartDate = new Date();
@@ -126,13 +128,13 @@ export default function AutomaticBooking(props) {
             from: slot.from,
             to: compareStartDate,
             duration: (compareStartDate - slot.from) / (60 * 60 * 1000),
-            seat:slot.seat
+            seat: slot.seat,
           };
           var newSlotTwo = {
             from: compareEndDate,
             to: slot.to,
             duration: (slot.to - compareEndDate) / (60 * 60 * 1000),
-            seat:slot.seat
+            seat: slot.seat,
           };
 
           //Removes the previous slot and adds the two new slots.
@@ -147,41 +149,53 @@ export default function AutomaticBooking(props) {
         var compareStart = new Date();
         var compareEnd = new Date();
         //Used so that the slot starts on slot.from or selectedFrom, whichever starts latest.
-        if(slot.from>selectedFrom){
+        if (slot.from > selectedFrom) {
           compareStart = slot.from;
-        }else{
-          compareStart=selectedFrom;
+        } else {
+          compareStart = selectedFrom;
         }
 
         compareEnd.setHours(
           compareStart.getHours(),
           compareStart.getMinutes(),
-          compareStart.getSeconds())
-        compareEnd.setMinutes(compareStart.getMinutes()+selectedDuration*60)
+          compareStart.getSeconds()
+        );
+        compareEnd.setMinutes(
+          compareStart.getMinutes() + selectedDuration * 60
+        );
         if (
-          compareStart>=slot.from && compareEnd <=slot.to && compareEnd<=selectedTo
-          ) {
-            const pushSlot = {from:compareStart, to:compareEnd, duration:selectedDuration, seat:slot.seat}
-            viableOptions.push(pushSlot);
+          compareStart >= slot.from &&
+          compareEnd <= slot.to &&
+          compareEnd <= selectedTo
+        ) {
+          const pushSlot = {
+            from: compareStart,
+            to: compareEnd,
+            duration: selectedDuration,
+            seat: slot.seat,
+          };
+          viableOptions.push(pushSlot);
         }
       });
     });
 
     var endTime = performance.now();
-    setRecommendedSlots(viableOptions)
+    setRecommendedSlots(viableOptions);
   }
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
-    var tmpArr=[]
-    tmpArr=recommendedSlots.slice((newPage-1)*rowsPerPage,newPage*rowsPerPage)
-    setSlotsToView(tmpArr)
+    var tmpArr = [];
+    tmpArr = recommendedSlots.slice(
+      (newPage - 1) * rowsPerPage,
+      newPage * rowsPerPage
+    );
+    setSlotsToView(tmpArr);
   };
-
 
   return (
     <div>
-      <h3>Automatic booking</h3>
+      <h3>Automatic booker</h3>
       <Form onSubmit={handleSearch}>
         {today && (
           <Form.Group>
@@ -223,30 +237,37 @@ export default function AutomaticBooking(props) {
           />
         </Form.Group>
         <Col className="mt-2 mb-2">
-        <Button variant="outlined" type="submit">Search</Button>
+          <Button variant="outlined" type="submit">
+            Search
+          </Button>
         </Col>
       </Form>
       {error && <Alert variant="danger">{error}</Alert>}
       {message && <Alert variant="success">{message}</Alert>}
 
-      {recommendedSlots.length>0 && <p>Available seats: </p>}
-      {recommendedSlots && slotsToView.map((slot,i)=>{
-        
-        return(
-          <RecommendedBooking 
-            key={i} 
-            slot={slot}
-            date={dateRef.current.value}
-            thisWeeksDatesStrings={props.thisWeeksDatesStrings}
-            currentUser={currentUser}
-            setError={setError}
-            setMessage={setMessage}
-          />
-        )
-      })}
-      {slotsToView.length>0&&
-      <Pagination color='primary' page={page} onChange={handleChangePage} count={Math.ceil(recommendedSlots.length/rowsPerPage)} />
-      }
+      {recommendedSlots.length > 0 && <p>Available seats: </p>}
+      {recommendedSlots &&
+        slotsToView.map((slot, i) => {
+          return (
+            <RecommendedBooking
+              key={i}
+              slot={slot}
+              date={dateRef.current.value}
+              thisWeeksDatesStrings={props.thisWeeksDatesStrings}
+              currentUser={currentUser}
+              setError={setError}
+              setMessage={setMessage}
+            />
+          );
+        })}
+      {slotsToView.length > 0 && (
+        <Pagination
+          color="primary"
+          page={page}
+          onChange={handleChangePage}
+          count={Math.ceil(recommendedSlots.length / rowsPerPage)}
+        />
+      )}
     </div>
   );
 }

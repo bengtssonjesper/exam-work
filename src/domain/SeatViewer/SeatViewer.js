@@ -117,8 +117,8 @@ export default function SeatViewer(props) {
 
   return (
     <ViewerContainer>
-      {props.viewer === "text" && <h3>Text viewer</h3>}
-      {props.viewer === "schedule" && <h3>Schedule viewer</h3>}
+      {props.viewer === "text" && <h3>Text view</h3>}
+      {props.viewer === "schedule" && <h3>Schedule view</h3>}
       <Row className="mt-2 mb-4">
         <Col sm lg="3" className="d-flex md-6">
           <Form>

@@ -15,8 +15,9 @@ export const DashboardHeader = styled.div`
 
 export const DashboardHeaderRow = styled.div`
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
+  width: 500px;
 `;
 
 export const DashboardHeaderItem = styled.div``;

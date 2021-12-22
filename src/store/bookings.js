@@ -10,7 +10,7 @@ const initialBookingState = {
   graphicViewTimeRefs: {},
   selectedOffice: null,
   viewDate: null,
-  darkMode: true,
+  darkMode: false,
   users: [],
 };
 
@@ -50,6 +50,19 @@ const bookingsSlice = createSlice({
     },
     setUsers(state, action) {
       state.users = action.payload;
+    },
+    clearStore(state, action) {
+      state.allBookings = [];
+      state.currentUsersBookings = [];
+      state.bookingsByDate = {};
+      state.bookingsByOffice = {};
+      state.seatsByOffice = {};
+      state.offices = [];
+      state.graphicViewTimeRefs = {};
+      state.selectedOffice = null;
+      state.viewDate = null;
+      state.darkMode = true;
+      state.users = [];
     },
   },
 });

@@ -2,9 +2,11 @@ import React from "react";
 import { Row, Col } from "react-bootstrap";
 import ScheduleBooking from "./ScheduleBooking";
 import { useAuth } from "../../../contexts/AuthContext";
-import { MyScheduleRow } from "./styles";
+import { ScheduleRowContainer } from "./styles";
+import { useSelector } from "react-redux";
 
 export default function ScheduleRow(props) {
+  const darkMode = useSelector((state) => state.bookings.darkMode);
   const { currentUser } = useAuth();
 
   const firstHour = props.start;
@@ -46,12 +48,12 @@ export default function ScheduleRow(props) {
   }
 
   return (
-    <div>
-      <Row className="schedule-row text-center"  >
-        <Col xs="2" style={{padding:"0", margin:"0"}}>
-          {props.seat}
-        </Col>
-        <Col style={{ position: "relative", overflow: "hidden",}} xs="10">
+    <ScheduleRowContainer
+      styles={{ borderColor: darkMode ? "white" : "black" }}
+    >
+      <Row>
+        <Col xs="2">{props.seat}</Col>
+        <Col style={{ position: "relative", overflow: "hidden" }} xs="10">
           {props.bookings.map((booking, i) => {
             const start = calculateStart(booking);
             const width = calculateWidth(booking);
@@ -68,6 +70,6 @@ export default function ScheduleRow(props) {
           })}
         </Col>
       </Row>
-    </div>
+    </ScheduleRowContainer>
   );
 }

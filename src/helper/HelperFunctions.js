@@ -108,7 +108,7 @@ export function updateBooking(
         startTime: newStartTime,
         user: booking["user"],
       });
-      setMessage("Success");
+      setMessage("Booking updated");
     } else {
       setError("Some error");
     }

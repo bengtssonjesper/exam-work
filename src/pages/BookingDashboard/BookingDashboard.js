@@ -33,6 +33,7 @@ import InputLabel from "@mui/material/InputLabel";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import useWindowSize from "../../hooks/useWindowSize";
+import Typography from "@mui/material/Typography";
 
 export default function BookingDashboard() {
   const { currentUser } = useAuth();
@@ -56,24 +57,24 @@ export default function BookingDashboard() {
   useEffect(() => {
     const db = getDatabase();
     const reduxBookingsRef = ref(db, "bookings");
-    // if (offices.length === 0) {
-    onValue(reduxBookingsRef, (snapshot) => {
-      const data = snapshot.val();
-      console.log("DEN KÖRS!");
-      reduxFormatBookings(data, currentUser, dispatch);
-    });
-    // }
+    if (offices.length === 0) {
+      onValue(reduxBookingsRef, (snapshot) => {
+        const data = snapshot.val();
+        console.log("DEN KÖRS!");
+        reduxFormatBookings(data, currentUser, dispatch);
+      });
+    }
   }, []);
 
   useEffect(() => {
     const db = getDatabase();
     const reduxOfficesRef = ref(db, "offices");
-    // if (offices.length === 0) {
-    onValue(reduxOfficesRef, (snapshot) => {
-      const data = snapshot.val();
-      reduxFormatOffices(data, dispatch);
-    });
-    // }
+    if (offices.length === 0) {
+      onValue(reduxOfficesRef, (snapshot) => {
+        const data = snapshot.val();
+        reduxFormatOffices(data, dispatch);
+      });
+    }
   }, []);
 
   useEffect(() => {
@@ -140,13 +141,18 @@ export default function BookingDashboard() {
     <>
       <DashboardHeader
         style={{
-          backgroundColor: darkMode ? "rgb(50,50,50)" : "rgb(230,230,230)",
+          backgroundColor: darkMode ? "rgb(50,50,50)" : "rgb(225,225,225)",
         }}
       >
         <ShowOnDesktop>
           <DashboardHeaderRow>
             <div>
-              <h3>Viewing option</h3>
+              <Typography
+                variant="h4"
+                color={darkMode ? "rgb(225,225,225)" : "rgb(50,50,50)"}
+              >
+                Viewing option
+              </Typography>
               <Divider />
               <Tabs
                 value={whatViewer}
@@ -167,7 +173,12 @@ export default function BookingDashboard() {
             </div>
             <Divider orientation="vertical" variant="middle" />
             <div>
-              <h3>Booking option</h3>
+              <Typography
+                variant="h4"
+                color={darkMode ? "rgb(225,225,225)" : "rgb(50,50,50)"}
+              >
+                Booking option
+              </Typography>
               <Divider />
               <Tabs
                 value={whatBooker}

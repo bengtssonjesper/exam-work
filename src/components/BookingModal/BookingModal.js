@@ -59,52 +59,58 @@ export default function BookingModal(props) {
       onHide={props.handleClose}
     >
       <Modal.Header closeButton>
-        <Modal.Title>What do you wish to do with this booking?</Modal.Title>
+        <Modal.Title>Update or delete booking</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        {showUpdateForm && (
-          <div>
-            <p>Please enter the new times</p>
-            <Form onSubmit={handleUpdateSubmit}>
-              <Form.Group>
-                <Form.Label>Start Time:</Form.Label>
-                <Form.Control
-                  ref={startTimeRef}
-                  type="time"
-                  required
-                ></Form.Control>
-              </Form.Group>
-              <Form.Group>
-                <Form.Label>End Time:</Form.Label>
-                <Form.Control
-                  ref={endTimeRef}
-                  type="time"
-                  required
-                ></Form.Control>
-              </Form.Group>
-              <Button
-                color="success"
-                variant="contained"
-                className="mt-2 mb-2"
-                type="submit"
-              >
-                Update
-              </Button>
-            </Form>
-          </div>
-        )}
+        {/* {showUpdateForm && ( */}
+        <div>
+          <p>Please enter the new times</p>
+          <Form onSubmit={handleUpdateSubmit}>
+            <Form.Group>
+              <Form.Label>Start Time:</Form.Label>
+              <Form.Control
+                ref={startTimeRef}
+                type="time"
+                required
+              ></Form.Control>
+            </Form.Group>
+            <Form.Group>
+              <Form.Label>End Time:</Form.Label>
+              <Form.Control
+                ref={endTimeRef}
+                type="time"
+                required
+              ></Form.Control>
+            </Form.Group>
+            <Button
+              color="success"
+              variant="contained"
+              className="mt-2 mb-2"
+              type="submit"
+            >
+              Update
+            </Button>
+          </Form>
+        </div>
+        {/* )} */}
         {message && <Alert variant="success">{message}</Alert>}
         {error && <Alert variant="danger">{error}</Alert>}
       </Modal.Body>
       <Modal.Footer>
-        <Button
+        {/* <Button
+          style={{ margin: "5px" }}
           color="warning"
           variant="contained"
           onClick={handleUpdateBooking}
         >
           Update booking
-        </Button>
-        <Button color="error" variant="contained" onClick={handleDeleteBooking}>
+        </Button> */}
+        <Button
+          style={{ margin: "5px" }}
+          color="error"
+          variant="contained"
+          onClick={handleDeleteBooking}
+        >
           Delete booking
         </Button>
       </Modal.Footer>

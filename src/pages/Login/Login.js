@@ -29,7 +29,7 @@ export default function Login() {
     padding: "3px",
   };
   const inputLightStyle = {
-    WebkitBoxShadow: "0 0 0 30px rgba(0,50,0,0.5) inset",
+    WebkitBoxShadow: "0 0 0 30px rgba(240,240,200,0.3) inset",
     padding: "3px",
   };
 
@@ -100,6 +100,9 @@ export default function Login() {
               variant="standard"
               type="password"
               onChange={handlePasswordInputChange}
+              inputProps={{
+                style: darkMode ? inputDarkStyle : inputLightStyle,
+              }}
             />
             <Button onClick={handleSubmit} variant="contained">
               Log In
