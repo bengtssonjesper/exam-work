@@ -122,7 +122,7 @@ export default function SeatViewer(props) {
       <Row className="mt-2 mb-4">
         <Col sm lg="3" className="d-flex md-6">
           <Form>
-            <Form.Group style={{ width: "min(150px,80vw)" }}>
+            <Form.Group style={{ width: "min(160px,80vw)" }}>
               <Form.Select
                 aria-label="Default select example"
                 ref={dateRef}

@@ -8,12 +8,8 @@ export default function SeatRowBooking(props) {
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
-  useEffect(() => {
-    console.log("props.booking: ", props.booking);
-  }, []);
-
   const myStyles = {
-    // width:"100%",
+    width: "100%",
     backgroundColor: "rgb(225,225,225)",
     borderRadius: "5px",
   };

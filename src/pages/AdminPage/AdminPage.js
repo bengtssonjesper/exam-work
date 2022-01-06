@@ -236,7 +236,7 @@ export default function AdminPage() {
         {error && <Alert variant="danger">{error}</Alert>}
 
         {whatView === "addAdmin" && (
-          <Card>
+          <Card raised style={{ width: "min(400px,95%)", margin: "auto" }}>
             <CardContent>
               <Form onSubmit={handleAddAdmin}>
                 <Form.Group>

@@ -17,7 +17,7 @@ export const AdminHeader = styled.div`
 export const AdminBody = styled.div`
   width: 90vw;
   margin: 30px auto 0 auto;
-  display: flex;
+  // display: flex;
   justify-content: center;
 `;
 

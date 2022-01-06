@@ -37,8 +37,6 @@ export default function Login() {
 
   async function handleSubmit(e) {
     e.preventDefault();
-    console.log(emailRef);
-    console.log(this);
     try {
       setError("");
       setLoading(true);

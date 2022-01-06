@@ -38,9 +38,9 @@ export default function NavBar() {
 
   async function handleLogOut() {
     try {
-      dispatch(bookingsActions.clearStore());
       await logout();
       navigate("/login");
+      dispatch(bookingsActions.clearStore());
     } catch (error) {
       //Some error
     }
@@ -55,7 +55,14 @@ export default function NavBar() {
   return (
     <Navbar collapseOnSelect expand="md" bg="dark" variant="dark">
       <Container>
-        <Navbar.Brand>Booking System</Navbar.Brand>
+        <Navbar.Brand
+          style={{
+            fontFamily: "Play",
+            fontSize: "30px",
+          }}
+        >
+          BookQ
+        </Navbar.Brand>
         <Navbar.Toggle aria-controls="responsive-navbar-nav" />
         <Navbar.Collapse id="responsive-navbar-nav">
           <Nav className="me-auto">

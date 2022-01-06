@@ -12,12 +12,11 @@ export default function ScheduleBooking(props) {
   const handleShow = () => setShow(true);
 
   const myStyles = {
-    height: "90%",
+    height: "100%",
     backgroundColor: "rgb(225,225,225)",
     border: "1px solid rgba(170,170,170,0.2)",
-    borderRadius: "5px",
+    borderRadius: "3px",
     position: "absolute",
-    top: "5%",
     overflow: "hidden",
     left: props.start,
     width: props.width,
@@ -25,7 +24,7 @@ export default function ScheduleBooking(props) {
   };
 
   const currentUserStyles = {
-    backgroundColor: "rgba(150,10,90,0.8)",
+    backgroundColor: "rgb(216, 177, 203)",
     color: "black",
     cursor: "pointer",
   };

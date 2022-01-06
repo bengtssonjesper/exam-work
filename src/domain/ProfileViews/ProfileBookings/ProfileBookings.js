@@ -65,8 +65,6 @@ export default function ProfileBookings() {
       });
     });
 
-    console.log("inputData: ", inputData);
-    console.log("myarr: ", myArr);
     return myArr;
   }
 

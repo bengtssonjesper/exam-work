@@ -54,7 +54,6 @@ export default function Profile() {
         onValue(profileRef, (snapshot) => {
           const data = snapshot.val();
           setProfileData(data);
-          console.log("profiledata: ", data);
         });
       } catch (error) {
         setError("Error getting profile data");
@@ -69,7 +68,6 @@ export default function Profile() {
     if (offices.length === 0) {
       onValue(reduxBookingsRef, (snapshot) => {
         const data = snapshot.val();
-        console.log("DEN KÖRS!");
         reduxFormatBookings(data, currentUser, dispatch);
       });
     }
@@ -78,14 +76,11 @@ export default function Profile() {
   useEffect(() => {
     const db = getDatabase();
     const reduxAllOfficesRef = ref(db, "Offices");
-    console.log("offices length 0: ", offices);
-    console.log("currentusersbookings:", currentUsersBookings);
     // if (offices.length === 0) {
     onValue(reduxAllOfficesRef, (snapshot) => {
       const data = snapshot.val();
       // reduxFormatData(data, currentUser, dispatch);
       reduxFormatOffices(data, dispatch);
-      console.log("data: ", data);
     });
     // }
   }, []);

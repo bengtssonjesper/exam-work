@@ -152,26 +152,21 @@ function isBookingAllowed(
       throw "End time must be greater than start time";
     } else if (
       (startTimeDate > cmpStart && startTimeDate < cmpEnd) ||
-      (endTimeDate > cmpStart && endTimeDate < cmpEnd)
+      (endTimeDate > cmpStart && endTimeDate < cmpEnd) ||
+      (cmpStart > startTimeDate && cmpStart < endTimeDate) ||
+      (cmpEnd > startTimeDate && cmpEnd < endTimeDate)
     ) {
       isAllowed = false;
       throw "Collision with another booking, please change times";
     }
   });
-  console.log("currentusersbooking: ", currentUsersBookings);
 
   if (currentUsersBookings) {
-    // console.log("currentusersbooking")
     // Object.keys(currentUsersBookings).forEach((element,i)=>{
-    //   console.log("date: ", date)
-    //   console.log("element: ", element)
-    //   console.log("element[]: ", currentUsersBookings[element])
+
     //   currentUsersBookings[element].forEach(booking=>{
     currentUsersBookings.forEach((booking) => {
       if (booking["date"] === date) {
-        console.log("same date: ");
-        console.log("booking: ", booking);
-
         var cmpStart = new Date();
         var cmpEnd = new Date();
         cmpStart.setHours(

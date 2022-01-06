@@ -62,27 +62,6 @@ export default function HandleUsers(props) {
     }
     setLoading(false);
   }
-  // async function handleAddUser(e) {
-  //   e.preventDefault();
-  //   setMessage("");
-  //   setError("");
-  //   const db = getDatabase();
-  //   try {
-  //     setLoading(true);
-  //     const promise = await signup(
-  //       emailRef.current.value,
-  //       passwordRef.current.value
-  //     );
-  //     set(ref(db, "users/" + promise.user._delegate.uid), {
-  //       uid: promise.user._delegate.uid,
-  //       email: emailRef.current.value,
-  //     });
-  //     setMessage("User created");
-  //   } catch (error) {
-  //     setError("Failed to create an account");
-  //   }
-  //   setLoading(false);
-  // }
 
   function handleEmailInputChange(e) {
     setEnteredEmail(e.target.value);
@@ -96,58 +75,21 @@ export default function HandleUsers(props) {
     <div>
       {message && <Alert variant="success">{message}</Alert>}
       {error && <Alert variant="danger">{error}</Alert>}
-      {/* <Form onSubmit={handleAddUser}>
-        <Form.Group>
-          <Form.Label>Email</Form.Label>
-          <Form.Control ref={emailRef} type="text" />
-        </Form.Group>
-        <Form.Group>
-          <Form.Label>Password</Form.Label>
-          <Form.Control
-            ref={passwordRef}
-            id="passwordInput"
-            type={showPassword ? "text" : "password"}
-          />
-          <Form.Check
-            onChange={(event) => {
-              handleShowPassword(event);
-            }}
-            id="toggle"
-            type="checkbox"
-            label="Show password"
-          />
-          <Button
-            variant="contained"
-            color="warning"
-            onClick={generatePassword}
-          >
-            Generate Password
-          </Button>
-        </Form.Group>
-        <Button
-          disabled={loading}
-          type="submit"
-          variant="contained"
-          color="success"
-        >
-          Add user
-        </Button>
-      </Form> */}
       <Grid
         container
         spacing={0}
         direction="column"
         alignItems="center"
         justify="center"
-        style={{ minHeight: "70vh" }}
+        style={{ minHeight: "50vh" }}
       >
         <Card
+          raised
           sx={{
             width: "min(400px,85vw)",
-            height: "350px",
+            height: "400px",
             margin: "auto",
           }}
-          variant="outlined"
         >
           <CardHeader title="Add User" />
           <CardContent

@@ -8,6 +8,7 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
+import Card from "@mui/material/Card";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import Box from "@mui/material/Box";
@@ -81,7 +82,6 @@ export default function HandleOffices(props) {
     e.preventDefault();
     setError("");
     setMessage("");
-    console.log("props.offices: ", props.offices);
     const db = getDatabase();
     if (enteredOffice === "") {
       setError("You must enter an office name");
@@ -94,20 +94,6 @@ export default function HandleOffices(props) {
       setMessage("Office was added");
     }
   }
-  // function handleAddOffice(e) {
-  //   e.preventDefault();
-  //   setError("");
-  //   setMessage("");
-  //   const db = getDatabase();
-  //   if (props.offices.includes(newOfficeRef.current.value)) {
-  //     setError("Office already exist");
-  //   } else {
-  //     set(ref(db, "offices/" + newOfficeRef.current.value), {
-  //       seats: ["seat1"],
-  //     });
-  //     setMessage("Success");
-  //   }
-  // }
 
   function handleOfficeInputChange(e) {
     setEnteredOffice(e.target.value);
@@ -118,7 +104,11 @@ export default function HandleOffices(props) {
       {message && <Alert variant="success">{message}</Alert>}
       {error && <Alert variant="danger">{error}</Alert>}
       {offices && (
-        <TableContainer component={Paper}>
+        <TableContainer
+          component={Card}
+          raised
+          style={{ width: "min(800px,95%)", margin: "auto" }}
+        >
           <Table
             // sx={{ minWidth: 650 }}
             size="small"
@@ -160,7 +150,7 @@ export default function HandleOffices(props) {
                     variant="standard"
                   />
                 </TableCell>
-                <TableCell>
+                <TableCell align="right">
                   <Button
                     variant="contained"
                     color="success"
@@ -169,17 +159,6 @@ export default function HandleOffices(props) {
                     Add
                   </Button>
                 </TableCell>
-                {/* <TableCell> */}
-                {/* <Form onSubmit={handleAddOffice}>
-                    <Form.Group>
-                      <Form.Label>New office</Form.Label>
-                      <Form.Control ref={newOfficeRef} type="text" required />
-                      <Button type="submit" variant="contained" color="success">
-                        Add
-                      </Button>
-                    </Form.Group>
-                  </Form> */}
-                {/* </TableCell> */}
               </TableRow>
             </TableBody>
           </Table>

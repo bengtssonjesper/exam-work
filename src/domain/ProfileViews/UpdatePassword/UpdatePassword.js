@@ -54,7 +54,6 @@ export default function UpdatePassword() {
         throw "Old password wrong";
       }
     } catch (error) {
-      console.log("error: ", error);
       setError("error");
     }
   }
@@ -82,6 +81,7 @@ export default function UpdatePassword() {
         // style={{ height: "40vh" }}
       >
         <Card
+          raised
           style={{
             height: "100%",
             width: "min(400px,85vw)",

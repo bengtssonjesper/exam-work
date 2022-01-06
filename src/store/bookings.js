@@ -61,7 +61,6 @@ const bookingsSlice = createSlice({
       state.graphicViewTimeRefs = {};
       state.selectedOffice = null;
       state.viewDate = null;
-      state.darkMode = true;
       state.users = [];
     },
   },

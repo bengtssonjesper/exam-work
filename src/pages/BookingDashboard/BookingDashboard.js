@@ -34,6 +34,11 @@ import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import useWindowSize from "../../hooks/useWindowSize";
 import Typography from "@mui/material/Typography";
+import Button from "@mui/material/Button";
+import DialogTitle from "@mui/material/DialogTitle";
+import Dialog from "@mui/material/Dialog";
+import PropTypes from "prop-types";
+import { getStorage, getDownloadURL, ref as sRef } from "firebase/storage";
 
 export default function BookingDashboard() {
   const { currentUser } = useAuth();
@@ -44,11 +49,14 @@ export default function BookingDashboard() {
   const [thisWeeksDatesStrings, setThisWeeksDatesStrings] = useState([]);
   const [whatViewer, setWhatViewer] = useState("schedule");
   const [whatBooker, setWhatBooker] = useState("manual");
+  const [mapOpen, setMapOpen] = useState(false);
+  const [mapUrl, setMapUrl] = useState("Images/NoMapFound");
   const offices = useSelector((state) => state.bookings.offices);
   const darkMode = useSelector((state) => state.bookings.darkMode);
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [width, height] = useWindowSize();
+  const storage = getStorage();
 
   useEffect(() => {
     getThisWeeksDates();
@@ -60,7 +68,6 @@ export default function BookingDashboard() {
     if (offices.length === 0) {
       onValue(reduxBookingsRef, (snapshot) => {
         const data = snapshot.val();
-        console.log("DEN KÖRS!");
         reduxFormatBookings(data, currentUser, dispatch);
       });
     }
@@ -102,13 +109,16 @@ export default function BookingDashboard() {
     var tmpArr = [];
     tmpArr = arr.map((date) => {
       const year = date.getFullYear().toString();
-      const month =
+      var month =
         date.getMonth().toString() === "12"
           ? "1"
           : (date.getMonth() + 1).toString();
       var day = date.getDate().toString();
       if (day.length < 2) {
         day = "0" + day;
+      }
+      if (month.length < 2) {
+        month = "0" + month;
       }
 
       var tmpStr = year + "-" + month + "-" + day;
@@ -119,6 +129,17 @@ export default function BookingDashboard() {
 
   function handleOnChange() {
     //Using selectedOffice as state to force rerender of childs on update
+    switch (selectedOfficeRef.current.value) {
+      case "Behrn Tower":
+        setMapUrl("Images/BehrnTower.png");
+        break;
+      case "Fabriksgatan":
+        setMapUrl("Images/Fabriksgatan.png");
+        break;
+      default:
+        setMapUrl("Images/NoMapFound.png");
+        break;
+    }
     setSelectedOffice(selectedOfficeRef.current.value);
     dispatch(
       bookingsActions.setSelectedOffice(selectedOfficeRef.current.value)
@@ -136,6 +157,57 @@ export default function BookingDashboard() {
   const handleChangeBooker = (event, newValue) => {
     setWhatBooker(newValue);
   };
+
+  const handleClickOpen = () => {
+    setMapOpen(true);
+    handleShowImage();
+  };
+
+  const handleClose = (value) => {
+    setMapOpen(false);
+  };
+
+  function SimpleDialog(props) {
+    const { onClose, selectedValue, open } = props;
+
+    const handleClose = () => {
+      onClose(selectedValue);
+    };
+
+    const handleListItemClick = (value) => {
+      onClose(value);
+    };
+
+    return (
+      <Dialog onClose={handleClose} open={mapOpen}>
+        <img id="mapImg" width="min(800px, 95%)"></img>
+      </Dialog>
+    );
+  }
+  SimpleDialog.propTypes = {
+    onClose: PropTypes.func.isRequired,
+    open: PropTypes.bool.isRequired,
+    selectedValue: PropTypes.string.isRequired,
+  };
+
+  function handleShowImage() {
+    getDownloadURL(sRef(storage, mapUrl))
+      .then((url) => {
+        const xhr = new XMLHttpRequest();
+        xhr.responseType = "blob";
+        xhr.onload = (event) => {
+          const blob = xhr.response;
+        };
+        xhr.open("GET", url);
+        xhr.send();
+
+        const img = document.getElementById("mapImg");
+        img.setAttribute("src", url);
+      })
+      .catch((error) => {
+        // Handle any errors
+      });
+  }
 
   return (
     <>
@@ -241,6 +313,10 @@ export default function BookingDashboard() {
                 })}
             </Form.Select>
           </Form>
+          {showViewerAndBooker && (
+            <Button onClick={handleClickOpen}>Show Map</Button>
+          )}
+          <SimpleDialog open={mapOpen} onClose={handleClose} />
         </div>
         {showViewerAndBooker && (
           <ViewerBookerContainer width={width}>

@@ -61,7 +61,7 @@ export default function HandleBookings(props) {
 
   function handleDeleteBooking(booking) {
     const db = getDatabase();
-    set(ref(db, "bookings/" + booking.user + "/" + booking.id), {
+    set(ref(db, "bookings/" + booking.user + "/" + booking.bookingId), {
       //Passing empty object will delete the booking
     });
   }
@@ -113,7 +113,8 @@ export default function HandleBookings(props) {
                     <Button
                       onClick={() => handleDeleteBooking(booking)}
                       variant="contained"
-                      color="warning"
+                      color="error"
+                      style={{ margin: "5px" }}
                     >
                       Delete
                     </Button>
@@ -121,6 +122,7 @@ export default function HandleBookings(props) {
                       onClick={() => handleUpdateBooking(booking)}
                       variant="contained"
                       color="warning"
+                      style={{ margin: "5px" }}
                     >
                       Update
                     </Button>

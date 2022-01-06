@@ -8,12 +8,14 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
+import Card from "@mui/material/Card";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
+import { SelectContainer } from "./styles";
 
 export default function HandleSeats(props) {
   const [offices, setOffices] = useState([]);
@@ -111,27 +113,33 @@ export default function HandleSeats(props) {
     <div>
       {message && <Alert variant="success">{message}</Alert>}
       {error && <Alert variant="danger">{error}</Alert>}
-      <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
-        <InputLabel id="demo-simple-select-standard-label">Office</InputLabel>
-        <Select
-          labelId="demo-simple-select-standard-label"
-          id="demo-simple-select-standard"
-          value={selectedOffice}
-          onChange={(event) => {
-            handleOfficeChange(event);
-          }}
-          label="Office"
-        >
-          <MenuItem value="">
-            <em>None</em>
-          </MenuItem>
-          {props.offices.map((office) => {
-            return <MenuItem value={office}>{office}</MenuItem>;
-          })}
-        </Select>
-      </FormControl>
+      <SelectContainer>
+        <FormControl variant="standard" sx={{ m: 1, width: 120 }}>
+          <InputLabel id="demo-simple-select-standard-label">Office</InputLabel>
+          <Select
+            labelId="demo-simple-select-standard-label"
+            id="demo-simple-select-standard"
+            value={selectedOffice}
+            onChange={(event) => {
+              handleOfficeChange(event);
+            }}
+            label="Office"
+          >
+            <MenuItem value="">
+              <em>None</em>
+            </MenuItem>
+            {props.offices.map((office) => {
+              return <MenuItem value={office}>{office}</MenuItem>;
+            })}
+          </Select>
+        </FormControl>
+      </SelectContainer>
       {selectedOffice && (
-        <TableContainer component={Paper}>
+        <TableContainer
+          component={Card}
+          raised
+          style={{ margin: "auto", width: "min(400px,95%)" }}
+        >
           <Table size="small" aria-label="simple table">
             <TableHead>
               <TableRow>
@@ -149,7 +157,7 @@ export default function HandleSeats(props) {
                     <TableCell component="th" scope="row">
                       {seat}
                     </TableCell>
-                    <TableCell>
+                    <TableCell align="right">
                       <Button
                         onClick={() => handleDeleteSeat(seat)}
                         variant="contained"
@@ -168,7 +176,7 @@ export default function HandleSeats(props) {
                     variant="standard"
                   />
                 </TableCell>
-                <TableCell>
+                <TableCell align="right">
                   <Button
                     variant="contained"
                     color="success"
