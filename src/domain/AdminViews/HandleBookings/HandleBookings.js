@@ -77,6 +77,7 @@ export default function HandleBookings(props) {
       {error && <Alert variant="success">{error}</Alert>}
       {show && (
         <BookingModal
+          fromAdminModal={true}
           setShow={setShow}
           show={show}
           booking={clickedBooking}

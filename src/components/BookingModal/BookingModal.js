@@ -36,15 +36,39 @@ export default function BookingModal(props) {
         booking_["bookingId"] !== props.booking["bookingId"]
     );
 
-    updateBooking(
-      startTimeRef.current.value,
-      endTimeRef.current.value,
-      props.booking,
-      bookingsOnSameSeat,
-      setError,
-      setMessage,
-      currentUsersBookings
-    );
+    if (props.fromAdminModal !== null) {
+      updateBooking(
+        startTimeRef.current.value,
+        endTimeRef.current.value,
+        props.booking,
+        bookingsOnSameSeat,
+        setError,
+        setMessage,
+        currentUsersBookings,
+        props.fromAdminModal
+      );
+    } else {
+      updateBooking(
+        startTimeRef.current.value,
+        endTimeRef.current.value,
+        props.booking,
+        bookingsOnSameSeat,
+        setError,
+        setMessage,
+        currentUsersBookings
+      );
+    }
+
+    // updateBooking(
+    //   startTimeRef.current.value,
+    //   endTimeRef.current.value,
+    //   props.booking,
+    //   bookingsOnSameSeat,
+    //   setError,
+    //   setMessage,
+    //   currentUsersBookings,
+
+    // );
   }
 
   return (

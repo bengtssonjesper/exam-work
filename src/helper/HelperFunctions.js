@@ -75,7 +75,8 @@ export function updateBooking(
   arrayOfBookings,
   setError,
   setMessage,
-  currentUsersBookings
+  currentUsersBookings,
+  fromAdminModal = false
 ) {
   const db = getDatabase();
   setError("");
@@ -96,7 +97,8 @@ export function updateBooking(
         newEndTime,
         arrayOfBookings,
         currentUsersBookingsArr,
-        booking["date"]
+        booking["date"],
+        fromAdminModal
       )
     ) {
       set(ref(db, refStr), {
@@ -122,7 +124,8 @@ function isBookingAllowed(
   selectedEndTime,
   compareArray,
   currentUsersBookings,
-  date
+  date,
+  fromAdminModal = false
 ) {
   //Needed input: selectedStartTime, selectedEndTime, compareArray,
   var isAllowed = true;
@@ -146,7 +149,11 @@ function isBookingAllowed(
       booking.startTime.substr(3, 2),
       0
     );
-    cmpEnd.setHours(booking.endTime.substr(0, 2), booking.endTime.substr(3, 2));
+    cmpEnd.setHours(
+      booking.endTime.substr(0, 2),
+      booking.endTime.substr(3, 2),
+      0
+    );
     if (startTimeDate >= endTimeDate) {
       isAllowed = false;
       throw "End time must be greater than start time";
@@ -161,7 +168,7 @@ function isBookingAllowed(
     }
   });
 
-  if (currentUsersBookings) {
+  if (currentUsersBookings && !fromAdminModal) {
     // Object.keys(currentUsersBookings).forEach((element,i)=>{
 
     //   currentUsersBookings[element].forEach(booking=>{
@@ -204,10 +211,9 @@ export function isCollision(selectedStartTime, selectedEndTime, compareArray) {
 
   compareArray.forEach((booking) => {
     if (
-      (selectedStartTime >= booking.startTime &&
-        selectedStartTime <= booking.endTime) ||
-      (selectedEndTime >= booking.startTime &&
-        selectedEndTime <= booking.endTime)
+      (selectedStartTime > booking.startTime &&
+        selectedStartTime < booking.endTime) ||
+      (selectedEndTime > booking.startTime && selectedEndTime < booking.endTime)
     ) {
       isCollision = true;
     }
