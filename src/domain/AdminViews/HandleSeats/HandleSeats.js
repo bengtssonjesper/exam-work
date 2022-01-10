@@ -138,7 +138,7 @@ export default function HandleSeats(props) {
         <TableContainer
           component={Card}
           raised
-          style={{ margin: "auto", width: "min(400px,95%)" }}
+          style={{ margin: "0 auto 15px auto", width: "min(400px,95%)" }}
         >
           <Table size="small" aria-label="simple table">
             <TableHead>

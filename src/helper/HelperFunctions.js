@@ -181,7 +181,9 @@ function isBookingAllowed(
         );
         if (
           (startTimeDate > cmpStart && startTimeDate < cmpEnd) ||
-          (endTimeDate > cmpStart && endTimeDate < cmpEnd)
+          (endTimeDate > cmpStart && endTimeDate < cmpEnd) ||
+          (cmpStart > startTimeDate && cmpStart < endTimeDate) ||
+          (cmpEnd > startTimeDate && cmpEnd < endTimeDate)
         ) {
           isAllowed = false;
           throw "Only one booking per user at a time allowed";

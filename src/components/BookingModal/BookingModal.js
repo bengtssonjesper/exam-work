@@ -8,7 +8,6 @@ import { useSelector } from "react-redux";
 export default function BookingModal(props) {
   const startTimeRef = useRef();
   const endTimeRef = useRef();
-  const [showUpdateForm, setShowUpdateForm] = useState(false);
   const [error, setError] = useState();
   const [message, setMessage] = useState();
   const bookingsByDate = useSelector((state) => state.bookings.bookingsByDate);
@@ -26,10 +25,6 @@ export default function BookingModal(props) {
     set(removeRef, {
       //Setting an empty object will delete the booking
     });
-  }
-
-  function handleUpdateBooking() {
-    setShowUpdateForm(true);
   }
 
   function handleUpdateSubmit(e) {
@@ -62,7 +57,6 @@ export default function BookingModal(props) {
         <Modal.Title>Update or delete booking</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        {/* {showUpdateForm && ( */}
         <div>
           <p>Please enter the new times</p>
           <Form onSubmit={handleUpdateSubmit}>
@@ -92,19 +86,10 @@ export default function BookingModal(props) {
             </Button>
           </Form>
         </div>
-        {/* )} */}
         {message && <Alert variant="success">{message}</Alert>}
         {error && <Alert variant="danger">{error}</Alert>}
       </Modal.Body>
       <Modal.Footer>
-        {/* <Button
-          style={{ margin: "5px" }}
-          color="warning"
-          variant="contained"
-          onClick={handleUpdateBooking}
-        >
-          Update booking
-        </Button> */}
         <Button
           style={{ margin: "5px" }}
           color="error"
