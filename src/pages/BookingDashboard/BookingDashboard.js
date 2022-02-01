@@ -264,7 +264,7 @@ export default function BookingDashboard() {
                 />
                 <Tab
                   value="automatic"
-                  label="Automatic"
+                  label="Seat finder"
                   sx={{ color: `${theme.palette.secondary.main}` }}
                 />
               </Tabs>

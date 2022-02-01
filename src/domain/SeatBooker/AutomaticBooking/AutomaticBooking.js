@@ -44,8 +44,6 @@ export default function AutomaticBooking(props) {
     var startTime = performance.now();
     var selectedFrom = new Date();
     var selectedTo = new Date();
-    var initStartTime = new Date();
-    var initEndTime = new Date();
 
     const selectedDuration =
       parseInt(durationRef.current.value.substr(0, 2)) +
@@ -72,9 +70,6 @@ export default function AutomaticBooking(props) {
       0
     );
 
-    initStartTime.setHours(0, 0, 0);
-    initEndTime.setHours(23, 59, 0);
-
     //emptySlots should contain what available spots there are,
     //a slot is structured as follows: {startTime:hh:mm, endTime:hh:mm, duration:minutes seat:seat}
     var emptySlots = {};
@@ -82,15 +77,15 @@ export default function AutomaticBooking(props) {
     Object.keys(seatsByOffice[selectedOffice]).map((seat, i) => {
       emptySlots[seatsByOffice[selectedOffice][seat]] = [
         {
-          from: initStartTime,
-          to: initEndTime,
-          duration: (initEndTime - initStartTime) / (60 * 60 * 1000),
+          from: selectedFrom,
+          to: selectedTo,
+          duration: (selectedTo - selectedFrom) / (60 * 60 * 1000),
           seat: seatsByOffice[selectedOffice][seat],
         },
       ];
     });
 
-    //compareArray contains all the bookings in selectedOffice and selectedDate
+    //setting compareArray to contain all the bookings in selectedOffice and selectedDate
     var compareArray = [];
     if (bookingsByDate[dateRef.current.value]) {
       compareArray = bookingsByDate[dateRef.current.value].filter(
@@ -98,6 +93,7 @@ export default function AutomaticBooking(props) {
       );
     }
 
+    //For each booking on the selected date and in the selected office, check if collision, if so, divide into two new slots.
     compareArray.forEach((booking) => {
       var compareStartDate = new Date();
       compareStartDate.setFullYear(
@@ -144,37 +140,29 @@ export default function AutomaticBooking(props) {
     });
 
     var viableOptions = [];
+    //For each of the empty slots, find the ones that have long enough duration, then add them to viable options
     Object.keys(emptySlots).forEach((seat, i) => {
-      emptySlots[seat].forEach((slot) => {
-        var compareStart = new Date();
-        var compareEnd = new Date();
-        //Used so that the slot starts on slot.from or selectedFrom, whichever starts latest.
-        if (slot.from > selectedFrom) {
-          compareStart = slot.from;
-        } else {
-          compareStart = selectedFrom;
-        }
-
-        compareEnd.setHours(
-          compareStart.getHours(),
-          compareStart.getMinutes(),
-          compareStart.getSeconds()
-        );
-        compareEnd.setMinutes(
-          compareStart.getMinutes() + selectedDuration * 60
-        );
-        if (
-          compareStart >= slot.from &&
-          compareEnd <= slot.to &&
-          compareEnd <= selectedTo
-        ) {
-          const pushSlot = {
-            from: compareStart,
-            to: compareEnd,
-            duration: selectedDuration,
+      emptySlots[seat].forEach((slot, j) => {
+        if (slot.duration >= selectedDuration) {
+          var newToTime = new Date();
+          newToTime.setFullYear(
+            slot.from.getFullYear(),
+            slot.from.getMonth(),
+            slot.from.getDate()
+          );
+          newToTime.setHours(
+            slot.from.getHours() +
+              parseInt(durationRef.current.value.substr(0, 2)),
+            slot.from.getMinutes() +
+              parseInt(durationRef.current.value.substr(3, 5)),
+            0
+          );
+          viableOptions.push({
+            from: slot.from,
+            to: newToTime,
             seat: slot.seat,
-          };
-          viableOptions.push(pushSlot);
+            duration: selectedDuration,
+          });
         }
       });
     });
@@ -195,7 +183,7 @@ export default function AutomaticBooking(props) {
 
   return (
     <div>
-      <h3>Automatic booker</h3>
+      <h3>Seat finder</h3>
       <Form onSubmit={handleSearch}>
         {today && (
           <Form.Group>

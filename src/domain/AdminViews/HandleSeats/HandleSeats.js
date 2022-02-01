@@ -143,7 +143,7 @@ export default function HandleSeats(props) {
           <Table size="small" aria-label="simple table">
             <TableHead>
               <TableRow>
-                <TableCell>Office</TableCell>
+                <TableCell>Seat</TableCell>
                 <TableCell align="right">Option</TableCell>
               </TableRow>
             </TableHead>
